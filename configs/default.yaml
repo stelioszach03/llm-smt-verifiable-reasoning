@@ -1,0 +1,11 @@
+app:
+  name: CEGVR Demo
+  description: Skeleton configuration for the CEGVR toolkit
+  seed: 2024
+
+logging:
+  level: INFO
+
+dataset:
+  path: data/toy/budget.csv
+  description: Synthetic monthly budget data used by the demo CLI

@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Environments
+.env
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+/runs/
+/tables/
+reports/case_studies.md
+examples/paper_assets/figures/
+examples/paper_assets/tables/
+examples/paper_assets/latex/*.pdf
+!examples/paper_assets/latex/main.pdf
+
+# Ensure we never ignore the source package tables module
+!src/cegvr/tables/
+!src/cegvr/tables/**
+
+# Large artifacts / external assets
+datasets/
+models/
+*.gguf
+*.pt
+*.ckpt
+*.bin
+*.tar
+*.tar.gz
+*.zip
+*.zst

@@ -1,0 +1,18 @@
+% LaTeX snippet for scheduling results (MiniZinc → CEGVR)
+% Requires \usepackage{pgfplotstable}
+
+\pgfplotstableset{
+  every head row/.style={before row=\toprule, after row=\midrule},
+  every last row/.style={after row=\bottomrule},
+}
+
+\pgfplotstabletypeset[
+  col sep=comma,
+  header=has colnames,
+  trim cells=true,
+  columns/metric/.style={string type,string replace*={_}{\_}},
+  columns/value/.style={fixed, precision=3},
+  columns/lower/.style={fixed, precision=3},
+  columns/upper/.style={fixed, precision=3},
+]{../../../tables/scheduling/main_results.csv}
+

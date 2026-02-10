@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/generation/llm_linear.py
+# hypothesis_version: 6.140.3
+
+[0.2, 256, ' + ', '0', '=', 'Constraints:', 'LLMLinearGenerator', 'Solver feedback:', 'Variables:', '```', '```json', 'answer', 'assignments', 'assumptions', 'binary', 'choices', 'constant', 'constraints', 'content', 'derive', 'expr', 'id', 'issues', 'justification', 'kind', 'left', 'linear-llm', 'linear_ineq', 'llama-3-8b-instruct', 'math', 'max_tokens', 'message', 'messages', 'model', 'name', 'note', 'objective', 'op', 'problem_id', 'right', 'role', 'steps', 'system', 'task', 'temperature', 'terms', 'type', 'unsat_core', 'unsat_descriptions', 'user', 'value', 'variable', 'variables']

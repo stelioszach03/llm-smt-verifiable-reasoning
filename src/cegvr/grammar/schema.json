@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cegvr.example.com/schemas/reasoning-trace.json",
+  "title": "CEGVR Reasoning Trace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "problem_id",
+    "task",
+    "variables",
+    "assumptions",
+    "steps",
+    "constraints"
+  ],
+  "properties": {
+    "problem_id": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string",
+      "enum": ["math", "scheduling", "planning"]
+    },
+    "variables": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/Variable"},
+      "minItems": 1
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "steps": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/Step"},
+      "minItems": 1
+    },
+    "constraints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/Constraint"}
+    },
+    "objective": {
+      "$ref": "#/$defs/Objective"
+    },
+    "answer": {
+      "$ref": "#/$defs/Answer"
+    }
+  },
+  "$defs": {
+    "Bounds": {
+      "type": "object",
+      "properties": {
+        "lower": {"type": "integer"},
+        "upper": {"type": "integer"}
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {"required": ["lower"]},
+        {"required": ["upper"]}
+      ]
+    },
+    "Variable": {
+      "type": "object",
+      "required": ["name", "domain"],
+      "properties": {
+        "name": {"type": "string"},
+        "domain": {"type": "string", "enum": ["int", "bool"]},
+        "bounds": {"$ref": "#/$defs/Bounds"}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {"domain": {"const": "bool"}},
+            "required": ["domain"]
+          },
+          "then": {
+            "not": {
+              "required": ["bounds"]
+            }
+          }
+        }
+      ]
+    },
+    "ConstantExpr": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {"const": "constant"},
+        "value": {
+          "type": ["string", "number", "boolean"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "VariableExpr": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {"const": "variable"},
+        "name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "UnaryExpr": {
+      "type": "object",
+      "required": ["type", "op", "operand"],
+      "properties": {
+        "type": {"const": "unary"},
+        "op": {"type": "string", "enum": ["-", "not"]},
+        "operand": {"$ref": "#/$defs/Expression"}
+      },
+      "additionalProperties": false
+    },
+    "BinaryExpr": {
+      "type": "object",
+      "required": ["type", "op", "left", "right"],
+      "properties": {
+        "type": {"const": "binary"},
+        "op": {
+          "type": "string",
+          "enum": ["+", "-", "*", "/", "and", "or", "=", "!=", "<", "<=", ">", ">=", "=>"]
+        },
+        "left": {"$ref": "#/$defs/Expression"},
+        "right": {"$ref": "#/$defs/Expression"}
+      },
+      "additionalProperties": false
+    },
+    "FunctionExpr": {
+      "type": "object",
+      "required": ["type", "name", "args"],
+      "properties": {
+        "type": {"const": "function"},
+        "name": {"type": "string"},
+        "args": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/Expression"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "Expression": {
+      "oneOf": [
+        {"$ref": "#/$defs/ConstantExpr"},
+        {"$ref": "#/$defs/VariableExpr"},
+        {"$ref": "#/$defs/UnaryExpr"},
+        {"$ref": "#/$defs/BinaryExpr"},
+        {"$ref": "#/$defs/FunctionExpr"}
+      ]
+    },
+    "LinearTerm": {
+      "type": "object",
+      "required": ["variable", "coefficient"],
+      "properties": {
+        "variable": {"type": "string"},
+        "coefficient": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "LinearIneq": {
+      "type": "object",
+      "required": ["kind", "terms", "relation", "rhs"],
+      "properties": {
+        "kind": {"const": "linear_ineq"},
+        "terms": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/LinearTerm"},
+          "minItems": 1
+        },
+        "offset": {"type": "number", "default": 0},
+        "relation": {"type": "string", "enum": ["<=", ">=", "="]},
+        "rhs": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "IntDomain": {
+      "type": "object",
+      "required": ["kind", "variable", "lower", "upper"],
+      "properties": {
+        "kind": {"const": "int_domain"},
+        "variable": {"type": "string"},
+        "lower": {"type": "integer"},
+        "upper": {"type": "integer"}
+      },
+      "additionalProperties": false
+    },
+    "BoolAtom": {
+      "type": "object",
+      "required": ["kind", "variable", "value"],
+      "properties": {
+        "kind": {"const": "bool_atom"},
+        "variable": {"type": "string"},
+        "value": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "AllDifferent": {
+      "type": "object",
+      "required": ["kind", "variables"],
+      "properties": {
+        "kind": {"const": "all_different"},
+        "variables": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "AndConstraint": {
+      "type": "object",
+      "required": ["kind", "constraints"],
+      "properties": {
+        "kind": {"const": "and"},
+        "constraints": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/Constraint"},
+          "minItems": 2
+        }
+      },
+      "additionalProperties": false
+    },
+    "OrConstraint": {
+      "type": "object",
+      "required": ["kind", "constraints"],
+      "properties": {
+        "kind": {"const": "or"},
+        "constraints": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/Constraint"},
+          "minItems": 2
+        }
+      },
+      "additionalProperties": false
+    },
+    "NotConstraint": {
+      "type": "object",
+      "required": ["kind", "constraint"],
+      "properties": {
+        "kind": {"const": "not"},
+        "constraint": {"$ref": "#/$defs/Constraint"}
+      },
+      "additionalProperties": false
+    },
+    "Constraint": {
+      "oneOf": [
+        {"$ref": "#/$defs/LinearIneq"},
+        {"$ref": "#/$defs/IntDomain"},
+        {"$ref": "#/$defs/BoolAtom"},
+        {"$ref": "#/$defs/AllDifferent"},
+        {"$ref": "#/$defs/AndConstraint"},
+        {"$ref": "#/$defs/OrConstraint"},
+        {"$ref": "#/$defs/NotConstraint"}
+      ]
+    },
+    "Objective": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"type": "string", "enum": ["value", "minimize", "maximize"]},
+        "target": {
+          "oneOf": [
+            {"$ref": "#/$defs/Expression"},
+            {"type": "null"}
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Answer": {
+      "type": "object",
+      "required": ["value", "justification"],
+      "properties": {
+        "value": {},
+        "justification": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "Step": {
+      "type": "object",
+      "required": ["id", "kind", "expr"],
+      "properties": {
+        "id": {"type": "integer"},
+        "kind": {"type": "string", "enum": ["derive", "assume", "case"]},
+        "expr": {"$ref": "#/$defs/Expression"},
+        "note": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

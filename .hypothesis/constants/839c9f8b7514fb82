@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/robustness/paraphrase.py
+# hypothesis_version: 6.140.3
+
+['<=', '>=', 'aggregate', 'assumptions', 'at least', 'at most', 'delta', 'description', 'difference', 'equal', 'gap', 'identical', 'no less than', 'no more than', 'paraphrase_problem', 'paraphrase_statement', 'same', 'sum', 'total']

@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/baselines/dummy.py
+# hypothesis_version: 6.140.3
+
+['=', 'answer', 'assumptions', 'binary', 'bool', 'build_dummy_trace', 'constant', 'constraints', 'derive', 'domain', 'dummy-problem', 'expr', 'id', 'int', 'justification', 'kind', 'left', 'math', 'name', 'objective', 'op', 'problem_id', 'right', 'steps', 'task', 'type', 'value', 'variable', 'variables']

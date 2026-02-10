@@ -1,0 +1,101 @@
+Trace := '{'
+    'problem_id' ':' String ','
+    'task' ':' Task ','
+    'variables' ':' '[' Variable {',' Variable} ']' ','
+    'assumptions' ':' '[' String {',' String} ']' ','
+    'steps' ':' '[' Step {',' Step} ']' ','
+    'constraints' ':' '[' Constraint {',' Constraint} ']'
+    [',' 'objective' ':' Objective]
+    [',' 'answer' ':' Answer]
+'}'.
+
+Task := '"math"' | '"scheduling"' | '"planning"'.
+
+Variable := '{'
+    '"name"' ':' String ','
+    '"domain"' ':' ('"int"' | '"bool"')
+    [',' '"bounds"' ':' Bounds]
+'}'.
+
+Bounds := '{'
+    ['"lower"' ':' Integer [',']]
+    ['"upper"' ':' Integer]
+'}'.
+
+Step := '{'
+    '"id"' ':' Integer ','
+    '"kind"' ':' ('"derive"' | '"assume"' | '"case"') ','
+    '"expr"' ':' Expression
+    [',' '"note"' ':' String]
+'}'.
+
+Expression := ConstantExpr | VariableExpr | UnaryExpr | BinaryExpr | FunctionExpr.
+
+ConstantExpr := '{' '"type"' ':' '"constant"' ',' '"value"' ':' Literal '}'.
+VariableExpr := '{' '"type"' ':' '"variable"' ',' '"name"' ':' String '}'.
+UnaryExpr := '{' '"type"' ':' '"unary"' ',' '"op"' ':' UnaryOp ',' '"operand"' ':' Expression '}'.
+BinaryExpr := '{' '"type"' ':' '"binary"' ',' '"op"' ':' BinaryOp ','
+                '"left"' ':' Expression ',' '"right"' ':' Expression '}'.
+FunctionExpr := '{' '"type"' ':' '"function"' ',' '"name"' ':' String ','
+                  '"args"' ':' '[' Expression {',' Expression} ']' '}'.
+
+UnaryOp := '"-"' | '"not"'.
+BinaryOp := '"+"' | '"-"' | '"*"' | '"/"' | '"and"' | '"or"' |
+            '"="' | '"!="' | '"<"' | '"<="' | '"">"' | '"">="' | '"=>"'.
+
+Constraint := LinearIneq | IntDomain | BoolAtom | AllDifferent | AndConstraint | OrConstraint | NotConstraint.
+
+LinearIneq := '{'
+    '"kind"' ':' '"linear_ineq"' ','
+    '"terms"' ':' '[' LinearTerm {',' LinearTerm} ']' ','
+    ['"offset"' ':' Number ',']
+    '"relation"' ':' ('"<="' | '">="' | '"="') ','
+    '"rhs"' ':' Number
+'}'.
+
+LinearTerm := '{' '"variable"' ':' String ',' '"coefficient"' ':' Number '}'.
+
+IntDomain := '{'
+    '"kind"' ':' '"int_domain"' ','
+    '"variable"' ':' String ','
+    '"lower"' ':' Integer ','
+    '"upper"' ':' Integer
+'}'.
+
+BoolAtom := '{'
+    '"kind"' ':' '"bool_atom"' ','
+    '"variable"' ':' String ','
+    '"value"' ':' Boolean
+'}'.
+
+AllDifferent := '{'
+    '"kind"' ':' '"all_different"' ','
+    '"variables"' ':' '[' String {',' String} ']'
+'}'.
+
+AndConstraint := '{'
+    '"kind"' ':' '"and"' ','
+    '"constraints"' ':' '[' Constraint ',' Constraint {',' Constraint} ']'
+'}'.
+
+OrConstraint := '{'
+    '"kind"' ':' '"or"' ','
+    '"constraints"' ':' '[' Constraint ',' Constraint {',' Constraint} ']'
+'}'.
+
+NotConstraint := '{'
+    '"kind"' ':' '"not"' ','
+    '"constraint"' ':' Constraint
+'}'.
+
+Objective := '{'
+    '"type"' ':' ('"value"' | '"minimize"' | '"maximize"')
+    [',' '"target"' ':' Expression]
+'}'.
+
+Answer := '{'
+    '"value"' ':' Literal ','
+    '"justification"' ':' String
+'}'.
+
+Literal := String | Number | Boolean.

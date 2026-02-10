@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cegvr"
+version = "0.1.0"
+description = "Counterexample-Guided, Verifiable Reasoning toolkit skeleton."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "CEGVR Authors", email = "team@example.com"}]
+keywords = [
+  "formal verification",
+  "command-line",
+  "reasoning",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Environment :: Console",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "pydantic>=2.3",
+  "pyyaml>=6.0",
+  "typer>=0.9",
+  "rich>=13.0",
+  "requests>=2.31",
+  "z3-solver>=4.12",
+  "jsonschema>=4.19",
+  "matplotlib>=3.7",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black>=23.0",
+  "ruff>=0.1.1",
+  "mypy>=1.5.0",
+  "pytest>=7.4",
+  "pytest-cov>=4.1",
+  "types-PyYAML>=6.0.12",
+  "hypothesis>=6.88",
+]
+
+[project.scripts]
+cegvr = "cegvr.cli:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = { find = { where = ["src"], include = ["cegvr*"] } }
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+exclude = ["build/"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = [
+  "E501",  # line length handled by formatter / intentional in CLI strings
+  "B008",  # Typer Option defaults pattern
+  "I001",  # import sorting not enforced project-wide
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501", "I001", "F401"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+strict = false
+disallow_any_generics = false
+no_implicit_optional = false
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+  "cegvr.engine.errors",
+  "cegvr.engine.repair",
+  "cegvr.eval.aggregate",
+  "cegvr.grammar.validate",
+  "cegvr.utils.random",
+  "cegvr.generation.llm_linear",
+  "cegvr.generation.llm_sudoku",
+  "cegvr.generation.llm_latin5",
+  "cegvr.plots.curves",
+  "cegvr.data.*",
+  "cegvr.report.*",
+  "cegvr.robustness.*",
+  "cegvr.smt.*",
+  "cegvr.cli",
+  "cegvr.tables.*",
+]
+ignore_errors = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

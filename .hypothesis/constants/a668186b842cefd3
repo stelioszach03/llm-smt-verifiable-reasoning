@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/engine/repair.py
+# hypothesis_version: 6.140.3
+
+[1000, 2000, 'Solver timed out', 'answer', 'assumptions', 'baseline', 'candidate_index', 'cegvr.grammar', 'certified', 'coerced-problem', 'config', 'constraints', 'detail', 'error', 'failed', 'feedback', 'history', 'invalid', 'issues', 'justification', 'latency_ms', 'math', 'model', 'no_candidates', 'no_coverage', 'objective', 'problem_id', 'python', 'reason', 'round', 'rounds', 'sat', 'schema.json', 'solver', 'solver_calls', 'status', 'steps', 'task', 'timeout', 'trace', 'type', 'unsat', 'unsat_core', 'utf-8', 'value', 'variables']

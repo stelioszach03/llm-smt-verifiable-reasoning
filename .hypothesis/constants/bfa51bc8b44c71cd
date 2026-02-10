@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/generation/provider.py
+# hypothesis_version: 6.140.3
+
+['=', 'StubGenerator', 'TraceGenerator', 'answer', 'assumptions', 'binary', 'bool_atom', 'bounds', 'coefficient', 'constant', 'constraints', 'derive', 'domain', 'expr', 'force_assignments', 'id', 'int', 'int_domain', 'justification', 'kind', 'left', 'linear_ineq', 'lower', 'math', 'name', 'note', 'objective', 'op', 'planning', 'problem_id', 'relation', 'rhs', 'right', 'scheduling', 'steps', 'stub-problem', 'task', 'terms', 'type', 'upper', 'value', 'variable', 'variables']

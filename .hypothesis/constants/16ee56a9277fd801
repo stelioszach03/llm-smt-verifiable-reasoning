@@ -1,0 +1,4 @@
+# file: /home/stelios/cegvr/src/cegvr/utils/logging.py
+# hypothesis_version: 6.140.3
+
+['%(message)s', '[%X]']

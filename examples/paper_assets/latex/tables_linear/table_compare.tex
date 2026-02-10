@@ -1,0 +1,16 @@
+% Linear dataset: baseline vs feedback comparison
+
+\pgfplotstableset{
+  every head row/.style={before row=\toprule, after row=\midrule},
+  every last row/.style={after row=\bottomrule},
+}
+
+\pgfplotstabletypeset[
+  col sep=comma,
+  header=has colnames,
+  trim cells=true,
+  columns/variant/.style={string type},
+  columns/certified_accuracy/.style={column name=certified\_accuracy, fixed, precision=3},
+  columns/avg_iterations/.style={column name=avg\_iterations, fixed, precision=3},
+  columns/avg_latency_ms/.style={column name=avg\_latency\_ms, fixed, precision=1},
+]{../../../tables/linear/compare.csv}
