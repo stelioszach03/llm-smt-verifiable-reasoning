@@ -9,7 +9,7 @@
 \usepackage{newtxtext,newtxmath}
 \pgfplotsset{compat=1.18}
 
-\title{CEGVR: LLM-Guided, Counterexample-Grounded Verifiable Reasoning}
+\title{CEGVR: Candidate-First Verifiable Reasoning with Solver-Grounded Feedback}
 \author{Stylianos Zacharioudakis}
 \date{\today}
 
@@ -17,78 +17,66 @@
 \maketitle
 
 \begin{abstract}
-We present an end-to-end, reproducible pipeline that couples a local LLM with
-an SMT solver to iteratively refine candidate solutions via counterexample
-feedback (unsat cores). The system converts standard problem sources (SMT-LIB
-and a subset of MiniZinc) to a unified JSONL format, runs an iterative repair
-loop where the solver verifies and explains failures, and feeds those
-explanations back into the LLM to guide subsequent proposals. We report
-results on a 500-instance linear feasibility set and a MiniZinc scheduling
-subset, and provide paper-ready tables and figures generated directly from the
-evaluation runs.
+We present a linear-first, candidate-based LLM+SMT evaluation protocol for
+verifiable reasoning under explicit feedback-granularity control. The main study
+compares five methods: a one-shot reference, three compute-matched retry
+baselines, and a new conflict-directed verifier-guided search method
+(\texttt{cd\_vgs\_core\_rank}) that uses unsat-core structure for candidate
+ranking and targeted repair. The implementation preserves the legacy trace-based
+architecture as a compatibility and transfer layer while moving the main paper
+path to a stricter candidate-verification interface. All experiments are
+designed for local execution with an OpenAI-compatible endpoint such as
+llama.cpp serving Qwen.
 \end{abstract}
 
-\section*{Key Findings}
+\section{Introduction}
+The central question of this upgrade is not whether an LLM can emit a candidate,
+but whether \emph{solver-grounded feedback} measurably improves verified
+performance over mere repeated attempts under matched budgets. To answer that
+question cleanly, the codebase now separates a candidate-first linear pipeline
+from the preserved trace-based extension layer, standardizes outcome logging,
+and reports paired arm comparisons with bootstrap confidence intervals.
+
+\paragraph{Contributions.}
 \begin{itemize}
-  \item We operationalise an LLM\,$\leftrightarrow$\,SMT feedback loop where Z3's unsat cores are surfaced as natural-language hints and injected into the next prompt.
-  \item On a 500-instance linear feasibility set (Fig.~\ref{fig:latency_linear}, Table~\ref{tab:linear-compare}), a tight budget yields comparable certification to a one-shot baseline, with predictable latency increases under feedback.
-  \item The pipeline generalises to symbolic scheduling (MiniZinc subset) and small CSPs (Sudoku), supporting a ``trustworthy neuro-symbolic'' narrative with fully reproducible artefacts.
+  \item A candidate-first linear pipeline with explicit feedback-isolated retry baselines and a conflict-directed CoreRank flagship method.
+  \item Paper-grade run records, metrics, and paired statistical comparisons.
+  \item A preserved trace-based extension path, demonstrated via a small Sudoku appendix transfer experiment.
 \end{itemize}
 
-\section{Introduction}
-Trustworthy automated reasoning needs verifiable solutions and actionable
-feedback when proposals fail. CEGVR provides a lightweight framework and CLI
-for such ``counterexample-guided'' loops. Here we upgrade the stack to close the
-LLM\,$\leftrightarrow$\,SMT feedback loop: the solver produces precise
-unsatisfiable cores; we render them as human-readable hints; and the LLM uses
-those hints to revise assignments.
-
-\textbf{Contributions.} (i) Unified conversion of SMT-LIB (linear) and a
-practical MiniZinc subset to a common schema; (ii) an LLM-backed proposer that
-consumes solver feedback; (iii) automated evaluation producing tables and
-figures, compiled into this PDF.
-
 \section{Method}
-\textbf{Data.} The linear feasibility set (500 instances) follows the CEGVR
-schema; the MiniZinc subset includes bounded integer variables, linear
-inequalities, and \texttt{all\_different}. Both are stored as JSONL.
+\textbf{Main benchmark.} The primary benchmark is a solver-backed linear
+feasibility dataset with SAT/UNSAT labels and structural difficulty metadata.
 
-\textbf{Loop.} At each iteration, the LLM proposes assignments (JSON only).
-Z3 checks satisfiability and, on failure, emits an unsat core. We attach
-readable descriptions to the tracked assertions (bounds, linear forms) and
-insert them into the next prompt as ``conflicting constraints''.
+\textbf{Protocol.} The candidate generator returns either a full satisfying
+assignment or an UNSAT claim. The verifier then either certifies the claim or
+returns the richest solver-grounded diagnostic available. The main causal
+comparison is among the four compute-matched multi-round methods; the one-shot
+arm is retained as a repair-gain baseline.
 
-\textbf{Setup.} Local llama.cpp (Llama 3 8B Instruct, Q4\_K\_M), context 4096,
-\texttt{--max-rounds}=3, \texttt{--budget}=1, solver timeout 1500\,ms. The CLI
-invocations and plotting are scripted; this PDF is compiled from the artefacts.
+\textbf{Local execution.} The documented local path uses Python 3.11, a local
+OpenAI-compatible endpoint, and llama.cpp as the default serving stack. The
+paper defaults are \(K=4\), \(R=4\), and thinking disabled.
 
 \section{Results}
 \input{sections/results.tex}
 
 \section{Conclusion}
-We demonstrate a compact, reproducible LLM+SMT loop with solver-guided
-revision via unsat-core hints. On a 500-instance linear set the system
-certifies roughly 70\% under tight budgets, and readily extends to a MiniZinc
-scheduling subset. Future work: richer constraint vocabularies, multi-step
-trace edits, and LoRA/SFT using the collected feedback corpus.
-
-\section*{Related Work}
-Our design intersects with counterexample-guided inductive synthesis (CEGIS),
-neuro-symbolic reasoning, and prompt-guided structured generation. The use of
-unsat cores to condition subsequent proposals aligns with prior work on
-conflict-driven search and interactive theorem proving. Local inference via
-llama.cpp and SMT checks via Z3 enable on-device, reproducible experimentation.
+The upgraded repository now supports a linear-first, candidate-level
+verifiable-reasoning study with strict feedback isolation and reproducible local
+execution. The preserved trace layer remains useful for transfer evidence and
+future extensions, but the main paper claims are now tied to the explicit
+candidate-verification protocol.
 
 \section*{Reproducibility}
-All assets in this report are generated by scripts. The full pipeline is
-invoked via \texttt{scripts/run\_all.sh}. LLM evaluation requires a local
-llama.cpp server at \texttt{http://127.0.0.1:8000}. Run times and seeds are
-reported alongside results.
+The local paper pipeline is executed by \texttt{scripts/run\_all.sh}. It
+bootstraps Python 3.11, regenerates the linear benchmark, runs the full arm
+matrix, and rebuilds the figures, tables, and PDF.
 
 \section*{Limitations}
-The current MiniZinc converter supports a subset (bounded integers, linear
-inequalities, \texttt{all\_different}). Feedback gains are sensitive to model
-quality, prompt design, and budget. Our goal is to provide a clean, extensible
-baseline rather than exhaustively optimize settings.
+The appendix transfer evidence is intentionally small and descriptive. The main
+claims remain restricted to the linear benchmark and to the current local
+serving setup. Additional training or larger transfer suites are outside the
+scope of this slice.
 
 \end{document}

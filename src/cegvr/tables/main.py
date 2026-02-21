@@ -3,138 +3,164 @@
 from __future__ import annotations
 
 import csv
-from collections import defaultdict
 from pathlib import Path
 from typing import List
 
-from cegvr.eval.aggregate import aggregate_runs, load_run
+from cegvr.eval.aggregate import aggregate_runs
+
+_ARM_ORDER = {
+    "one_shot": 0,
+    "multi_no_feedback": 1,
+    "multi_generic_feedback": 2,
+    "multi_unsat_core_feedback": 3,
+    "cd_vgs_core_rank": 4,
+}
 
 
 def _collect_run_files(runs_dir: Path) -> List[Path]:
-    return sorted(path for path in runs_dir.glob("seed_*.jsonl") if path.is_file())
+    return sorted(path for path in runs_dir.rglob("seed_*.jsonl") if path.is_file())
 
 
-def _summarize_main_metrics(run_files: List[Path]) -> List[dict]:
-    summary = (
-        aggregate_runs(run_files)
-        if run_files
-        else {
-            "count": 0,
-            "certified_accuracy": {"value": 0.0, "lower": 0.0, "upper": 0.0},
-            "uncertified_accuracy": {
-                "value": 0.0,
-                "lower": 0.0,
-                "upper": 0.0,
-            },
-            "avg_iterations": {"value": 0.0, "lower": 0.0, "upper": 0.0},
-            "avg_latency_ms": {"value": 0.0, "lower": 0.0, "upper": 0.0},
-            "per_task": {},
-        }
-    )
+def generate_main_table(runs_dir: Path | str, output_csv: Path | str) -> List[dict]:
+    """Generate the main arm-by-arm results table CSV."""
 
-    def _count_row(metric: str, value: int) -> dict:
-        return {"metric": metric, "value": value, "lower": value, "upper": value}
+    runs_dir = Path(runs_dir)
+    output_csv = Path(output_csv)
+    summary = aggregate_runs(_collect_run_files(runs_dir))
 
-    rows = [
-        {"metric": "certified_accuracy", **summary["certified_accuracy"]},
-        {"metric": "uncertified_accuracy", **summary["uncertified_accuracy"]},
-        {"metric": "avg_iterations", **summary["avg_iterations"]},
-        {"metric": "avg_latency_ms", **summary["avg_latency_ms"]},
-        _count_row("count", int(summary.get("count", 0))),
-    ]
+    rows: List[dict] = []
+    for arm_name, payload in sorted(
+        summary.get("per_arm", {}).items(),
+        key=lambda item: (_ARM_ORDER.get(item[0], 999), item[0]),
+    ):
+        rows.append(
+            {
+                "arm": arm_name,
+                "count": payload.get("count", 0),
+                "verified_solve_rate": payload["verified_solve_rate"]["value"],
+                "verified_solve_rate_lower": payload["verified_solve_rate"]["lower"],
+                "verified_solve_rate_upper": payload["verified_solve_rate"]["upper"],
+                "sat_certification_rate": payload["sat_certification_rate"]["value"],
+                "unsat_precision": payload["unsat_precision"]["value"],
+                "unsat_recall": payload["unsat_recall"]["value"],
+                "solver_calls_per_certified_solve": payload[
+                    "solver_calls_per_certified_solve"
+                ]["value"],
+                "latency_mean_ms": payload["latency_mean_ms"]["value"],
+                "latency_p95_ms": payload["latency_p95_ms"]["value"],
+                "repair_gain_vs_one_shot": payload.get(
+                    "repair_gain_vs_one_shot", {"value": 0.0}
+                )["value"],
+            }
+        )
 
-    for task, count in summary.get("per_task", {}).items():
-        rows.append(_count_row(f"count_{task}", int(count)))
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    with output_csv.open("w", encoding="utf-8", newline="") as handle:
+        fieldnames = [
+            "arm",
+            "count",
+            "verified_solve_rate",
+            "verified_solve_rate_lower",
+            "verified_solve_rate_upper",
+            "sat_certification_rate",
+            "unsat_precision",
+            "unsat_recall",
+            "solver_calls_per_certified_solve",
+            "latency_mean_ms",
+            "latency_p95_ms",
+            "repair_gain_vs_one_shot",
+        ]
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
 
     return rows
 
 
-def generate_main_table(runs_dir: Path | str, output_csv: Path | str) -> List[dict]:
-    """Generate the main results table CSV and return the written rows."""
+def generate_difficulty_breakdown_table(
+    runs_dir: Path | str, output_csv: Path | str
+) -> List[dict]:
+    """Generate a difficulty-bin breakdown CSV grouped by arm."""
 
     runs_dir = Path(runs_dir)
     output_csv = Path(output_csv)
-    run_files = _collect_run_files(runs_dir)
-    rows = _summarize_main_metrics(run_files)
+    summary = aggregate_runs(_collect_run_files(runs_dir))
+
+    rows: List[dict] = []
+    for arm_name, by_difficulty in sorted(
+        summary.get("per_arm_per_difficulty", {}).items(),
+        key=lambda item: (_ARM_ORDER.get(item[0], 999), item[0]),
+    ):
+        for difficulty, payload in sorted(by_difficulty.items()):
+            rows.append(
+                {
+                    "arm": arm_name,
+                    "difficulty_bin": difficulty,
+                    "count": payload.get("count", 0),
+                    "verified_solve_rate": payload["verified_solve_rate"]["value"],
+                    "sat_certification_rate": payload["sat_certification_rate"][
+                        "value"
+                    ],
+                    "solver_calls_per_certified_solve": payload[
+                        "solver_calls_per_certified_solve"
+                    ]["value"],
+                    "latency_mean_ms": payload["latency_mean_ms"]["value"],
+                }
+            )
 
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     with output_csv.open("w", encoding="utf-8", newline="") as handle:
-        fieldnames = ["metric", "value", "lower", "upper"]
+        fieldnames = [
+            "arm",
+            "difficulty_bin",
+            "count",
+            "verified_solve_rate",
+            "sat_certification_rate",
+            "solver_calls_per_certified_solve",
+            "latency_mean_ms",
+        ]
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow({field: row.get(field, "") for field in fieldnames})
+            writer.writerow(row)
 
     return rows
 
 
 def generate_ablation_table(runs_dir: Path | str, output_csv: Path | str) -> None:
-    """Generate ablation table CSV summarising different flag combinations."""
+    """Generate the paired-comparison statistics table CSV."""
 
     runs_dir = Path(runs_dir)
     output_csv = Path(output_csv)
-    run_files = _collect_run_files(runs_dir)
-
-    records: List[dict] = []
-    for path in run_files:
-        records.extend(load_run(path))
-
-    grouped: dict[tuple[bool, bool, bool], List[dict]] = defaultdict(list)
-    for record in records:
-        config = record.get("config", {})
-        key = (
-            bool(config.get("use_grammar", True)),
-            bool(config.get("use_solver", True)),
-            bool(config.get("enable_repair", True)),
-        )
-        grouped[key].append(record)
+    summary = aggregate_runs(_collect_run_files(runs_dir))
+    comparisons = summary.get("comparisons", {})
 
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
-        "use_grammar",
-        "use_solver",
-        "enable_repair",
-        "count",
-        "certified_accuracy",
-        "uncertified_accuracy",
-        "avg_iterations",
-        "avg_latency_ms",
+        "comparison",
+        "n_pairs",
+        "success_mcnemar_p",
+        "success_mcnemar_p_holm",
+        "latency_wilcoxon_p",
+        "solver_calls_wilcoxon_p",
     ]
-
     with output_csv.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
-
-        for key, entries in sorted(grouped.items()):
-            count = len(entries)
-            if not count:
-                continue
-            certified_accuracy = (
-                sum(1.0 if entry.get("certified") else 0.0 for entry in entries) / count
-            )
-            uncertified_accuracy = (
-                sum(
-                    1.0 if entry.get("uncertified_correct") else 0.0
-                    for entry in entries
-                )
-                / count
-            )
-            avg_iterations = (
-                sum(entry.get("iterations", 0) or 0 for entry in entries) / count
-            )
-            avg_latency = (
-                sum(entry.get("latency_ms", 0.0) or 0.0 for entry in entries) / count
-            )
+        for comparison, payload in sorted(comparisons.items()):
             writer.writerow(
                 {
-                    "use_grammar": key[0],
-                    "use_solver": key[1],
-                    "enable_repair": key[2],
-                    "count": count,
-                    "certified_accuracy": round(certified_accuracy, 4),
-                    "uncertified_accuracy": round(uncertified_accuracy, 4),
-                    "avg_iterations": round(avg_iterations, 2),
-                    "avg_latency_ms": round(avg_latency, 2),
+                    "comparison": comparison,
+                    "n_pairs": payload.get("n_pairs", 0),
+                    "success_mcnemar_p": payload.get("success_mcnemar_p", 1.0),
+                    "success_mcnemar_p_holm": payload.get(
+                        "success_mcnemar_p_holm", 1.0
+                    ),
+                    "latency_wilcoxon_p": payload.get("latency_wilcoxon_p", 1.0),
+                    "solver_calls_wilcoxon_p": payload.get(
+                        "solver_calls_wilcoxon_p", 1.0
+                    ),
                 }
             )
 
@@ -144,7 +170,7 @@ def generate_main_table_tex(
     *,
     csv_reference: str = "tables/main_results.csv",
 ) -> None:
-    """Write a LaTeX snippet that renders the main results CSV via pgfplotstable."""
+    """Write a LaTeX snippet rendering the arm-level CSV via pgfplotstable."""
 
     output_tex = Path(output_tex)
     output_tex.parent.mkdir(parents=True, exist_ok=True)
@@ -160,10 +186,15 @@ def generate_main_table_tex(
         "  col sep=comma,\n"
         "  header=has colnames,\n"
         "  trim cells=true,\n"
-        "  columns/metric/.style={string type,string replace*={_}{\\_}},\n"
-        "  columns/value/.style={fixed, precision=3},\n"
-        "  columns/lower/.style={fixed, precision=3},\n"
-        "  columns/upper/.style={fixed, precision=3},\n"
+        "  columns/arm/.style={string type,string replace*={_}{\\_}},\n"
+        "  columns/count/.style={fixed, precision=0},\n"
+        "  columns/verified_solve_rate/.style={fixed, precision=3},\n"
+        "  columns/sat_certification_rate/.style={fixed, precision=3},\n"
+        "  columns/unsat_precision/.style={fixed, precision=3},\n"
+        "  columns/unsat_recall/.style={fixed, precision=3},\n"
+        "  columns/solver_calls_per_certified_solve/.style={fixed, precision=2},\n"
+        "  columns/latency_mean_ms/.style={fixed, precision=1},\n"
+        "  columns/latency_p95_ms/.style={fixed, precision=1},\n"
         f"]{{{csv_reference}}}\n"
     )
 
@@ -172,6 +203,7 @@ def generate_main_table_tex(
 
 __all__ = [
     "generate_main_table",
+    "generate_difficulty_breakdown_table",
     "generate_ablation_table",
     "generate_main_table_tex",
 ]

@@ -1,31 +1,36 @@
 # Paper Asset LaTeX Pack
 
-This directory contains a minimal skeleton for integrating the automatically
-generated tables and figures into a paper draft.
+This LaTeX pack is synced to the current implementation:
 
-## Structure
-- `main.tex` – top-level entry point (simple article template).
-- `sections/results.tex` – plugs in `tables/table_main.tex` and the PNG figures
-  under `../figures/`.
-- `tables/table_main.tex` – auto-generated via `cegvr make-tables`.
-- `Makefile` – builds `main.pdf` with `pdflatex`.
+- main results: linear-first candidate pipeline
+- appendix transfer evidence: Sudoku 4x4 on the preserved trace layer
 
 ## Workflow
-1. Run the analytics pipeline:
+
+1. Run the local paper pipeline:
+
    ```bash
-   cegvr eval --problems data/toy/problems.jsonl --out runs/toy
-   cegvr make-figures --runs runs/toy --out examples/paper_assets/figures
-   cegvr make-tables --runs runs/toy --out examples/paper_assets/tables
+   bash scripts/run_all.sh
    ```
-2. Inspect the generated CSV/PNG files; replace placeholders in `main.tex`
-   (abstract, introduction, method, conclusion) with your content.
+
+2. Or regenerate the linear assets manually:
+
+   ```bash
+   cegvr summarize --runs runs/linear_main --table tables/linear/main_results.csv
+   cegvr make-tables --runs runs/linear_main --out examples/paper_assets/tables_linear --latex examples/paper_assets/latex/tables_linear
+   cegvr make-figures --runs runs/linear_main --out examples/paper_assets/figures_linear
+   ```
+
 3. Build the PDF:
+
    ```bash
    make
    ```
-4. Clean auxiliary files if needed:
-   ```bash
-   make clean
-   ```
 
-That’s it – the LaTeX pack stays synced with the CLI-generated assets.
+## Structure
+
+- `main.tex`: top-level paper draft
+- `sections/results.tex`: linear main results plus Sudoku appendix transfer section
+- `tables_linear/table_main.tex`: auto-generated linear main table
+- `tables_sudoku_appendix/table_main.tex`: auto-generated appendix table
+- `Makefile`: LaTeX build helper

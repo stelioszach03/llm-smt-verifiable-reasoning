@@ -11,6 +11,14 @@ import matplotlib.pyplot as plt
 
 from cegvr.eval.aggregate import load_run
 
+_ARM_ORDER = {
+    "one_shot": 0,
+    "multi_no_feedback": 1,
+    "multi_generic_feedback": 2,
+    "multi_unsat_core_feedback": 3,
+    "cd_vgs_core_rank": 4,
+}
+
 
 def load_records_from_runs(run_paths: Iterable[Path]) -> List[dict]:
     """Load and merge JSONL run records."""
@@ -21,93 +29,96 @@ def load_records_from_runs(run_paths: Iterable[Path]) -> List[dict]:
     return records
 
 
-def plot_certification_vs_budget(records: Sequence[dict], output_path: Path) -> None:
-    """Plot certification accuracy as a function of repair budget."""
+def plot_arm_verified_solve_rate(records: Sequence[dict], output_path: Path) -> None:
+    """Plot verified solve rate per arm."""
 
-    by_budget: dict[int, List[float]] = defaultdict(list)
+    by_arm: dict[str, List[float]] = defaultdict(list)
     for record in records:
-        budget = record.get("budget")
-        certified = record.get("certified")
-        if budget is None or certified is None:
-            continue
-        by_budget[int(budget)].append(1.0 if certified else 0.0)
+        arm = str(record.get("arm") or "unknown")
+        verified = str(record.get("verified_outcome")) in {
+            "CERTIFIED_SAT",
+            "CERTIFIED_UNSAT",
+        }
+        by_arm[arm].append(1.0 if verified else 0.0)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig, ax = plt.subplots(figsize=(5, 3))
-
-    if by_budget:
-        budgets = sorted(by_budget)
-        accuracies = [mean(by_budget[b]) for b in budgets]
-        ax.plot(budgets, accuracies, marker="o")
-        ax.set_xlabel("Per-round budget")
-        ax.set_ylabel("Certified accuracy")
-        ax.set_ylim(0, 1)
-    else:
-        ax.text(0.5, 0.5, "No budget annotations available", ha="center", va="center")
-        ax.set_axis_off()
-
+    fig, ax = plt.subplots(figsize=(6, 3.5))
+    arms = sorted(by_arm, key=lambda arm: (_ARM_ORDER.get(arm, 999), arm))
+    values = [mean(by_arm[arm]) if by_arm[arm] else 0.0 for arm in arms]
+    ax.bar(range(len(arms)), values, color="#355C7D")
+    ax.set_xticks(range(len(arms)), [arm.replace("_", "\n") for arm in arms])
+    ax.set_ylabel("Verified solve rate")
+    ax.set_ylim(0, 1)
     fig.tight_layout()
     fig.savefig(output_path, dpi=300)
     plt.close(fig)
 
 
-def plot_iterations_histogram(records: Sequence[dict], output_path: Path) -> None:
-    """Plot a histogram of repair iterations."""
+def plot_convergence_by_round(records: Sequence[dict], output_path: Path) -> None:
+    """Plot solved-within-round curves per arm."""
 
-    iterations = [int(record.get("iterations", 0) or 0) for record in records]
-    iterations = [value for value in iterations if value > 0]
+    by_arm: dict[str, List[dict]] = defaultdict(list)
+    for record in records:
+        by_arm[str(record.get("arm") or "unknown")].append(record)
 
+    max_rounds = max((int(record.get("max_rounds", 1) or 1) for record in records), default=1)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig, ax = plt.subplots(figsize=(5, 3))
+    fig, ax = plt.subplots(figsize=(6, 3.5))
 
-    if iterations:
-        max_iter = max(iterations)
-        bins = range(1, max_iter + 2)
-        ax.hist(iterations, bins=bins, edgecolor="black")
-        ax.set_xlabel("Iterations")
-        ax.set_ylabel("Frequency")
-    else:
-        ax.text(0.5, 0.5, "No iteration data available", ha="center", va="center")
-        ax.set_axis_off()
+    for arm, arm_records in sorted(
+        by_arm.items(), key=lambda item: (_ARM_ORDER.get(item[0], 999), item[0])
+    ):
+        xs = list(range(1, max_rounds + 1))
+        ys = []
+        for round_index in xs:
+            solved = sum(
+                1
+                for record in arm_records
+                if str(record.get("verified_outcome"))
+                in {"CERTIFIED_SAT", "CERTIFIED_UNSAT"}
+                and int(record.get("iterations", 0) or 0) <= round_index
+            )
+            ys.append(solved / len(arm_records) if arm_records else 0.0)
+        ax.plot(xs, ys, marker="o", label=arm.replace("_", " "))
 
+    ax.set_xlabel("Round")
+    ax.set_ylabel("Solved within round")
+    ax.set_ylim(0, 1)
+    ax.legend(fontsize=8)
     fig.tight_layout()
     fig.savefig(output_path, dpi=300)
     plt.close(fig)
 
 
-def plot_latency_accuracy_pareto(records: Sequence[dict], output_path: Path) -> None:
-    """Plot a latency vs certified-accuracy Pareto scatter."""
+def plot_efficiency_frontier(records: Sequence[dict], output_path: Path) -> None:
+    """Plot mean solver calls against verified solve rate per arm."""
 
-    per_problem: dict[str, List[dict]] = defaultdict(list)
+    by_arm: dict[str, List[dict]] = defaultdict(list)
     for record in records:
-        problem_id = record.get("problem_id")
-        if not problem_id:
-            continue
-        per_problem[str(problem_id)].append(record)
+        by_arm[str(record.get("arm") or "unknown")].append(record)
 
     points = []
-    for entries in per_problem.values():
-        latencies = [float(entry.get("latency_ms", 0.0) or 0.0) for entry in entries]
-        certified_flags = [1.0 if entry.get("certified") else 0.0 for entry in entries]
-        if not latencies:
-            continue
-        latency = mean(latencies)
-        accuracy = mean(certified_flags) if certified_flags else 0.0
-        points.append((latency, accuracy))
+    for arm, arm_records in sorted(
+        by_arm.items(), key=lambda item: (_ARM_ORDER.get(item[0], 999), item[0])
+    ):
+        solve_rate = mean(
+            1.0
+            if str(record.get("verified_outcome"))
+            in {"CERTIFIED_SAT", "CERTIFIED_UNSAT"}
+            else 0.0
+            for record in arm_records
+        )
+        mean_solver_calls = mean(float(record.get("solver_calls", 0.0) or 0.0) for record in arm_records)
+        points.append((arm, mean_solver_calls, solve_rate))
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig, ax = plt.subplots(figsize=(5, 3))
-
-    if points:
-        xs, ys = zip(*points, strict=False)
-        ax.scatter(xs, ys, alpha=0.7)
-        ax.set_xlabel("Latency (ms)")
-        ax.set_ylabel("Certified accuracy")
-        ax.set_ylim(0, 1)
-    else:
-        ax.text(0.5, 0.5, "No latency data available", ha="center", va="center")
-        ax.set_axis_off()
-
+    fig, ax = plt.subplots(figsize=(6, 3.5))
+    for arm, solver_calls, solve_rate in points:
+        ax.scatter([solver_calls], [solve_rate], s=70)
+        ax.annotate(arm, (solver_calls, solve_rate), fontsize=8, xytext=(5, 3), textcoords="offset points")
+    ax.set_xlabel("Mean solver calls")
+    ax.set_ylabel("Verified solve rate")
+    ax.set_ylim(0, 1)
     fig.tight_layout()
     fig.savefig(output_path, dpi=300)
     plt.close(fig)
@@ -115,7 +126,7 @@ def plot_latency_accuracy_pareto(records: Sequence[dict], output_path: Path) -> 
 
 __all__ = [
     "load_records_from_runs",
-    "plot_certification_vs_budget",
-    "plot_iterations_histogram",
-    "plot_latency_accuracy_pareto",
+    "plot_arm_verified_solve_rate",
+    "plot_convergence_by_round",
+    "plot_efficiency_frontier",
 ]

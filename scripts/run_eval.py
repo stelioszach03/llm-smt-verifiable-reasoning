@@ -12,6 +12,7 @@ from cegvr.engine.configs import ExperimentConfig
 from cegvr.eval.harness import run_evaluation
 from cegvr.eval.aggregate import aggregate_runs
 from cegvr.generation.provider import StubGenerator
+from cegvr.generation.llm_candidate_linear import LLMLinearCandidateGenerator
 
 app = typer.Typer(help="Evaluation harness utilities.")
 
@@ -27,10 +28,30 @@ def run(
     no_grammar: bool = typer.Option(False, "--no-grammar", help="Disable grammar validation"),
     no_solver: bool = typer.Option(False, "--no-solver", help="Skip SMT solving"),
     no_repair: bool = typer.Option(False, "--no-repair", help="Disable iterative repair"),
+    pipeline: str = typer.Option("trace", help="Evaluation pipeline (trace or candidate)."),
+    arm: str = typer.Option(
+        "multi_unsat_core_feedback",
+        help="Candidate arm (one_shot, multi_no_feedback, multi_generic_feedback, multi_unsat_core_feedback, cd_vgs_core_rank).",
+    ),
+    generator_name: str = typer.Option("stub", "--generator", help="Generator backend (stub or llm)."),
+    llm_endpoint: str = typer.Option(
+        "http://127.0.0.1:8000/v1/chat/completions",
+        help="OpenAI-compatible local endpoint.",
+    ),
+    llm_model: str = typer.Option("qwen3.5-35b-a3b", help="Model identifier."),
 ) -> None:
-    generator = StubGenerator()
+    if generator_name == "llm" and pipeline == "candidate":
+        generator = LLMLinearCandidateGenerator(endpoint=llm_endpoint, model=llm_model)
+    else:
+        generator = StubGenerator()
     seed_values = list(range(seeds))
-    config = ExperimentConfig.from_flags(no_grammar=no_grammar, no_solver=no_solver, no_repair=no_repair)
+    config = ExperimentConfig.from_flags(
+        no_grammar=no_grammar,
+        no_solver=no_solver,
+        no_repair=no_repair,
+        pipeline=pipeline,
+        arm=arm,
+    )
     run_evaluation(
         dataset_path=problems,
         output_path=out,
@@ -48,7 +69,7 @@ def summarize(
     runs: Path = typer.Option(..., exists=True, file_okay=False, help="Directory of run JSONL files"),
     table: Path = typer.Option(Path("tables/main_results.csv"), dir_okay=False, help="CSV output"),
 ) -> None:
-    run_files: List[Path] = sorted(runs.glob("seed_*.jsonl"))
+    run_files: List[Path] = sorted(runs.rglob("seed_*.jsonl"))
     summary = aggregate_runs(run_files)
     table.parent.mkdir(parents=True, exist_ok=True)
     with table.open("w", encoding="utf-8") as handle:

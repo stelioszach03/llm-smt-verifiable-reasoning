@@ -1,32 +1,38 @@
 # Paper Assets
 
-This directory stores artefacts that can be regenerated from evaluation runs.
+The paper assets are now aligned to the linear-first candidate study and the Sudoku appendix transfer run.
 
-## Generating Figures
+## Linear Main Assets
 
-```bash
-cegvr eval --problems data/toy/problems.jsonl --out runs/toy
-cegvr make-figures --runs runs/toy --out examples/paper_assets/figures
-```
-
-The figure command will produce:
-
-- `cert_vs_budget.png`
-- `iterations_hist.png`
-- `latency_vs_accuracy.png`
-
-## Generating Tables
+Generate from the 5-method candidate study:
 
 ```bash
-cegvr make-tables --runs runs/toy --out examples/paper_assets/tables
+cegvr summarize --runs runs/linear_main --table tables/linear/main_results.csv
+cegvr make-tables --runs runs/linear_main --out examples/paper_assets/tables_linear
+cegvr make-figures --runs runs/linear_main --out examples/paper_assets/figures_linear
 ```
 
-This command writes:
+Main linear figures:
+
+- `arm_verified_solve_rate.png`
+- `convergence_by_round.png`
+- `efficiency_frontier.png`
+
+Main linear tables:
 
 - `main_results.csv`
 - `ablations.csv`
-- `latex/tables/table_main.tex`
+- `difficulty_breakdown.csv`
+- `latex/tables_linear/table_main.tex`
 
-The CSV files can be ingested by pandas, Excel, or LaTeX. The LaTeX snippet uses
-`pgfplotstable` for easy inclusion in a paper. Regenerate these assets whenever
-new evaluation runs are available.
+## Sudoku Appendix Assets
+
+Generate from the preserved trace-layer appendix run:
+
+```bash
+cegvr summarize --runs runs/sudoku_appendix --table tables/sudoku_appendix_results.csv
+cegvr make-tables --runs runs/sudoku_appendix --out examples/paper_assets/tables_sudoku_appendix
+cegvr make-figures --runs runs/sudoku_appendix --out examples/paper_assets/figures_sudoku_appendix
+```
+
+These appendix outputs are descriptive transfer evidence only; the main claims remain tied to the linear candidate-first study.

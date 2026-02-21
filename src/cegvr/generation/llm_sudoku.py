@@ -14,7 +14,7 @@ from .provider import TraceGenerator
 @dataclass
 class LLMSudoku4Generator(TraceGenerator):
     endpoint: str = "http://127.0.0.1:8000/v1/chat/completions"
-    model: str = "llama-3-8b-instruct"
+    model: str = "qwen3.5-35b-a3b"
     temperature: float = 0.2
     max_tokens: int = 256
 

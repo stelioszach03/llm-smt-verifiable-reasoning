@@ -19,17 +19,19 @@ from .engine.metrics import compute_metrics
 from .engine.repair import repair_until_certified
 from .eval.aggregate import aggregate_runs
 from .eval.harness import run_evaluation
-from .generation.provider import StubGenerator, TraceGenerator
+from .generation.provider import StubGenerator
 from .generation.llm_linear import LLMLinearGenerator
+from .generation.llm_candidate_linear import LLMLinearCandidateGenerator
 from .generation.llm_sudoku import LLMSudoku4Generator
 from .generation.llm_latin5 import LLMLatin5Generator
 from cegvr.plots.curves import (
     load_records_from_runs,
-    plot_certification_vs_budget,
-    plot_iterations_histogram,
-    plot_latency_accuracy_pareto,
+    plot_arm_verified_solve_rate,
+    plot_convergence_by_round,
+    plot_efficiency_frontier,
 )
 from cegvr.tables.main import (
+    generate_difficulty_breakdown_table,
     generate_ablation_table,
     generate_main_table,
     generate_main_table_tex,
@@ -294,7 +296,19 @@ def eval_dataset(
     generator_name: str = typer.Option(
         "stub",
         "--generator",
-        help="Trace generator backend (stub, llm, llm-sudoku).",
+        help="Generator backend (stub, llm, llm-sudoku, llm-latin5).",
+    ),
+    pipeline: str = typer.Option(
+        "trace",
+        "--pipeline",
+        help="Evaluation pipeline (trace or candidate).",
+        show_default=True,
+    ),
+    arm: str = typer.Option(
+        "multi_unsat_core_feedback",
+        "--arm",
+        help="Candidate pipeline arm (one_shot, multi_no_feedback, multi_generic_feedback, multi_unsat_core_feedback, cd_vgs_core_rank).",
+        show_default=True,
     ),
     llm_endpoint: str = typer.Option(
         "http://127.0.0.1:8000/v1/chat/completions",
@@ -303,19 +317,38 @@ def eval_dataset(
         show_default=True,
     ),
     llm_model: str = typer.Option(
-        "llama-3-8b-instruct",
+        "qwen3.5-35b-a3b",
         "--llm-model",
         help="LLM model identifier for chat completion API.",
+        show_default=True,
+    ),
+    llm_enable_thinking: bool = typer.Option(
+        False,
+        "--llm-enable-thinking/--no-llm-enable-thinking",
+        help="Toggle model thinking mode for compatible backends.",
+        show_default=True,
+    ),
+    context_cap: int = typer.Option(
+        8192,
+        "--context-cap",
+        min=1,
+        help="Configured context cap for local paper runs.",
         show_default=True,
     ),
 ) -> None:
     """Run the evaluation harness over a dataset."""
 
     gname = generator_name.lower()
-    if gname == "llm":
-        generator: TraceGenerator = LLMLinearGenerator(
-            endpoint=llm_endpoint, model=llm_model
+    chosen_pipeline = pipeline.lower()
+    if gname == "llm" and chosen_pipeline == "candidate":
+        generator = LLMLinearCandidateGenerator(
+            endpoint=llm_endpoint,
+            model=llm_model,
+            enable_thinking=llm_enable_thinking,
+            context_cap=context_cap,
         )
+    elif gname == "llm":
+        generator = LLMLinearGenerator(endpoint=llm_endpoint, model=llm_model)
     elif gname == "llm-sudoku":
         generator = LLMSudoku4Generator(endpoint=llm_endpoint, model=llm_model)
     elif gname == "llm-latin5":
@@ -324,7 +357,11 @@ def eval_dataset(
         generator = StubGenerator()
     seed_values = list(range(seeds))
     config = ExperimentConfig.from_flags(
-        no_grammar=no_grammar, no_solver=no_solver, no_repair=no_repair
+        no_grammar=no_grammar,
+        no_solver=no_solver,
+        no_repair=no_repair,
+        pipeline=chosen_pipeline,
+        arm=arm,
     )
     run_evaluation(
         dataset_path=problems,
@@ -359,7 +396,7 @@ def summarize_runs(
 ) -> None:
     """Aggregate evaluation runs and save metrics table."""
 
-    run_files = sorted(runs.glob("seed_*.jsonl"))
+    run_files = sorted(runs.rglob("seed_*.jsonl"))
     summary = aggregate_runs(run_files)
 
     table.parent.mkdir(parents=True, exist_ok=True)
@@ -397,16 +434,16 @@ def make_figures(
 ) -> None:
     """Generate paper-ready figures from evaluation runs."""
 
-    run_files = sorted(runs.glob("seed_*.jsonl"))
+    run_files = sorted(runs.rglob("seed_*.jsonl"))
     records = load_records_from_runs(run_files)
     if not records:
         typer.echo("No run records found; skipping figure generation.", err=True)
         raise typer.Exit(code=1)
 
     out.mkdir(parents=True, exist_ok=True)
-    plot_certification_vs_budget(records, out / "cert_vs_budget.png")
-    plot_iterations_histogram(records, out / "iterations_hist.png")
-    plot_latency_accuracy_pareto(records, out / "latency_vs_accuracy.png")
+    plot_arm_verified_solve_rate(records, out / "arm_verified_solve_rate.png")
+    plot_convergence_by_round(records, out / "convergence_by_round.png")
+    plot_efficiency_frontier(records, out / "efficiency_frontier.png")
     console.print(f"[bold green]Figures written to {out}[/bold green]")
 
 
@@ -440,8 +477,10 @@ def make_tables(
     out.mkdir(parents=True, exist_ok=True)
     main_csv = out / "main_results.csv"
     ablations_csv = out / "ablations.csv"
+    difficulty_csv = out / "difficulty_breakdown.csv"
     generate_main_table(runs, main_csv)
     generate_ablation_table(runs, ablations_csv)
+    generate_difficulty_breakdown_table(runs, difficulty_csv)
     latex_dir.mkdir(parents=True, exist_ok=True)
     latex_root = latex_dir.parent
     csv_reference = Path(os.path.relpath(main_csv, start=latex_root)).as_posix()

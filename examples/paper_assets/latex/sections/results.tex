@@ -1,123 +1,71 @@
-\subsection*{Toy benchmark}
-We execute the default evaluation recipe (five repair rounds, budget two, three
-seeds, 2s solver timeout) on the toy dataset to establish baselines and visual
-intuition. Results are summarised in Table~\ref{tab:main-toy}. Certified
-accuracy is around \(0.48\) (95\% CI \(0.41\)--\(0.55\)); the loop typically
-converges in \(\sim3\) iterations at \(\sim311\,\mathrm{ms}\) average latency.
-Figure~\ref{fig:budget_hist_toy} (left) shows how accuracy scales with the
-candidate budget; Figure~\ref{fig:budget_hist_toy} (right) depicts the
-distribution of repair iterations. Figure~\ref{fig:latency_toy} presents the
-latency--accuracy Pareto frontier, illustrating the expected trade-off.
-\begin{table}[t]
-    \centering
-    \input{tables/table_main.tex}
-    \caption{Main results on the toy benchmark.}
-    \label{tab:main-toy}
-\end{table}
+\subsection*{Linear main study}
+The main paper path evaluates the candidate-first linear benchmark under five
+explicit methods: \texttt{one\_shot}, \texttt{multi\_no\_feedback},
+\texttt{multi\_generic\_feedback}, \texttt{multi\_unsat\_core\_feedback}, and
+\texttt{cd\_vgs\_core\_rank}. The primary comparison concerns the four
+compute-matched multi-round methods, which share identical \(K\), \(R\),
+timeouts, parsing rules, and generation settings. The retry baselines differ
+only in the carried-forward verifier feedback, while \texttt{cd\_vgs\_core\_rank}
+uses the same fixed budget for conflict-directed candidate ranking and targeted
+repair.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.45\textwidth]{../figures/cert_vs_budget.png}
-    \includegraphics[width=0.45\textwidth]{../figures/iterations_hist.png}
-    \caption{Toy benchmark. Left: certification vs.~budget (larger budgets improve coverage). Right: iteration histogram (most problems certify within a handful of rounds).}
-    \label{fig:budget_hist_toy}
-\end{figure}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../figures/latency_vs_accuracy.png}
-    \caption{Toy benchmark. Latency vs.~certified accuracy Pareto frontier across settings (95\% CIs).}
-    \label{fig:latency_toy}
-\end{figure}
-
-\subsection*{Linear feasibility benchmark (LLM + SMT feedback)}
-We evaluate a 500-instance linear corpus with mixed SAT/UNSAT labels. The
-generator is LLM-backed and consumes SMT feedback: on UNSAT the solver returns
-an unsat core which we render as hints (e.g., ``$y_1\!\le\!3$, $y_2\!\le\!2$, and
-$(2)y_1\!+\!(2)y_2\!\ge\!11$ cannot hold together''), guiding subsequent proposals.
-When a local LLM server is unavailable the CLI falls back to a stub generator.
-
-Table~\ref{tab:main-linear} reports aggregate metrics. Accuracy and latency
-curves appear in Figures~\ref{fig:budget_hist_linear}--\ref{fig:latency_linear}.
-Under a tight budget, certification remains comparable to one-shot baselines
-while latency increases with iteration depth; Section~\ref{tab:linear-compare}
-quantifies the trade-off.
 \begin{table}[t]
     \centering
     \input{tables_linear/table_main.tex}
-    \caption{Main results on the linear feasibility dataset.}
-    \label{tab:main-linear}
+    \caption{Arm-level linear results for the candidate-first study.}
+    \label{tab:linear-main}
 \end{table}
 
+Figure~\ref{fig:linear-arm-bars} reports arm-level verified solve rate.
+Figure~\ref{fig:linear-convergence} shows solved-within-round curves, exposing
+whether richer feedback or conflict-directed search helps convergence rather
+than merely increasing attempt count. Figure~\ref{fig:linear-frontier} plots
+efficiency via mean solver calls against verified solve rate.
+
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.45\textwidth]{../figures_linear/cert_vs_budget.png}
-    \includegraphics[width=0.45\textwidth]{../figures_linear/iterations_hist.png}
-    \caption{Linear dataset. Left: certification vs.~budget. Right: iteration histogram across the corpus.}
-    \label{fig:budget_hist_linear}
+    \includegraphics[width=0.6\textwidth]{../figures_linear/arm_verified_solve_rate.png}
+    \caption{Linear study: verified solve rate by arm.}
+    \label{fig:linear-arm-bars}
 \end{figure}
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.5\textwidth]{../figures_linear/latency_vs_accuracy.png}
-    \caption{Linear dataset. Latency vs.~certified accuracy Pareto frontier (95\% CIs).}
-    \label{fig:latency_linear}
+    \includegraphics[width=0.6\textwidth]{../figures_linear/convergence_by_round.png}
+    \caption{Linear study: solved-within-round curves for the five methods.}
+    \label{fig:linear-convergence}
 \end{figure}
 
-\paragraph{Ablation: baseline vs feedback.}
-Table~\ref{tab:linear-compare} compares a single-round baseline to a three-round
-feedback setting. Under the modest budget used here, certification is similar,
-while feedback increases iterations and latency, as expected when revising
-assignments based on solver evidence. Figure~\ref{fig:linear-compare-bars}
-summarises the two key metrics (certified accuracy and latency). On harder
-instances and larger budgets we anticipate clearer gains from feedback.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../figures_linear/efficiency_frontier.png}
+    \caption{Linear study: efficiency frontier using mean solver calls and verified solve rate.}
+    \label{fig:linear-frontier}
+\end{figure}
+
+\paragraph{Metrics and comparisons.}
+The run records expose verified solve rate, SAT certification rate, UNSAT
+precision/recall, solver calls per certified solve, latency summaries, token
+usage, and repair gain relative to \texttt{one\_shot}. Paired McNemar tests are
+reported for solved-within-budget comparisons among the compute-matched methods,
+with Wilcoxon signed-rank tests used for latency and solver-call comparisons.
+
+\subsection*{Sudoku appendix transfer evidence}
+To show that the repository is not reduced to a single-task artifact, we retain
+the legacy trace-based pipeline and run a small Sudoku 4x4 transfer experiment
+in the appendix. This is descriptive evidence only; it does not drive the main
+claims.
 
 \begin{table}[t]
     \centering
-    \input{tables_linear/table_compare.tex}
-    \caption{Linear: baseline (1 round) vs feedback (3 rounds).}
-    \label{tab:linear-compare}
+    \input{tables_sudoku_appendix/table_main.tex}
+    \caption{Sudoku appendix transfer evidence via the preserved trace layer.}
+    \label{tab:sudoku-appendix}
 \end{table}
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.55\textwidth]{../figures_linear/compare.png}
-    \caption{Linear: baseline vs feedback (bars) for certified accuracy and latency.}
-    \label{fig:linear-compare-bars}
+    \includegraphics[width=0.6\textwidth]{../figures_sudoku_appendix/arm_verified_solve_rate.png}
+    \caption{Sudoku appendix: descriptive arm-level transfer evidence.}
+    \label{fig:sudoku-appendix}
 \end{figure}
-
-\subsection*{Scheduling benchmark (MiniZinc subset)}
-We convert a practical MiniZinc subset (bounded integers, linear constraints,
-\texttt{all\_different}) into CEGVR. The LLM+SMT feedback loop applies unchanged.
-Table~\ref{tab:main-scheduling} summarises metrics; corresponding plots are in
-Figures~\ref{fig:scheduling_budget_hist}--\ref{fig:scheduling_latency}.
-
-\begin{table}[t]
-    \centering
-    \input{tables_scheduling/table_main.tex}
-    \caption{Main results on the scheduling (MiniZinc) subset.}
-    \label{tab:main-scheduling}
-\end{table}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.45\textwidth]{../figures_scheduling/cert_vs_budget.png}
-    \includegraphics[width=0.45\textwidth]{../figures_scheduling/iterations_hist.png}
-    \caption{Scheduling subset. Left: certification vs.~budget. Right: iteration histogram.}
-    \label{fig:scheduling_budget_hist}
-\end{figure}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../figures_scheduling/latency_vs_accuracy.png}
-    \caption{Scheduling subset. Latency vs.~certified accuracy (95\% CIs).}
-    \label{fig:scheduling_latency}
-\end{figure}
-
-\subsection*{Case studies}
-We illustrate the feedback loop on a representative linear instance. An
-unsatisfiable attempt returns the hints $y_1\!\le\!3$, $y_2\!\le\!2$, and
-$(2)y_1\!+\!(2)y_2\!\ge\!11$, which cannot all hold together. The next prompt embeds
-these conflicts; a revised assignment either satisfies all constraints or the
-model returns an empty assignment signalling infeasibility. Similar behaviour
-appears on Sudoku, where row/column/box conflicts become actionable guidance.

@@ -14,304 +14,171 @@ usage() {
   cat <<'EOF'
 Usage: run_all.sh [options]
 
-  --seeds <int>        Number of random seeds (default: 3)
-  --max-rounds <int>   Maximum rounds per seed (default: 5)
-  --budget <int>       Certification budget (default: 2)
-  --timeout-ms <int>   Timeout per attempt in milliseconds (default: 2000)
-  --venv <path>        Virtual environment directory (default: .venv)
-  --clean              Remove existing generated artifacts before running
-  --skip-tests         Skip running test and coverage suites
-  --skip-ablations     Skip ablation experiments
-  --skip-robustness    Skip robustness evaluation
-  --skip-latex         Skip LaTeX build
-  -h, --help           Show this help and exit
+  --seeds <int>          Number of random seeds (default: 3)
+  --max-rounds <int>     Max rounds for the multi-round linear study arms (default: 4)
+  --budget <int>         Candidates per round for the multi-round linear study arms (default: 4)
+  --timeout-ms <int>     Solver timeout per candidate (default: 1500)
+  --llm-endpoint <url>   OpenAI-compatible local endpoint (default: http://127.0.0.1:8000/v1/chat/completions)
+  --llm-model <id>       Model identifier (default: qwen3.5-35b-a3b)
+  --venv <path>          Virtual environment directory (default: .venv)
+  --clean                Remove generated runs/tables/figures before running
+  --skip-tests           Skip the pytest suite
+  --skip-latex           Skip LaTeX build
+  -h, --help             Show this help and exit
 EOF
 }
 
 SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-
-if [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/pyproject.toml" ]]; then
-  ROOT="$GIT_ROOT"
-else
-  ROOT="$SCRIPT_ROOT"
-fi
-
+ROOT="$SCRIPT_ROOT"
 cd "$ROOT"
 
 SEEDS=3
-MAX_ROUNDS=5
-BUDGET=2
-TIMEOUT_MS=2000
+MAX_ROUNDS=4
+BUDGET=4
+TIMEOUT_MS=1500
+LLM_ENDPOINT="http://127.0.0.1:8000/v1/chat/completions"
+LLM_MODEL="qwen3.5-35b-a3b"
+VENV_PATH=".venv"
 CLEAN=0
 SKIP_TESTS=0
-SKIP_ABLATIONS=0
-SKIP_ROBUSTNESS=0
 SKIP_LATEX=0
-VENV_PATH=".venv"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --seeds)
-      [[ $# -ge 2 ]] || abort "--seeds requires a value"
-      SEEDS="$2"
-      shift 2
-      ;;
-    --max-rounds)
-      [[ $# -ge 2 ]] || abort "--max-rounds requires a value"
-      MAX_ROUNDS="$2"
-      shift 2
-      ;;
-    --budget)
-      [[ $# -ge 2 ]] || abort "--budget requires a value"
-      BUDGET="$2"
-      shift 2
-      ;;
-    --timeout-ms)
-      [[ $# -ge 2 ]] || abort "--timeout-ms requires a value"
-      TIMEOUT_MS="$2"
-      shift 2
-      ;;
-    --venv)
-      [[ $# -ge 2 ]] || abort "--venv requires a value"
-      VENV_PATH="$2"
-      shift 2
-      ;;
-    --clean)
-      CLEAN=1
-      shift
-      ;;
-    --skip-tests)
-      SKIP_TESTS=1
-      shift
-      ;;
-    --skip-ablations)
-      SKIP_ABLATIONS=1
-      shift
-      ;;
-    --skip-robustness)
-      SKIP_ROBUSTNESS=1
-      shift
-      ;;
-    --skip-latex)
-      SKIP_LATEX=1
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      usage >&2
-      abort "Unknown argument: $1"
-      ;;
+    --seeds) SEEDS="$2"; shift 2 ;;
+    --max-rounds) MAX_ROUNDS="$2"; shift 2 ;;
+    --budget) BUDGET="$2"; shift 2 ;;
+    --timeout-ms) TIMEOUT_MS="$2"; shift 2 ;;
+    --llm-endpoint) LLM_ENDPOINT="$2"; shift 2 ;;
+    --llm-model) LLM_MODEL="$2"; shift 2 ;;
+    --venv) VENV_PATH="$2"; shift 2 ;;
+    --clean) CLEAN=1; shift ;;
+    --skip-tests) SKIP_TESTS=1; shift ;;
+    --skip-latex) SKIP_LATEX=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) abort "Unknown argument: $1" ;;
   esac
 done
 
-if [[ "$VENV_PATH" = /* ]]; then
-  VENV_DIR="$VENV_PATH"
-else
-  VENV_DIR="$ROOT/$VENV_PATH"
+if [[ "$VENV_PATH" != /* ]]; then
+  VENV_PATH="$ROOT/$VENV_PATH"
 fi
 
 if [[ $CLEAN -eq 1 ]]; then
-  log "Cleaning previous artifacts"
+  log "Cleaning previous generated artifacts"
   rm -rf "$ROOT/runs" "$ROOT/tables" \
-    "$ROOT/examples/paper_assets/figures" \
-    "$ROOT/examples/paper_assets/tables" \
-    "$ROOT/reports/case_studies.md"
+    "$ROOT/examples/paper_assets/figures_linear" \
+    "$ROOT/examples/paper_assets/figures_sudoku_appendix" \
+    "$ROOT/examples/paper_assets/tables_linear" \
+    "$ROOT/examples/paper_assets/tables_sudoku_appendix"
 fi
 
-log "Step A: Environment setup"
-log "Preparing directories"
-mkdir -p "$ROOT/runs" "$ROOT/tables" "$ROOT/reports" \
-  "$ROOT/examples/paper_assets/figures" \
-  "$ROOT/examples/paper_assets/tables"
+mkdir -p "$ROOT/runs" "$ROOT/tables" \
+  "$ROOT/examples/paper_assets/figures_linear" \
+  "$ROOT/examples/paper_assets/figures_sudoku_appendix" \
+  "$ROOT/examples/paper_assets/tables_linear" \
+  "$ROOT/examples/paper_assets/tables_sudoku_appendix"
 
-log "Using virtual environment at $VENV_DIR"
-if [[ ! -d "$VENV_DIR" ]]; then
-  log "Creating virtual environment"
-  python3 -m venv "$VENV_DIR"
-fi
-
+log "Bootstrapping local Python environment"
+bash "$ROOT/scripts/bootstrap_local_mac.sh" "$VENV_PATH"
 # shellcheck disable=SC1091
-source "$VENV_DIR/bin/activate"
-
-log "Upgrading pip"
-python -m pip install --upgrade pip >/dev/null
-
-log "Installing project dependencies via make install"
-make install
-
-log "Installing pre-commit hooks"
-if ! command -v pre-commit >/dev/null 2>&1; then
-  log "pre-commit not found; installing"
-  python -m pip install pre-commit
-fi
-pre-commit install
+source "$VENV_PATH/bin/activate"
+export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 
 if [[ $SKIP_TESTS -eq 0 ]]; then
   log "Running test suite"
   make test
-
-  log "Running coverage suite"
-  if ! make cov; then
-    log "WARNING: Coverage command reported issues (continuing anyway)"
-  fi
 else
-  log "Skipping tests and coverage as requested"
+  log "Skipping tests"
 fi
 
-log "Sanity check: cegvr --help"
-cegvr --help >/dev/null
+log "Checking local llama.cpp/Qwen endpoint"
+if ! curl -s --max-time 2 "$LLM_ENDPOINT" >/dev/null; then
+  abort "Local endpoint not reachable at $LLM_ENDPOINT. Start llama.cpp with your Qwen model first."
+fi
 
-log "Step B: Toy dataset sanity checks"
-cegvr data-stats --path data/toy/problems.jsonl
-cegvr gen-toy --n 10 --out data/toy/generated.jsonl
+log "Rebuilding linear benchmark dataset"
+python "$ROOT/scripts/build_linear_dataset.py" --total 500 --sat-ratio 0.6 --seed 7 --output "$ROOT/data/linear/problems.jsonl"
 
-  log "Step C: Main evaluation"
+LINEAR_RUN_ROOT="$ROOT/runs/linear_main"
+mkdir -p "$LINEAR_RUN_ROOT"
+ARMS=(
+  "one_shot"
+  "multi_no_feedback"
+  "multi_generic_feedback"
+  "multi_unsat_core_feedback"
+  "cd_vgs_core_rank"
+)
+
+log "Running linear candidate-first paper matrix"
+for arm in "${ARMS[@]}"; do
+  arm_out="$LINEAR_RUN_ROOT/$arm"
+  mkdir -p "$arm_out"
+  log "Arm: $arm"
   cegvr eval \
-    --problems data/toy/problems.jsonl \
-    --out runs/toy \
+    --pipeline candidate \
+    --arm "$arm" \
+    --generator llm \
+    --problems "$ROOT/data/linear/problems.jsonl" \
+    --out "$arm_out" \
     --seeds "$SEEDS" \
     --max-rounds "$MAX_ROUNDS" \
     --budget "$BUDGET" \
-    --timeout-ms "$TIMEOUT_MS"
-
-log "Summarizing evaluation results"
-cegvr summarize --runs runs/toy --table tables/main_results.csv
-
-log "Step D: Generating tables and figures (toy only)"
-cegvr make-tables --runs runs/toy --out examples/paper_assets/tables
-  cegvr make-figures --runs runs/toy --out examples/paper_assets/figures
-
-VARIANTS=(toy)
-
-if [[ $SKIP_ABLATIONS -eq 0 ]]; then
-  log "Step E: Running ablations"
-  cegvr eval --problems data/toy/problems.jsonl --out runs/nosolver --no-solver
-  VARIANTS+=(nosolver)
-
-  cegvr eval --problems data/toy/problems.jsonl --out runs/nogrammar --no-grammar
-  VARIANTS+=(nogrammar)
-
-  cegvr eval --problems data/toy/problems.jsonl --out runs/norepair --no-repair
-  VARIANTS+=(norepair)
-
-  COMBINED_RUNS="$ROOT/runs/_combined"
-  log "Combining run artifacts for ablation summaries at $COMBINED_RUNS"
-  rm -rf "$COMBINED_RUNS"
-  mkdir -p "$COMBINED_RUNS"
-
-  for variant in "${VARIANTS[@]}"; do
-    VARIANT_DIR="$ROOT/runs/$variant"
-    if [[ ! -d "$VARIANT_DIR" ]]; then
-      continue
-    fi
-    shopt -s nullglob
-    for run_file in "$VARIANT_DIR"/seed_*.jsonl; do
-      base="$(basename "$run_file")"
-      cp "$run_file" "$COMBINED_RUNS/seed_${variant}_${base}"
-    done
-    shopt -u nullglob
-  done
-
-  log "Regenerating tables and figures with ablation runs"
-  cegvr make-tables --runs "$COMBINED_RUNS" --out examples/paper_assets/tables
-  cegvr make-figures --runs "$COMBINED_RUNS" --out examples/paper_assets/figures
-else
-  log "Skipping ablations as requested"
-fi
-
-if [[ $SKIP_ROBUSTNESS -eq 0 ]]; then
-  log "Step F: Robustness evaluation"
-  cegvr robustness --problems data/toy/problems.jsonl --out runs/robust --variants 3
-else
-  log "Skipping robustness evaluation as requested"
-fi
-
-# --- Linear (LLM) evaluation and assets ---
-log "Step G: Linear dataset (SMT-LIB) preparation"
-if [[ ! -f data/linear/problems.jsonl ]]; then
-  if [[ -f "$HOME/datasets/linear_smt.zip" ]]; then
-    python scripts/convert_linear_smt.py --archive "$HOME/datasets/linear_smt.zip" --output data/linear/problems.jsonl || true
-  else
-    log "linear_smt.zip not found (expected at ~/datasets). Using existing data/linear if present."
-  fi
-fi
-
-log "Step H: Linear dataset evaluation with LLM (if server available)"
-LLM_ENDPOINT="http://127.0.0.1:8000/v1/chat/completions"
-if curl -s --max-time 2 "$LLM_ENDPOINT" >/dev/null; then
-  log "Detected local LLM server at $LLM_ENDPOINT"
-  cegvr eval \
-    --problems data/linear/problems.jsonl \
-    --out runs/linear_llm_llm \
-    --seeds 1 \
-    --max-rounds 3 \
-    --budget 1 \
-    --timeout-ms 1500 \
-    --generator llm \
+    --timeout-ms "$TIMEOUT_MS" \
     --llm-endpoint "$LLM_ENDPOINT" \
-    --llm-model llama-3-8b-instruct || true
-else
-  log "LLM server not reachable; falling back to stub generator for linear set"
-  cegvr eval --problems data/linear/problems.jsonl --out runs/linear --seeds 1 --max-rounds 1 --budget 1 --timeout-ms 1500 || true
-fi
-
-log "Step I: Linear dataset tables/figures"
-mkdir -p tables/linear
-# Summarize whichever run exists
-if [[ -d runs/linear_llm_llm ]]; then
-  cegvr summarize --runs runs/linear_llm_llm --table tables/linear/main_results.csv || true
-  cegvr make-figures --runs runs/linear_llm_llm --out examples/paper_assets/figures_linear || true
-elif [[ -d runs/linear ]]; then
-  cegvr summarize --runs runs/linear --table tables/linear/main_results.csv || true
-  cegvr make-figures --runs runs/linear --out examples/paper_assets/figures_linear || true
-fi
-
-log "Step G: Exporting case studies"
-cegvr export-cases --runs runs/toy --out reports/case_studies.md --n 4
-
-if [[ $SKIP_LATEX -eq 0 ]]; then
-  log "Step H: Building LaTeX assets"
-  make -C examples/paper_assets/latex
-else
-  log "Skipping LaTeX build as requested"
-fi
-
-SUMMARY_PATHS=()
-
-shopt -s nullglob
-prefix="$ROOT/"
-for run_path in "$ROOT"/runs/*; do
-  relative_path=${run_path#$prefix}
-  SUMMARY_PATHS+=("$relative_path")
-done
-shopt -u nullglob
-
-if [[ ${#SUMMARY_PATHS[@]} -eq 0 ]]; then
-  SUMMARY_PATHS+=("runs/")
-fi
-
-SUMMARY_PATHS+=(
-  "tables/main_results.csv"
-  "tables/linear/main_results.csv"
-  "examples/paper_assets/tables"
-  "examples/paper_assets/figures_linear"
-  "examples/paper_assets/figures"
-  "reports/case_studies.md"
-)
-
-if [[ $SKIP_LATEX -eq 0 ]]; then
-  SUMMARY_PATHS+=("examples/paper_assets/latex/main.pdf")
-else
-  log "LaTeX artifacts skipped; rerun without --skip-latex to build PDF"
-fi
-
-log "Pipeline complete. Summary of generated artifacts:"
-for summary_path in "${SUMMARY_PATHS[@]}"; do
-  printf '  - %s\n' "$summary_path"
+    --llm-model "$LLM_MODEL" \
+    --no-llm-enable-thinking
 done
 
-log "Done"
+log "Summarizing and plotting linear paper results"
+mkdir -p "$ROOT/tables/linear"
+cegvr summarize --runs "$LINEAR_RUN_ROOT" --table "$ROOT/tables/linear/main_results.csv"
+cegvr make-tables --runs "$LINEAR_RUN_ROOT" --out "$ROOT/examples/paper_assets/tables_linear" --latex "$ROOT/examples/paper_assets/latex/tables_linear"
+cegvr make-figures --runs "$LINEAR_RUN_ROOT" --out "$ROOT/examples/paper_assets/figures_linear"
+
+log "Running Sudoku appendix transfer evidence on the preserved trace layer"
+SUDOKU_RUN_ROOT="$ROOT/runs/sudoku_appendix"
+mkdir -p "$SUDOKU_RUN_ROOT"
+cegvr eval \
+  --pipeline trace \
+  --generator llm-sudoku \
+  --problems "$ROOT/data/sudoku4/problems.jsonl" \
+  --out "$SUDOKU_RUN_ROOT/one_shot" \
+  --seeds 1 \
+  --max-rounds 1 \
+  --budget 1 \
+  --timeout-ms "$TIMEOUT_MS" \
+  --llm-endpoint "$LLM_ENDPOINT" \
+  --llm-model "$LLM_MODEL"
+cegvr eval \
+  --pipeline trace \
+  --generator llm-sudoku \
+  --problems "$ROOT/data/sudoku4/problems.jsonl" \
+  --out "$SUDOKU_RUN_ROOT/feedback" \
+  --seeds 1 \
+  --max-rounds 3 \
+  --budget 1 \
+  --timeout-ms "$TIMEOUT_MS" \
+  --llm-endpoint "$LLM_ENDPOINT" \
+  --llm-model "$LLM_MODEL"
+cegvr summarize --runs "$SUDOKU_RUN_ROOT" --table "$ROOT/tables/sudoku_appendix_results.csv"
+cegvr make-tables --runs "$SUDOKU_RUN_ROOT" --out "$ROOT/examples/paper_assets/tables_sudoku_appendix" --latex "$ROOT/examples/paper_assets/latex/tables_sudoku_appendix"
+cegvr make-figures --runs "$SUDOKU_RUN_ROOT" --out "$ROOT/examples/paper_assets/figures_sudoku_appendix"
+
+if [[ $SKIP_LATEX -eq 0 ]]; then
+  log "Building LaTeX paper assets"
+  make -C "$ROOT/examples/paper_assets/latex"
+else
+  log "Skipping LaTeX build"
+fi
+
+log "Pipeline complete"
+printf '  - %s\n' \
+  "runs/linear_main" \
+  "runs/sudoku_appendix" \
+  "tables/linear/main_results.csv" \
+  "tables/sudoku_appendix_results.csv" \
+  "examples/paper_assets/tables_linear" \
+  "examples/paper_assets/figures_linear" \
+  "examples/paper_assets/tables_sudoku_appendix" \
+  "examples/paper_assets/figures_sudoku_appendix"

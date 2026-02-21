@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import random
 from typing import Any, Dict, Protocol, runtime_checkable
 
+from cegvr.candidate.types import CandidateProposal, VerifierFeedback
 from cegvr.utils.random import generate_seed
 
 
@@ -18,6 +19,19 @@ class TraceGenerator(Protocol):
         self, problem: dict, budget: int, hint: dict | None = None
     ) -> list[dict]:
         """Return up to ``budget`` candidate trace dictionaries for the given problem."""
+
+
+@runtime_checkable
+class CandidateGenerator(Protocol):
+    """Interface for proposing candidate-first outputs."""
+
+    def propose_candidates(
+        self,
+        problem: dict,
+        budget: int,
+        hint: VerifierFeedback | None = None,
+    ) -> list[CandidateProposal]:
+        """Return up to ``budget`` candidate proposals for the given problem."""
 
 
 @dataclass
@@ -168,4 +182,4 @@ class StubGenerator:
         return assignments
 
 
-__all__ = ["TraceGenerator", "StubGenerator"]
+__all__ = ["CandidateGenerator", "TraceGenerator", "StubGenerator"]

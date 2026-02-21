@@ -30,14 +30,20 @@ class SolverContext:
     next_index: int = 0
     labels: dict[str, str] = field(default_factory=dict)
 
-    def track(self, expr: z3.BoolRef, prefix: str, desc: str | None = None) -> None:
+    def track(
+        self,
+        expr: z3.BoolRef,
+        prefix: str,
+        desc: str | None = None,
+        label: str | None = None,
+    ) -> None:
         """Assert an expression with a generated tracking literal and optional description."""
 
-        label = f"{prefix}:{self.next_index}"
+        tracking_label = label or f"{prefix}:{self.next_index}"
         self.next_index += 1
-        self.solver.assert_and_track(expr, label)
+        self.solver.assert_and_track(expr, tracking_label)
         if desc:
-            self.labels[label] = desc
+            self.labels[tracking_label] = desc
 
 
 def build_z3_context(trace: Trace) -> tuple[z3.Solver, dict[str, z3.ExprRef]]:
@@ -92,12 +98,12 @@ def encode_constraints(
 
     context = _get_context(solver)
     for constraint in constraints:
-        expr = _encode_constraint(constraint, varmap)
-        desc = _describe_constraint(constraint)
+        expr = encode_constraint_expr(constraint, varmap)
+        desc = describe_constraint(constraint)
         context.track(expr, "constraint", desc=desc)
 
 
-def _encode_constraint(
+def encode_constraint_expr(
     constraint: Constraint, varmap: Dict[str, z3.ExprRef]
 ) -> z3.BoolRef:
     if isinstance(constraint, LinearIneqConstraint):
@@ -113,18 +119,18 @@ def _encode_constraint(
         return z3.Distinct(*symbols)
     if isinstance(constraint, AndConstraint):
         return z3.And(
-            *(_encode_constraint(child, varmap) for child in constraint.constraints)
+            *(encode_constraint_expr(child, varmap) for child in constraint.constraints)
         )
     if isinstance(constraint, OrConstraint):
         return z3.Or(
-            *(_encode_constraint(child, varmap) for child in constraint.constraints)
+            *(encode_constraint_expr(child, varmap) for child in constraint.constraints)
         )
     if isinstance(constraint, NotConstraint):
-        return z3.Not(_encode_constraint(constraint.constraint, varmap))
+        return z3.Not(encode_constraint_expr(constraint.constraint, varmap))
     raise TypeError(f"Unsupported constraint kind: {constraint}")
 
 
-def _describe_constraint(constraint: Constraint) -> str:
+def describe_constraint(constraint: Constraint) -> str:
     """Produce a human-readable description of a constraint for feedback."""
     if isinstance(constraint, LinearIneqConstraint):
         parts: list[str] = []
@@ -145,17 +151,17 @@ def _describe_constraint(constraint: Constraint) -> str:
     if isinstance(constraint, AndConstraint):
         return (
             "AND["
-            + "; ".join(_describe_constraint(c) for c in constraint.constraints)
+            + "; ".join(describe_constraint(c) for c in constraint.constraints)
             + "]"
         )
     if isinstance(constraint, OrConstraint):
         return (
             "OR["
-            + "; ".join(_describe_constraint(c) for c in constraint.constraints)
+            + "; ".join(describe_constraint(c) for c in constraint.constraints)
             + "]"
         )
     if isinstance(constraint, NotConstraint):
-        return "NOT(" + _describe_constraint(constraint.constraint) + ")"
+        return "NOT(" + describe_constraint(constraint.constraint) + ")"
     return repr(constraint)
 
 

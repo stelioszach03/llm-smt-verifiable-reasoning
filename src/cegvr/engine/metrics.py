@@ -12,8 +12,9 @@ def compute_metrics(records: Iterable[Dict[str, Any]]) -> Dict[str, float]:
     total = len(records_list)
     if total == 0:
         return {
-            "certified_accuracy": 0.0,
-            "uncertified_accuracy": 0.0,
+            "verified_solve_rate": 0.0,
+            "sat_certification_rate": 0.0,
+            "unsat_prediction_rate": 0.0,
             "avg_iterations": 0.0,
             "avg_latency_ms": 0.0,
             "coverage": 0.0,
@@ -36,18 +37,18 @@ def compute_metrics(records: Iterable[Dict[str, Any]]) -> Dict[str, float]:
         record for record in records_list if record.get("ground_truth") == "unsat"
     ]
 
-    certified_accuracy = (
+    sat_certification_rate = (
         sum(1 for record in certified if record.get("ground_truth") == "sat")
         / len(sat_truth)
         if sat_truth
         else 0.0
     )
-    uncertified_accuracy = (
+    unsat_prediction_rate = (
         sum(
             1
             for record in records_list
-            if record.get("status") != "certified"
-            and record.get("ground_truth") == "unsat"
+            if record.get("ground_truth") == "unsat"
+            and record.get("status") != "certified"
         )
         / len(unsat_truth)
         if unsat_truth
@@ -55,8 +56,9 @@ def compute_metrics(records: Iterable[Dict[str, Any]]) -> Dict[str, float]:
     )
 
     return {
-        "certified_accuracy": certified_accuracy,
-        "uncertified_accuracy": uncertified_accuracy,
+        "verified_solve_rate": coverage,
+        "sat_certification_rate": sat_certification_rate,
+        "unsat_prediction_rate": unsat_prediction_rate,
         "avg_iterations": avg_iterations,
         "avg_latency_ms": avg_latency,
         "coverage": coverage,
