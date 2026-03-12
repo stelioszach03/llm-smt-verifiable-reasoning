@@ -78,7 +78,9 @@ def test_tables_contain_expected_columns(tmp_path: Path) -> None:
     tables_dir = tmp_path / "tables"
     generate_main_table(runs_dir, tables_dir / "main_results.csv")
     generate_ablation_table(runs_dir, tables_dir / "ablations.csv")
-    generate_difficulty_breakdown_table(runs_dir, tables_dir / "difficulty_breakdown.csv")
+    generate_difficulty_breakdown_table(
+        runs_dir, tables_dir / "difficulty_breakdown.csv"
+    )
 
     with (tables_dir / "main_results.csv").open("r", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -96,9 +98,13 @@ def test_tables_contain_expected_columns(tmp_path: Path) -> None:
         "success_mcnemar_p",
         "latency_wilcoxon_p",
     }.issubset(reader.fieldnames or [])
-    assert rows == [], "Pairwise table can be empty when no compute-matched arm pairs exist"
+    assert rows == [], (
+        "Pairwise table can be empty when no compute-matched arm pairs exist"
+    )
 
-    with (tables_dir / "difficulty_breakdown.csv").open("r", encoding="utf-8") as handle:
+    with (tables_dir / "difficulty_breakdown.csv").open(
+        "r", encoding="utf-8"
+    ) as handle:
         reader = csv.DictReader(handle)
         rows = list(reader)
     assert {"arm", "difficulty_bin", "verified_solve_rate"}.issubset(

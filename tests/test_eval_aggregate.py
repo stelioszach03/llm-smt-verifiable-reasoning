@@ -102,6 +102,4 @@ def test_aggregate_runs_tracks_cd_vgs_and_difficulty_breakdown(
 
     assert "cd_vgs_core_rank" in summary["per_arm"]
     assert "hard" in summary["per_arm_per_difficulty"]["cd_vgs_core_rank"]
-    assert (
-        "cd_vgs_core_rank__vs__multi_unsat_core_feedback" in summary["comparisons"]
-    )
+    assert "cd_vgs_core_rank__vs__multi_unsat_core_feedback" in summary["comparisons"]

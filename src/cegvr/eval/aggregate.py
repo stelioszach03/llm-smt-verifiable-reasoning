@@ -113,7 +113,9 @@ def aggregate_runs(paths: Iterable[Path | str]) -> Dict[str, Any]:
     return summary
 
 
-def _group_records_by_arm(records: Sequence[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+def _group_records_by_arm(
+    records: Sequence[Dict[str, Any]],
+) -> Dict[str, List[Dict[str, Any]]]:
     grouped: Dict[str, List[Dict[str, Any]]] = {}
     for record in records:
         arm = str(record.get("arm") or "unknown")
@@ -131,12 +133,14 @@ def _difficulty_bin(record: Dict[str, Any]) -> str:
 
 
 def _summarize_by_difficulty(
-    records: Sequence[Dict[str, Any]]
+    records: Sequence[Dict[str, Any]],
 ) -> Dict[str, Dict[str, Any]]:
     grouped: Dict[str, List[Dict[str, Any]]] = {}
     for record in records:
         grouped.setdefault(_difficulty_bin(record), []).append(record)
-    return {difficulty: _summarize_records(items) for difficulty, items in grouped.items()}
+    return {
+        difficulty: _summarize_records(items) for difficulty, items in grouped.items()
+    }
 
 
 def _summarize_records(records: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
@@ -216,7 +220,7 @@ def _is_certified(record: Dict[str, Any]) -> bool:
 
 
 def _paired_arm_comparisons(
-    grouped_by_arm: Dict[str, List[Dict[str, Any]]]
+    grouped_by_arm: Dict[str, List[Dict[str, Any]]],
 ) -> Dict[str, Any]:
     if len(grouped_by_arm) < 2:
         return {}
@@ -224,7 +228,8 @@ def _paired_arm_comparisons(
     multi_arms = [
         arm
         for arm in sorted(grouped_by_arm)
-        if arm in {
+        if arm
+        in {
             "multi_no_feedback",
             "multi_generic_feedback",
             "multi_unsat_core_feedback",

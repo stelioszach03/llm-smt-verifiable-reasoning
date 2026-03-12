@@ -61,7 +61,9 @@ def plot_convergence_by_round(records: Sequence[dict], output_path: Path) -> Non
     for record in records:
         by_arm[str(record.get("arm") or "unknown")].append(record)
 
-    max_rounds = max((int(record.get("max_rounds", 1) or 1) for record in records), default=1)
+    max_rounds = max(
+        (int(record.get("max_rounds", 1) or 1) for record in records), default=1
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(6, 3.5))
 
@@ -108,14 +110,22 @@ def plot_efficiency_frontier(records: Sequence[dict], output_path: Path) -> None
             else 0.0
             for record in arm_records
         )
-        mean_solver_calls = mean(float(record.get("solver_calls", 0.0) or 0.0) for record in arm_records)
+        mean_solver_calls = mean(
+            float(record.get("solver_calls", 0.0) or 0.0) for record in arm_records
+        )
         points.append((arm, mean_solver_calls, solve_rate))
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(6, 3.5))
     for arm, solver_calls, solve_rate in points:
         ax.scatter([solver_calls], [solve_rate], s=70)
-        ax.annotate(arm, (solver_calls, solve_rate), fontsize=8, xytext=(5, 3), textcoords="offset points")
+        ax.annotate(
+            arm,
+            (solver_calls, solve_rate),
+            fontsize=8,
+            xytext=(5, 3),
+            textcoords="offset points",
+        )
     ax.set_xlabel("Mean solver calls")
     ax.set_ylabel("Verified solve rate")
     ax.set_ylim(0, 1)

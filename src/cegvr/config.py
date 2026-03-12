@@ -57,7 +57,10 @@ class AppConfig(BaseModel):
     def yaml(self) -> str:
         """Render the configuration as YAML for display."""
 
-        return yaml.safe_dump(self.model_dump(mode="python"), sort_keys=False)
+        # `mode="json"` coerces Path/datetime/Enum into JSON-safe scalars,
+        # which safe_dump can then represent. `mode="python"` leaves
+        # PosixPath instances in the dict and crashes the representer.
+        return yaml.safe_dump(self.model_dump(mode="json"), sort_keys=False)
 
 
 def load_config(path: Path | str | None = None) -> AppConfig:

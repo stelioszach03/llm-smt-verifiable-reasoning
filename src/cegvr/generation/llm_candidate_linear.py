@@ -119,7 +119,9 @@ class LLMLinearCandidateGenerator(CandidateGenerator):
                 for item in conflict_refs:
                     lines.append(f"- Conflict: {item.constraint_text}")
             if hint.sat_witness:
-                lines.append("- A solver witness exists. Prefer a satisfying assignment.")
+                lines.append(
+                    "- A solver witness exists. Prefer a satisfying assignment."
+                )
                 for key, value in sorted(hint.sat_witness.items()):
                     lines.append(f"  {key} = {value}")
             diagnostics = hint.diagnostics or {}
@@ -188,10 +190,13 @@ class LLMLinearCandidateGenerator(CandidateGenerator):
     def _describe_constraint(constraint: dict) -> str:
         kind = constraint.get("kind")
         if kind == "linear_ineq":
-            terms = " + ".join(
-                f"({term['coefficient']})*{term['variable']}"
-                for term in constraint.get("terms", [])
-            ) or "0"
+            terms = (
+                " + ".join(
+                    f"({term['coefficient']})*{term['variable']}"
+                    for term in constraint.get("terms", [])
+                )
+                or "0"
+            )
             offset = constraint.get("offset", 0.0)
             if offset:
                 terms = f"{terms} + {offset}"

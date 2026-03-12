@@ -43,13 +43,19 @@ def verify_linear_candidate(
                 diagnostics={
                     "last_assignment": assignment,
                     "precheck_errors": precheck,
-                    "violated_constraint_ids": [ref.constraint_id for ref in violations],
-                    "violated_constraint_texts": [ref.constraint_text for ref in violations],
+                    "violated_constraint_ids": [
+                        ref.constraint_id for ref in violations
+                    ],
+                    "violated_constraint_texts": [
+                        ref.constraint_text for ref in violations
+                    ],
                 },
                 precheck_violations=precheck_violations,
             )
 
-        solver, context, varmap = _build_problem_solver(problem, constraints, timeout_ms)
+        solver, context, varmap = _build_problem_solver(
+            problem, constraints, timeout_ms
+        )
         for spec in variables:
             name = spec["name"]
             expr = _assignment_expr(varmap[name], assignment[name])
@@ -71,7 +77,9 @@ def verify_linear_candidate(
                 solver_time_ms=solver_time_ms,
                 certified_assignment=assignment,
                 diagnostics={
-                    "violated_constraint_ids": [ref.constraint_id for ref in violations],
+                    "violated_constraint_ids": [
+                        ref.constraint_id for ref in violations
+                    ],
                 },
                 precheck_violations=precheck_violations,
             )
@@ -85,8 +93,12 @@ def verify_linear_candidate(
                 solver_time_ms=solver_time_ms,
                 unsat_core=core,
                 diagnostics={
-                    "violated_constraint_ids": [ref.constraint_id for ref in violations],
-                    "violated_constraint_texts": [ref.constraint_text for ref in violations],
+                    "violated_constraint_ids": [
+                        ref.constraint_id for ref in violations
+                    ],
+                    "violated_constraint_texts": [
+                        ref.constraint_text for ref in violations
+                    ],
                     "last_assignment": assignment,
                 },
                 precheck_violations=precheck_violations,
@@ -98,7 +110,9 @@ def verify_linear_candidate(
                 "VERIFIER_TIMEOUT" if reason == "timeout" else "VERIFIER_UNKNOWN"
             ),
             verifier_result="timeout" if reason == "timeout" else "unknown",
-            failure_type="verifier_timeout" if reason == "timeout" else "verifier_unknown",
+            failure_type="verifier_timeout"
+            if reason == "timeout"
+            else "verifier_unknown",
             solver_time_ms=solver_time_ms,
             diagnostics={"reason": reason or None, "last_assignment": assignment},
             precheck_violations=precheck_violations,
@@ -194,7 +208,9 @@ def _load_constraints(problem: dict) -> list[tuple[str, Constraint]]:
     return parsed
 
 
-def _precheck_assignment(variables: list[dict], assignment: dict[str, Any]) -> list[str]:
+def _precheck_assignment(
+    variables: list[dict], assignment: dict[str, Any]
+) -> list[str]:
     errors: list[str] = []
     expected = {spec["name"]: spec for spec in variables}
     for name in assignment:
@@ -259,9 +275,13 @@ def _evaluate_constraint(constraint: Constraint, assignment: dict[str, Any]) -> 
         values = [assignment[name] for name in constraint.variables]
         return len(values) == len(set(values))
     if kind == "and":
-        return all(_evaluate_constraint(child, assignment) for child in constraint.constraints)
+        return all(
+            _evaluate_constraint(child, assignment) for child in constraint.constraints
+        )
     if kind == "or":
-        return any(_evaluate_constraint(child, assignment) for child in constraint.constraints)
+        return any(
+            _evaluate_constraint(child, assignment) for child in constraint.constraints
+        )
     if kind == "not":
         return not _evaluate_constraint(constraint.constraint, assignment)
     raise TypeError(f"Unsupported constraint kind: {kind}")

@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 from time import perf_counter
-from typing import Iterable
+from typing import Any, Iterable
 
 from cegvr.candidate.repair import repair_candidates_until_certified
 from cegvr.candidate.types import ExperimentArm
@@ -95,9 +95,7 @@ def run_evaluation(
                         outcome.get("solver_latency_ms", 0.0) or 0.0
                     ),
                     "prompt_tokens": int(outcome.get("prompt_tokens", 0) or 0),
-                    "completion_tokens": int(
-                        outcome.get("completion_tokens", 0) or 0
-                    ),
+                    "completion_tokens": int(outcome.get("completion_tokens", 0) or 0),
                     "total_tokens": int(outcome.get("total_tokens", 0) or 0),
                     "config": outcome.get("config", cfg.to_dict()),
                     "per_round_candidates": per_round_budget,
@@ -112,7 +110,11 @@ def run_evaluation(
                     or (
                         "cd_vgs_core_rank"
                         if cfg.arm is ExperimentArm.CD_VGS_CORE_RANK
-                        else ("one_shot" if cfg.arm is ExperimentArm.ONE_SHOT else "round_retry")
+                        else (
+                            "one_shot"
+                            if cfg.arm is ExperimentArm.ONE_SHOT
+                            else "round_retry"
+                        )
                     ),
                     "search_score": outcome.get("search_score", []),
                     "repeat_failure_count": int(
@@ -173,9 +175,8 @@ def _problem_features(problem: dict) -> dict:
                     coeffs.append(abs(float(term.get("coefficient", 0.0))))
                 except (TypeError, ValueError):
                     continue
-    metadata = (
-        problem.get("metadata") if isinstance(problem.get("metadata"), dict) else {}
-    )
+    raw_meta = problem.get("metadata")
+    metadata: dict[str, Any] = raw_meta if isinstance(raw_meta, dict) else {}
     return {
         "n_vars": n_vars,
         "n_constraints": n_constraints,

@@ -117,7 +117,9 @@ def repair_candidates_until_certified(
         if arm is ExperimentArm.ONE_SHOT:
             break
 
-        source_attempt, source_verification = _select_feedback_source(round_attempts, arm)
+        source_attempt, source_verification = _select_feedback_source(
+            round_attempts, arm
+        )
         if source_attempt is None:
             feedback = None
             continue
@@ -332,7 +334,9 @@ def _finalize_result(
         "completion_tokens": completion_tokens,
         "total_tokens": total_tokens,
         "history": history,
-        "feedback": feedback.model_dump(mode="python") if feedback is not None else None,
+        "feedback": feedback.model_dump(mode="python")
+        if feedback is not None
+        else None,
         "feedback_source": feedback_source,
         "selected_parent_round_index": (
             feedback_source.get("round_index") if feedback_source else None
@@ -380,21 +384,25 @@ def _select_feedback_source(
         return None, None
     if arm is ExperimentArm.CD_VGS_CORE_RANK:
         failed.sort(
-            key=lambda pair: pair[0].search_score
-            or (
-                _LARGE_RANK,
-                _LARGE_RANK,
-                _LARGE_RANK,
-                _LARGE_RANK,
-                _LARGE_RANK,
-                _LARGE_RANK,
-                pair[0].candidate_index,
+            key=lambda pair: (
+                pair[0].search_score
+                or (
+                    _LARGE_RANK,
+                    _LARGE_RANK,
+                    _LARGE_RANK,
+                    _LARGE_RANK,
+                    _LARGE_RANK,
+                    _LARGE_RANK,
+                    pair[0].candidate_index,
+                )
             )
         )
     else:
         failed.sort(
-            key=lambda pair: pair[0].feedback_source_score
-            or (_LARGE_RANK, _LARGE_RANK, pair[0].candidate_index)
+            key=lambda pair: (
+                pair[0].feedback_source_score
+                or (_LARGE_RANK, _LARGE_RANK, pair[0].candidate_index)
+            )
         )
     return failed[0]
 
@@ -518,7 +526,9 @@ def _last_assignment(
 
 def _attempt_last_assignment(attempt: AttemptRecord) -> dict[str, int | bool] | None:
     diagnostics = attempt.model_dump(mode="python").get("diagnostics", {})
-    last_assignment = diagnostics.get("last_assignment") if isinstance(diagnostics, dict) else None
+    last_assignment = (
+        diagnostics.get("last_assignment") if isinstance(diagnostics, dict) else None
+    )
     if isinstance(last_assignment, dict):
         return {str(key): value for key, value in last_assignment.items()}
     candidate_output = attempt.model_dump(mode="python").get("candidate_output")
@@ -678,10 +688,13 @@ def _constraint_text_map(problem: dict) -> dict[str, str]:
 def _describe_constraint(constraint: dict) -> str:
     kind = constraint.get("kind")
     if kind == "linear_ineq":
-        terms = " + ".join(
-            f"({term['coefficient']})*{term['variable']}"
-            for term in constraint.get("terms", [])
-        ) or "0"
+        terms = (
+            " + ".join(
+                f"({term['coefficient']})*{term['variable']}"
+                for term in constraint.get("terms", [])
+            )
+            or "0"
+        )
         offset = constraint.get("offset", 0.0)
         if offset:
             terms = f"{terms} + {offset}"
