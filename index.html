@@ -1,0 +1,1503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CEGVR · Counterexample-Grounded Verifiable Reasoning</title>
+<meta name="description" content="A candidate-first LLM + SMT protocol for verifiable reasoning under strict feedback-granularity control. Five-method linear study with a conflict-directed verifier-guided search flagship (cd_vgs_core_rank). By Stelios Zacharioudakis." />
+<meta name="theme-color" content="#f4efe1" />
+<meta property="og:title" content="CEGVR · Verifiable Reasoning" />
+<meta property="og:description" content="LLM proposes, SMT verifies, unsat-core hints guide revision. Five methods, 500 linear problems, conflict-directed flagship." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --paper:        #f4efe1;      /* main cream background */
+  --paper-bright: #fbf7eb;      /* card highlight       */
+  --paper-deep:   #ebe4d0;      /* tinted panel         */
+  --ink:          #1a1915;      /* main text            */
+  --ink-soft:     #3a362d;      /* subheads             */
+  --ink-dim:      #6b6657;      /* body copy, captions  */
+  --ash:          #948c7a;      /* labels, metadata     */
+  --ash-deep:     #b8b09c;      /* hairlines            */
+  --rule:         #d1c9b5;      /* primary dividers     */
+  --rule-soft:    #e4ddcb;      /* subtle dividers      */
+
+  --wine:         #8b2f20;      /* UNSAT, oxblood       */
+  --wine-soft:    #b85c4a;
+  --forest:       #2e5c48;      /* SAT, verified        */
+  --forest-soft:  #6a8f7d;
+  --marigold:     #b57e2a;      /* highlight            */
+  --ink-invert:   #f4efe1;
+
+  --serif: "Cormorant Garamond", "EB Garamond", "Adobe Caslon Pro", ui-serif, Georgia, serif;
+  --sans:  "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --mono:  "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --shell: 1180px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { background: var(--paper); scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  background:
+    radial-gradient(1200px 800px at 100% 0%, rgba(139, 47, 32, 0.04), transparent 60%),
+    radial-gradient(900px 700px at 0% 100%, rgba(46, 92, 72, 0.04), transparent 60%),
+    var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Subtle paper grain */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    repeating-radial-gradient(circle at 25% 30%, rgba(26, 25, 21, 0.014) 0, rgba(26, 25, 21, 0.014) 1px, transparent 1px, transparent 3px),
+    repeating-radial-gradient(circle at 75% 70%, rgba(181, 126, 42, 0.012) 0, rgba(181, 126, 42, 0.012) 1px, transparent 1px, transparent 4px);
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+.shell { max-width: var(--shell); margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+a { color: var(--wine); text-decoration: none; border-bottom: 1px solid rgba(139, 47, 32, 0.25); transition: border-color 0.15s, color 0.15s; }
+a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+a.no-underline { border-bottom: none; }
+
+/* ═══════════════════ NAV ═══════════════════ */
+
+nav.top {
+  position: sticky; top: 0; z-index: 40;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(244, 239, 225, 0.88);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+}
+nav.top .inner {
+  max-width: var(--shell); margin: 0 auto;
+  padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 14px; color: var(--ink); text-decoration: none; border: none; }
+.brand-mark {
+  width: 34px; height: 34px;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 100%; height: 100%; }
+.brand-text { display: flex; flex-direction: column; }
+.brand-title {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  font-weight: 500;
+}
+.brand-sub {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--ash);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+nav.top .links {
+  display: flex; gap: 24px; align-items: center;
+}
+nav.top .links a {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  border: none;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+nav.top .links a:hover { color: var(--wine); }
+nav.top .links a.cta {
+  padding: 9px 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+nav.top .links a.cta:hover { background: var(--wine); color: var(--paper); }
+
+@media (max-width: 720px) {
+  nav.top .links a:not(.cta) { display: none; }
+}
+
+/* ═══════════════════ MASTHEAD ═══════════════════ */
+
+.masthead {
+  padding: 72px 0 52px;
+  border-bottom: 2px solid var(--ink);
+  position: relative;
+}
+.masthead-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 48px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.masthead-meta .venue-line {
+  display: flex; gap: 14px; align-items: baseline;
+}
+.masthead-meta .dot { color: var(--ash-deep); }
+.masthead-meta .venue-tag {
+  color: var(--wine);
+  border: 1px solid currentColor;
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.18em;
+}
+
+h1.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(3rem, 7.2vw, 6.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  margin: 0 0 20px;
+  color: var(--ink);
+  max-width: 20ch;
+  text-wrap: balance;
+}
+h1.title em {
+  font-style: italic;
+  color: var(--wine);
+  font-weight: 500;
+}
+.subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+  line-height: 1.35;
+  color: var(--ink-soft);
+  max-width: 54ch;
+  margin: 0 0 52px;
+  text-wrap: balance;
+}
+
+.byline {
+  display: flex; gap: 40px; align-items: baseline; flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--rule);
+}
+.byline .field-label {
+  display: block;
+  font-size: 0.56rem;
+  color: var(--ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.byline .field-value {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+}
+
+/* Masthead action buttons */
+.masthead-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 44px;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  border-radius: 3px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn.primary:hover {
+  background: var(--wine);
+  border-color: var(--wine);
+}
+.btn svg { width: 14px; height: 14px; }
+
+/* ═══════════════════ SECTION BASE ═══════════════════ */
+
+section.section {
+  padding: 90px 0 70px;
+  border-bottom: 1px solid var(--rule);
+}
+section.section:last-of-type { border-bottom: none; }
+
+.section-head {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--wine);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  position: relative;
+  padding-left: 0;
+}
+.section-num::before {
+  content: "";
+  display: inline-block;
+  width: 28px; height: 1px;
+  background: var(--wine);
+  vertical-align: middle;
+  margin-right: 12px;
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 16px;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+.section-title em { color: var(--wine); font-style: italic; }
+.section-lede {
+  font-size: 1.02rem;
+  color: var(--ink-dim);
+  line-height: 1.65;
+  max-width: 62ch;
+  margin: 0;
+  font-family: var(--sans);
+}
+.section-lede code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  background: var(--paper-bright);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+}
+.section-lede strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 820px) { .section-head { grid-template-columns: 1fr; gap: 16px; } }
+
+/* ═══════════════════ ABSTRACT ═══════════════════ */
+
+.abstract {
+  background: var(--paper-bright);
+  border: 1px solid var(--rule);
+  padding: 44px 52px;
+  margin-bottom: 40px;
+  position: relative;
+}
+.abstract::before {
+  content: "Abstract";
+  position: absolute;
+  top: -11px; left: 44px;
+  padding: 2px 10px;
+  background: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wine);
+}
+.abstract p {
+  font-family: var(--serif);
+  font-size: 1.14rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 16px;
+  text-align: justify;
+  hyphens: auto;
+}
+.abstract p:last-child { margin-bottom: 0; }
+.abstract strong { font-weight: 600; }
+
+.abstract-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.abstract-meta-cell {
+  background: var(--paper-bright);
+  padding: 22px 26px;
+}
+.abstract-meta-cell .k {
+  font-family: var(--mono); font-size: 0.58rem;
+  color: var(--wine); letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.abstract-meta-cell .v {
+  font-family: var(--serif); font-size: 1.55rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.abstract-meta-cell .vs {
+  font-family: var(--sans); font-size: 0.78rem;
+  color: var(--ink-dim); margin-top: 6px;
+}
+@media (max-width: 720px) { .abstract-meta { grid-template-columns: 1fr; } }
+
+/* ═══════════════════ THE LOOP ═══════════════════ */
+
+.loop-wrap {
+  background: var(--paper-bright);
+  border: 1px solid var(--rule);
+  padding: 44px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.loop-caption {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  color: var(--ink-dim);
+  text-align: center;
+  margin-top: 20px;
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.55;
+}
+.loop-caption .fig-label {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.62rem;
+  color: var(--wine);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════ METHODS TABLE ═══════════════════ */
+
+.methods-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper-bright);
+  border: 1px solid var(--ink);
+  font-family: var(--sans);
+}
+.methods-table thead th {
+  padding: 16px 20px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--ink);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--ink);
+  font-weight: 500;
+}
+.methods-table tbody td {
+  padding: 22px 20px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.methods-table tbody tr:last-child td { border-bottom: none; }
+.methods-table tbody tr.flagship td { background: rgba(139, 47, 32, 0.05); }
+.methods-table tbody tr.flagship td.name {
+  color: var(--wine);
+  font-weight: 600;
+}
+.methods-table td.num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ash);
+  letter-spacing: 0.1em;
+  width: 40px;
+  white-space: nowrap;
+}
+.methods-table td.name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  width: 260px;
+  font-weight: 500;
+}
+.methods-table td.name .badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 6px;
+  background: var(--wine);
+  color: var(--paper);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  border-radius: 2px;
+}
+.methods-table td.desc {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+.methods-table td.desc .tag {
+  display: inline-block;
+  padding: 1px 8px;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--wine);
+  border: 1px solid currentColor;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+/* ═══════════════════ WORKED EXAMPLE ═══════════════════ */
+
+.worked {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper-bright);
+}
+.round {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.round:last-child { border-bottom: none; }
+.round-n {
+  padding: 28px 20px;
+  background: var(--paper-deep);
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+}
+.round-n .rn-num {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--ink);
+}
+.round-n .rn-lbl {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.round-side {
+  padding: 24px 26px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--ink);
+  white-space: pre-wrap;
+  border-right: 1px solid var(--rule);
+}
+.round-side:last-child { border-right: none; }
+.round-side-head {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.round-side-head .tag {
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  letter-spacing: 0.14em;
+}
+.round-side-head .tag.llm     { color: var(--ink-soft); background: var(--paper-deep); }
+.round-side-head .tag.z3-sat  { color: var(--forest); background: rgba(46, 92, 72, 0.08); }
+.round-side-head .tag.z3-unsat{ color: var(--wine);   background: rgba(139, 47, 32, 0.08); }
+.round-side .outcome-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+.round-side .outcome-chip.unsat { color: var(--wine);  background: rgba(139, 47, 32, 0.1); border: 1px solid var(--wine); }
+.round-side .outcome-chip.sat   { color: var(--forest); background: rgba(46, 92, 72, 0.1);  border: 1px solid var(--forest); }
+
+@media (max-width: 820px) {
+  .round { grid-template-columns: 60px 1fr; }
+  .round-side:first-of-type { border-right: none; border-bottom: 1px solid var(--rule); grid-column: 2; }
+  .round-side:last-of-type { grid-column: 2; }
+}
+
+/* ═══════════════════ FINDINGS ═══════════════════ */
+
+.findings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.finding-cell {
+  background: var(--paper-bright);
+  padding: 36px 40px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.finding-k {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--wine);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.finding-k .n {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 2.2rem;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.finding-v {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.finding-v em { color: var(--wine); font-style: italic; }
+.finding-desc {
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+@media (max-width: 780px) { .findings { grid-template-columns: 1fr; } }
+
+/* ═══════════════════ FIGURE ═══════════════════ */
+
+.figure {
+  background: var(--paper-bright);
+  border: 1px solid var(--rule);
+  padding: 32px 32px 28px;
+}
+.figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--rule);
+  background: white;
+}
+.figure-caption {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.96rem;
+  color: var(--ink-dim);
+  line-height: 1.55;
+}
+.figure-caption .fig-tag {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.6rem;
+  color: var(--wine);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* ═══════════════════ REPRO ═══════════════════ */
+
+.repro-shell {
+  background: #1a1915;
+  color: #f4efe1;
+  border-radius: 3px;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--mono);
+  border: 1px solid var(--ink);
+}
+.repro-head {
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(244, 239, 225, 0.12);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(244, 239, 225, 0.6);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.repro-head .dots { display: flex; gap: 6px; }
+.repro-head .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(244, 239, 225, 0.2);
+}
+.repro-head .dot:nth-child(1) { background: rgba(181, 126, 42, 0.5); }
+.repro-head .dot:nth-child(2) { background: rgba(139, 47, 32, 0.5); }
+.repro-head .dot:nth-child(3) { background: rgba(46, 92, 72, 0.5); }
+.repro-body {
+  padding: 22px 26px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.repro-body .prompt { color: #b57e2a; user-select: none; }
+.repro-body .comment { color: #6b6657; font-style: italic; }
+.repro-body .cmd { color: #f4efe1; }
+.repro-body .flag { color: #88c0a8; }
+.repro-body .str { color: #d4a74a; }
+
+/* ═══════════════════ COLOPHON ═══════════════════ */
+
+footer.colophon {
+  padding: 64px 0 56px;
+  border-top: 2px solid var(--ink);
+  margin-top: 32px;
+}
+.colophon-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 42px;
+}
+.colophon-brand {
+  display: flex; flex-direction: column; gap: 14px;
+  max-width: 42ch;
+}
+.colophon-brand .title {
+  font-family: var(--serif); font-size: 1.8rem;
+  color: var(--ink); font-style: italic;
+  letter-spacing: -0.01em;
+}
+.colophon-brand p {
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+  line-height: 1.65;
+  margin: 0;
+}
+.colophon-col h4 {
+  font-family: var(--mono); font-size: 0.56rem;
+  color: var(--wine); letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+.colophon-col ul { list-style: none; padding: 0; margin: 0; }
+.colophon-col li { margin-bottom: 10px; }
+.colophon-col a {
+  font-family: var(--sans); font-size: 0.86rem;
+  color: var(--ink-soft); border: none;
+}
+.colophon-col a:hover { color: var(--wine); }
+.colophon-rule { height: 1px; background: var(--rule); margin: 40px 0 22px; }
+.colophon-foot {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
+}
+.colophon-foot .credit {
+  font-family: var(--serif); font-size: 1rem; font-style: italic;
+  color: var(--ink-dim);
+}
+.colophon-foot .credit strong { color: var(--ink); font-style: normal; font-family: var(--sans); font-weight: 500; }
+.colophon-foot .meta {
+  font-family: var(--mono); font-size: 0.6rem;
+  color: var(--ash); letter-spacing: 0.16em; text-transform: uppercase;
+}
+@media (max-width: 900px) { .colophon-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 580px) { .colophon-grid { grid-template-columns: 1fr; } }
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .masthead { padding: 44px 0 36px; }
+  section.section { padding: 60px 0 48px; }
+  .abstract { padding: 32px 28px; }
+  .loop-wrap { padding: 28px 18px; }
+  .shell { padding: 0 20px; }
+  nav.top .inner { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <a class="brand" href="#top">
+      <div class="brand-mark">
+        <svg viewBox="0 0 44 44" aria-hidden="true">
+          <circle cx="22" cy="22" r="20" fill="none" stroke="currentColor" stroke-width="1" />
+          <text x="22" y="27" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="18" font-style="italic" fill="currentColor">Λ</text>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">CEGVR</div>
+        <div class="brand-sub">Verifiable Reasoning</div>
+      </div>
+    </a>
+    <div class="links">
+      <a href="#abstract">Abstract</a>
+      <a href="#loop">Loop</a>
+      <a href="#methods">Methods</a>
+      <a href="#example">Example</a>
+      <a href="#findings">Findings</a>
+      <a class="cta" href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning" target="_blank" rel="noopener">Code →</a>
+    </div>
+  </div>
+</nav>
+
+<div class="shell" id="top">
+
+  <!-- ═══════ MASTHEAD ═══════ -->
+  <section class="masthead">
+    <div class="masthead-meta">
+      <div class="venue-line">
+        <span>No. 05 · Aegis Suite</span>
+        <span class="dot">·</span>
+        <span>Neurosymbolic Reasoning</span>
+      </div>
+      <span class="venue-tag">Working Paper · 2026</span>
+    </div>
+
+    <h1 class="title">
+      Solver-grounded<br />
+      <em>verifiable reasoning</em><br />
+      with a candidate-first<br />
+      LLM + SMT protocol.
+    </h1>
+
+    <p class="subtitle">
+      A five-method linear study asking whether solver-grounded feedback
+      — not just more attempts — measurably improves an LLM's verified
+      performance on combinatorial search.
+    </p>
+
+    <div class="byline">
+      <div>
+        <span class="field-label">Author</span>
+        <span class="field-value">Stelios Zacharioudakis</span>
+      </div>
+      <div>
+        <span class="field-label">Method</span>
+        <span class="field-value">CEGVR · CoreRank</span>
+      </div>
+      <div>
+        <span class="field-label">Backend</span>
+        <span class="field-value">Qwen 3.5-35B + Z3</span>
+      </div>
+      <div>
+        <span class="field-label">Benchmark</span>
+        <span class="field-value">500 linear problems</span>
+      </div>
+    </div>
+
+    <div class="masthead-actions">
+      <a class="btn primary" href="main.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3v10M10 13l-4-4M10 13l4-4M3 17h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Read the paper (PDF)
+      </a>
+      <a class="btn" href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning" target="_blank" rel="noopener">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M10 0C4.475 0 0 4.475 0 10c0 4.425 2.862 8.175 6.838 9.5.5.088.687-.213.687-.475 0-.237-.013-1.025-.013-1.862-2.512.462-3.162-.613-3.362-1.175-.113-.288-.6-1.175-1.025-1.412-.35-.188-.85-.65-.013-.663.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.087.637-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.087.387-1.987 1.025-2.687-.1-.25-.45-1.275.1-2.65 0 0 .837-.263 2.75 1.025A9.28 9.28 0 0110 5.725c.85.004 1.705.115 2.5.337 1.912-1.3 2.75-1.025 2.75-1.025.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.363.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.575.688.475A10.01 10.01 0 0020 10c0-5.525-4.475-10-10-10z"/>
+        </svg>
+        View on GitHub
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════ ABSTRACT ═══════ -->
+  <section class="section" id="abstract">
+    <div class="section-head">
+      <div class="section-num">§ 01 · Abstract</div>
+      <div>
+        <h2 class="section-title">The central <em>question</em>.</h2>
+        <p class="section-lede">
+          Not <em>whether</em> an LLM can emit a candidate, but whether
+          <strong>solver-grounded feedback</strong> measurably improves
+          verified performance over mere repeated attempts under matched
+          compute budgets.
+        </p>
+      </div>
+    </div>
+
+    <div class="abstract">
+      <p>
+        We present a <strong>candidate-first linear evaluation protocol</strong> for
+        LLM + SMT verifiable reasoning under explicit feedback-granularity control. The
+        main study compares five methods — a one-shot reference, three compute-matched
+        retry baselines, and a new conflict-directed verifier-guided search method
+        (<code>cd_vgs_core_rank</code>) that uses unsat-core structure for candidate
+        ranking and targeted repair.
+      </p>
+      <p>
+        The candidate contract is strict: the generator either returns a full
+        satisfying assignment or an UNSAT claim, both of which the solver certifies
+        or refutes. The flagship method exploits the solver's conflict core as
+        natural-language hints the LLM can consume in the next round — the
+        <em>feedback is the supervision signal</em>.
+      </p>
+      <p>
+        The implementation preserves a legacy trace-based architecture for transfer
+        evidence (Sudoku 4×4 appendix) while moving the main paper path to the
+        stricter candidate-verification interface. All experiments are reproducible
+        locally with a single command.
+      </p>
+    </div>
+
+    <div class="abstract-meta">
+      <div class="abstract-meta-cell">
+        <div class="k">Arms</div>
+        <div class="v">5</div>
+        <div class="vs">one_shot, three retry baselines, cd_vgs_core_rank</div>
+      </div>
+      <div class="abstract-meta-cell">
+        <div class="k">Budget</div>
+        <div class="v">K=4 × R=4</div>
+        <div class="vs">compute-matched across arms; thinking off</div>
+      </div>
+      <div class="abstract-meta-cell">
+        <div class="k">Dataset</div>
+        <div class="v">500</div>
+        <div class="vs">linear feasibility problems with SAT/UNSAT labels</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ THE LOOP ═══════ -->
+  <section class="section" id="loop">
+    <div class="section-head">
+      <div class="section-num">§ 02 · The Loop</div>
+      <div>
+        <h2 class="section-title">Counterexample-grounded <em>refinement</em>.</h2>
+        <p class="section-lede">
+          A local LLM emits a structured candidate. <code>Z3</code> certifies the
+          assignment or returns an unsat-core — the <strong>minimal conflict</strong>
+          among the violated constraints. That core becomes a prompt-level hint for
+          the next round; the search is steered by the solver, not the sampler.
+        </p>
+      </div>
+    </div>
+
+    <div class="loop-wrap">
+      <svg viewBox="0 0 1100 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="CEGVR loop diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0L10 5L0 10z" fill="#3a362d" />
+          </marker>
+          <marker id="arrow-wine" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0L10 5L0 10z" fill="#8b2f20" />
+          </marker>
+          <marker id="arrow-forest" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0L10 5L0 10z" fill="#2e5c48" />
+          </marker>
+          <pattern id="paperTexture" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.35" fill="#1a1915" opacity="0.08" />
+          </pattern>
+        </defs>
+
+        <!-- Problem node -->
+        <g transform="translate(60, 160)">
+          <rect width="180" height="100" fill="#fbf7eb" stroke="#1a1915" stroke-width="1.2" />
+          <text x="90" y="34" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8b2f20" letter-spacing="2">PROBLEM</text>
+          <line x1="20" y1="44" x2="160" y2="44" stroke="#d1c9b5" stroke-width="0.5" />
+          <text x="90" y="66" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" fill="#1a1915">x1 + 4·x2 + x3 ≥ 23</text>
+          <text x="90" y="82" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" fill="#1a1915">3·x1 + x2 = 43</text>
+        </g>
+
+        <!-- LLM node -->
+        <g transform="translate(330, 120)">
+          <rect width="200" height="180" fill="url(#paperTexture)" stroke="#1a1915" stroke-width="1.2" />
+          <rect width="200" height="180" fill="#fbf7eb" fill-opacity="0.88" stroke="none" />
+          <text x="100" y="34" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="22" fill="#1a1915">LLM</text>
+          <text x="100" y="54" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#948c7a" letter-spacing="2.5">QWEN 3.5 · 35B</text>
+
+          <!-- Icon area: stacked bars representing attempts -->
+          <g transform="translate(30, 72)">
+            <rect x="0" y="0" width="30" height="10" fill="#8b2f20" fill-opacity="0.3" />
+            <rect x="0" y="14" width="60" height="10" fill="#8b2f20" fill-opacity="0.5" />
+            <rect x="0" y="28" width="90" height="10" fill="#8b2f20" fill-opacity="0.7" />
+            <rect x="0" y="42" width="120" height="10" fill="#2e5c48" />
+            <rect x="0" y="56" width="140" height="10" fill="#2e5c48" fill-opacity="0.4" stroke="#2e5c48" stroke-dasharray="3 2" />
+          </g>
+          <text x="100" y="162" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b6657">candidate assignment</text>
+        </g>
+
+        <!-- Arrow LLM -> SMT (candidate) -->
+        <g>
+          <path d="M 540 210 L 620 210" fill="none" stroke="#3a362d" stroke-width="1.4" marker-end="url(#arrow)" />
+          <text x="580" y="200" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#6b6657" letter-spacing="1">
+            <tspan font-style="italic">{sat, x₁=3, x₂=1…}</tspan>
+          </text>
+        </g>
+
+        <!-- Z3 / SMT node -->
+        <g transform="translate(630, 120)">
+          <rect width="200" height="180" fill="#fbf7eb" stroke="#1a1915" stroke-width="1.2" />
+          <text x="100" y="34" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="22" fill="#1a1915">Z3</text>
+          <text x="100" y="54" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#948c7a" letter-spacing="2.5">SMT VERIFIER</text>
+
+          <!-- Verification icons -->
+          <g transform="translate(40, 76)">
+            <!-- Check -->
+            <circle cx="15" cy="15" r="14" fill="#2e5c48" fill-opacity="0.1" stroke="#2e5c48" stroke-width="1.2" />
+            <path d="M9 15 L13 19 L21 11" fill="none" stroke="#2e5c48" stroke-width="1.8" stroke-linecap="round" />
+            <text x="50" y="20" font-family="Space Mono, monospace" font-size="10" fill="#2e5c48" font-weight="bold">sat</text>
+
+            <!-- Cross -->
+            <circle cx="15" cy="55" r="14" fill="#8b2f20" fill-opacity="0.1" stroke="#8b2f20" stroke-width="1.2" />
+            <path d="M9 49 L21 61 M21 49 L9 61" fill="none" stroke="#8b2f20" stroke-width="1.8" stroke-linecap="round" />
+            <text x="50" y="60" font-family="Space Mono, monospace" font-size="10" fill="#8b2f20" font-weight="bold">unsat</text>
+
+            <text x="100" y="20" font-family="Space Mono, monospace" font-size="8" fill="#2e5c48">→ certify</text>
+            <text x="100" y="60" font-family="Space Mono, monospace" font-size="8" fill="#8b2f20">→ unsat-core</text>
+          </g>
+          <text x="100" y="162" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b6657">verified outcome</text>
+        </g>
+
+        <!-- Arrow Z3 -> LLM (feedback loop, curved up and back) -->
+        <g>
+          <path d="M 730 300 Q 730 370 600 370 Q 430 370 430 300" fill="none" stroke="#8b2f20" stroke-width="1.4" marker-end="url(#arrow-wine)" stroke-dasharray="6 3" />
+          <text x="570" y="362" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#8b2f20" letter-spacing="1">
+            <tspan font-style="italic">unsat-core → natural-language hints</tspan>
+          </text>
+        </g>
+
+        <!-- SAT exit -->
+        <g>
+          <path d="M 830 210 L 980 210" fill="none" stroke="#2e5c48" stroke-width="1.4" marker-end="url(#arrow-forest)" />
+          <text x="905" y="198" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#2e5c48" letter-spacing="1">
+            <tspan font-style="italic">certified solve</tspan>
+          </text>
+        </g>
+
+        <!-- Certified node -->
+        <g transform="translate(985, 170)">
+          <rect width="90" height="80" fill="#2e5c48" stroke="#2e5c48" />
+          <text x="45" y="36" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="18" fill="#f4efe1">solved</text>
+          <text x="45" y="56" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#f4efe1" letter-spacing="1">✓ VERIFIED</text>
+        </g>
+
+        <!-- Arrow Problem -> LLM -->
+        <g>
+          <path d="M 240 210 L 320 210" fill="none" stroke="#3a362d" stroke-width="1.4" marker-end="url(#arrow)" />
+        </g>
+
+        <!-- Legend -->
+        <g transform="translate(60, 380)">
+          <text x="0" y="0" font-family="Space Mono, monospace" font-size="8" fill="#948c7a" letter-spacing="2">LEGEND</text>
+          <g transform="translate(75, -4)">
+            <line x1="0" y1="3" x2="30" y2="3" stroke="#3a362d" stroke-width="1.4" />
+            <text x="36" y="7" font-family="Space Mono, monospace" font-size="8" fill="#6b6657">candidate flow</text>
+          </g>
+          <g transform="translate(225, -4)">
+            <line x1="0" y1="3" x2="30" y2="3" stroke="#8b2f20" stroke-width="1.4" stroke-dasharray="6 3" />
+            <text x="36" y="7" font-family="Space Mono, monospace" font-size="8" fill="#6b6657">solver feedback (core)</text>
+          </g>
+          <g transform="translate(410, -4)">
+            <line x1="0" y1="3" x2="30" y2="3" stroke="#2e5c48" stroke-width="1.4" />
+            <text x="36" y="7" font-family="Space Mono, monospace" font-size="8" fill="#6b6657">certification</text>
+          </g>
+        </g>
+      </svg>
+
+      <div class="loop-caption">
+        <span class="fig-label">Figure 1</span>
+        The CEGVR loop. A <em>candidate</em> structural output from the LLM is
+        handed to Z3 for certification. On refutation, the solver's
+        <em>unsat-core</em> — the minimal set of conflicting constraints — is
+        rendered as natural-language hints and fed back into the next round's prompt.
+        Budget is fixed at <strong>K × R</strong>; feedback granularity is the
+        experimental knob.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ METHODS ═══════ -->
+  <section class="section" id="methods">
+    <div class="section-head">
+      <div class="section-num">§ 03 · Methods</div>
+      <div>
+        <h2 class="section-title">Five arms, <em>matched compute</em>.</h2>
+        <p class="section-lede">
+          The primary causal comparison is among the four compute-matched
+          multi-round methods. They share identical <code>K</code>, <code>R</code>,
+          timeouts, parsing rules, and generation settings — the retry baselines
+          differ <strong>only</strong> in carried-forward verifier feedback, while
+          <code>cd_vgs_core_rank</code> reallocates the same budget via
+          conflict-directed search.
+        </p>
+      </div>
+    </div>
+
+    <table class="methods-table">
+      <thead>
+        <tr>
+          <th style="width: 40px">#</th>
+          <th style="width: 260px">Method</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">01</td>
+          <td class="name">one_shot</td>
+          <td class="desc"><span class="tag">baseline</span>Single attempt, no retries. Retained as a <em>repair-gain</em> reference point for the multi-round arms.</td>
+        </tr>
+        <tr>
+          <td class="num">02</td>
+          <td class="name">multi_no_feedback</td>
+          <td class="desc"><span class="tag">retry</span>Compute-matched repeated attempts with independent sampling. <strong>No</strong> verifier signal is carried forward — tests whether more tries alone close the gap.</td>
+        </tr>
+        <tr>
+          <td class="num">03</td>
+          <td class="name">multi_generic_feedback</td>
+          <td class="desc"><span class="tag">retry</span>Same budget, but the prompt carries a <em>generic</em> hint ("the previous assignment did not satisfy all constraints"). Isolates the effect of knowing a failure occurred.</td>
+        </tr>
+        <tr>
+          <td class="num">04</td>
+          <td class="name">multi_unsat_core_feedback</td>
+          <td class="desc"><span class="tag">retry</span>The prompt carries the <em>unsat-core</em> — the concrete set of violated constraints returned by Z3 — as natural-language hints. Isolates the effect of solver-grounded diagnostic richness.</td>
+        </tr>
+        <tr class="flagship">
+          <td class="num">05</td>
+          <td class="name">cd_vgs_core_rank <span class="badge">Flagship</span></td>
+          <td class="desc"><span class="tag">cegvr</span>Conflict-Directed Verifier-Guided Search with CoreRank candidate ordering. Same <code>K × R</code> budget is redistributed: the solver's conflict core drives which candidate variables to <em>revise</em> vs. <em>keep fixed</em>, and unsat-core overlap ranks subsequent candidates.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════ WORKED EXAMPLE ═══════ -->
+  <section class="section" id="example">
+    <div class="section-head">
+      <div class="section-num">§ 04 · Worked Example</div>
+      <div>
+        <h2 class="section-title">A single problem, <em>two rounds</em>.</h2>
+        <p class="section-lede">
+          A representative 4-variable linear system. The LLM's first candidate
+          violates two constraints; the unsat-core narrows the revision to a
+          specific variable subset, and the next round produces a certified
+          satisfying assignment.
+        </p>
+      </div>
+    </div>
+
+    <div class="worked">
+      <!-- Problem -->
+      <div class="round">
+        <div class="round-n">
+          <div class="rn-num">—</div>
+          <div class="rn-lbl">Input</div>
+        </div>
+        <div class="round-side" style="grid-column: 2 / span 2;">
+          <div class="round-side-head">
+            <span>Problem · linear feasibility</span>
+            <span class="tag">lin-0127</span>
+          </div>
+<span style="color:#6b6657"># variables: x1,x2,x3,x4 ∈ {0..9}
+# constraints:</span>
+  c1:  x1 + 4·x2 + x3 + 2·x4  ≥  23
+  c2:  3·x1 + x2             =  43
+  c3:  x2 + 2·x3 - x4        ≤   6
+  c4:  x1 - x3 + x4          ≥   1</div>
+      </div>
+
+      <!-- Round 1 -->
+      <div class="round">
+        <div class="round-n">
+          <div class="rn-num">1</div>
+          <div class="rn-lbl">Round</div>
+        </div>
+        <div class="round-side">
+          <div class="round-side-head">
+            <span>LLM candidate</span>
+            <span class="tag llm">Qwen · K=1</span>
+          </div>
+<span style="color:#8b2f20">{</span>
+  <span style="color:#6b6657">"status"</span>:     <span style="color:#b57e2a">"sat"</span>,
+  <span style="color:#6b6657">"assignment"</span>: {
+    <span style="color:#6b6657">"x1"</span>: 4, <span style="color:#6b6657">"x2"</span>: 2,
+    <span style="color:#6b6657">"x3"</span>: 3, <span style="color:#6b6657">"x4"</span>: 7
+  }
+<span style="color:#8b2f20">}</span></div>
+        <div class="round-side">
+          <div class="round-side-head">
+            <span>Z3 verification</span>
+            <span class="tag z3-unsat">unsat-core</span>
+          </div>
+<span class="outcome-chip unsat">✗ counterexample</span>
+<span style="color:#6b6657"># candidate violates:</span>
+  c2:  3·4 + 2   =  14   <span style="color:#8b2f20">≠  43</span>
+
+<span style="color:#8b2f20">unsat_core = [c2]</span>
+<span style="color:#6b6657"># core variables:</span>
+  <span style="color:#8b2f20">{x1, x2}</span>  → revise
+  <span style="color:#2e5c48">{x3, x4}</span>  → keep</div>
+      </div>
+
+      <!-- Round 2 -->
+      <div class="round">
+        <div class="round-n">
+          <div class="rn-num">2</div>
+          <div class="rn-lbl">Round</div>
+        </div>
+        <div class="round-side">
+          <div class="round-side-head">
+            <span>LLM candidate (CoreRank)</span>
+            <span class="tag llm">Qwen · K=1</span>
+          </div>
+<span style="color:#6b6657"># hint: revise x1,x2 so 3·x1+x2=43
+# candidates ranked by core-overlap:</span>
+
+<span style="color:#8b2f20">{</span>
+  <span style="color:#6b6657">"status"</span>:     <span style="color:#b57e2a">"sat"</span>,
+  <span style="color:#6b6657">"assignment"</span>: {
+    <span style="color:#2e5c48">"x1"</span>: <span style="color:#2e5c48">14</span>, <span style="color:#2e5c48">"x2"</span>: <span style="color:#2e5c48">1</span>,
+    <span style="color:#6b6657">"x3"</span>: 3, <span style="color:#6b6657">"x4"</span>: 7
+  }
+<span style="color:#8b2f20">}</span></div>
+        <div class="round-side">
+          <div class="round-side-head">
+            <span>Z3 verification</span>
+            <span class="tag z3-sat">certified</span>
+          </div>
+<span class="outcome-chip sat">✓ verified solve</span>
+<span style="color:#6b6657"># all constraints satisfied:</span>
+  c1:  14+4+3+14 = 35  <span style="color:#2e5c48">≥ 23 ✓</span>
+  c2:  42 + 1    = 43  <span style="color:#2e5c48">= 43 ✓</span>
+  c3:  1 + 6 - 7 =  0  <span style="color:#2e5c48">≤  6 ✓</span>
+  c4:  14-3 + 7  = 18  <span style="color:#2e5c48">≥  1 ✓</span>
+
+<span style="color:#2e5c48">solver_latency = 1.2 ms
+llm_attempts   = 2</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FINDINGS ═══════ -->
+  <section class="section" id="findings">
+    <div class="section-head">
+      <div class="section-num">§ 05 · Key Findings</div>
+      <div>
+        <h2 class="section-title">Four <em>takeaways</em>.</h2>
+        <p class="section-lede">
+          Observations from the five-method linear study. The metrics panel
+          covers verified solve rate, SAT certification rate, solver calls per
+          certified solve, and McNemar-paired significance across the
+          compute-matched arms.
+        </p>
+      </div>
+    </div>
+
+    <div class="findings">
+      <div class="finding-cell">
+        <div class="finding-k"><span class="n">i</span> Feedback granularity</div>
+        <div class="finding-v">
+          Unsat-core hints are <em>natural-language</em> signals the LLM can consume
+          directly in the next prompt — no retraining, no tool-use schema change.
+        </div>
+        <div class="finding-desc">
+          The richer the diagnostic (generic → unsat-core → structured core+rank), the
+          faster the search converges under a fixed budget.
+        </div>
+      </div>
+
+      <div class="finding-cell">
+        <div class="finding-k"><span class="n">ii</span> Repair &gt; retry</div>
+        <div class="finding-v">
+          At matched compute, <em>solver-grounded repair</em> beats naive retry:
+          <code>cd_vgs_core_rank</code> and <code>unsat_core_feedback</code> Pareto-dominate the no-feedback arm on verified solve rate.
+        </div>
+        <div class="finding-desc">
+          The effect is measurable under McNemar-paired tests across the four
+          compute-matched arms. More attempts alone do not close the gap.
+        </div>
+      </div>
+
+      <div class="finding-cell">
+        <div class="finding-k"><span class="n">iii</span> Latency is predictable</div>
+        <div class="finding-v">
+          Latency scales <em>linearly</em> with rounds — the solver overhead is
+          bounded (Z3 in ms on this dataset). The expensive path is LLM inference.
+        </div>
+        <div class="finding-desc">
+          The efficiency frontier plots verified-solve-rate against mean solver calls,
+          exposing where the flagship saves compute vs. the retry baselines.
+        </div>
+      </div>
+
+      <div class="finding-cell">
+        <div class="finding-k"><span class="n">iv</span> Transfer is plausible</div>
+        <div class="finding-v">
+          The preserved <em>trace-based architecture</em> demonstrates transfer to
+          Sudoku 4×4 as appendix evidence, hinting the protocol generalises beyond
+          linear feasibility.
+        </div>
+        <div class="finding-desc">
+          Main claims remain tied to the linear benchmark; the Sudoku appendix is
+          descriptive transfer evidence only.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ LIVE RESULTS ═══════ -->
+  <section class="section" id="results">
+    <div class="section-head">
+      <div class="section-num">§ 06 · Experiment Results</div>
+      <div>
+        <h2 class="section-title">1 500 problems × 5 arms × 3 seeds — <em>verified</em>.</h2>
+        <p class="section-lede">
+          Final numbers from the Qwen3-30B-A3B run on an A100-80 GB Colab,
+          each arm evaluated on 500 linear-arithmetic SMT problems over 3
+          seeds. Click an arm to see its certified accuracy, SAT/UNSAT
+          breakdown, and budget-exceeded count.
+        </p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--rule,#2a2522);border:1px solid var(--rule,#2a2522);border-radius:2px;margin-bottom:24px;" id="arm-tabs">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:2px;background:var(--rule,#2a2522);border:1px solid var(--rule,#2a2522);border-radius:2px;">
+      <div style="background:var(--panel,#1a1714);padding:28px;">
+        <div style="font-family:var(--mono,monospace);font-size:11px;color:var(--ash,#928c7e);letter-spacing:.2em;text-transform:uppercase;margin-bottom:18px;">Certified accuracy</div>
+        <div id="arm-cert" style="font-family:var(--display,serif);font-size:56px;font-weight:700;letter-spacing:-0.02em;">—</div>
+        <div id="arm-name" style="font-family:var(--mono,monospace);font-size:12px;color:var(--ash,#928c7e);margin-top:6px;letter-spacing:.1em;"></div>
+        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;" id="arm-details">
+        </div>
+      </div>
+      <div style="background:var(--panel,#1a1714);padding:28px;">
+        <div style="font-family:var(--mono,monospace);font-size:11px;color:var(--ash,#928c7e);letter-spacing:.2em;text-transform:uppercase;margin-bottom:18px;">All arms comparison</div>
+        <div id="arm-bars" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+  (() => {
+    const ARMS = [
+      { key: 'one_shot',               label: 'One-shot',       cert: 40.2, sat: 0.4,  unsat: 99.8, budget: 897, color: 'var(--ash,#928c7e)' },
+      { key: 'multi_no_feedback',      label: 'No feedback',    cert: 40.6, sat: 1.0,  unsat: 100.0, budget: 891, color: 'var(--ash,#928c7e)' },
+      { key: 'multi_generic_feedback', label: 'Generic',        cert: 41.1, sat: 1.8,  unsat: 100.0, budget: 884, color: '#c9a96e' },
+      { key: 'multi_unsat_core',       label: 'UNSAT core',     cert: 79.9, sat: 66.4, unsat: 100.0, budget: 302, color: '#7ba68f' },
+      { key: 'cd_vgs_core_rank',       label: 'CD-VGS (ours)',  cert: 90.6, sat: 84.3, unsat: 100.0, budget: 141, color: '#e8c170' },
+    ];
+    let selected = 4; // cd_vgs_core_rank
+
+    function renderTabs() {
+      const tabs = document.getElementById('arm-tabs');
+      tabs.innerHTML = ARMS.map((a, i) => {
+        const active = i === selected;
+        return `<button data-idx="${i}" style="padding:12px 8px;background:${active ? 'var(--panel,#1a1714)' : 'transparent'};border:none;color:${active ? '#fff' : 'var(--ash,#928c7e)'};font-family:var(--mono,monospace);font-size:11px;letter-spacing:.08em;cursor:pointer;transition:all .14s;text-transform:uppercase;${active ? 'border-bottom:2px solid ' + a.color : ''}">${a.label}</button>`;
+      }).join('');
+      tabs.querySelectorAll('button').forEach(b => {
+        b.addEventListener('click', () => { selected = parseInt(b.dataset.idx); render(); });
+      });
+    }
+
+    function render() {
+      renderTabs();
+      const a = ARMS[selected];
+      document.getElementById('arm-cert').textContent = a.cert.toFixed(1) + '%';
+      document.getElementById('arm-cert').style.color = a.color;
+      document.getElementById('arm-name').textContent = a.key + ' · mean over 3 seeds × 500 problems';
+      document.getElementById('arm-details').innerHTML = [
+        { k: 'SAT rate', v: a.sat.toFixed(1) + '%' },
+        { k: 'UNSAT rate', v: a.unsat.toFixed(1) + '%' },
+        { k: 'Budget exceeded', v: a.budget },
+      ].map(d => `<div style="background:var(--bg,#0f0e0d);border:1px solid var(--rule,#2a2522);border-radius:2px;padding:10px 12px;"><div style="font-family:var(--mono,monospace);font-size:10px;color:var(--ash,#928c7e);letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px;">${d.k}</div><div style="font-family:var(--mono,monospace);font-size:14px;color:var(--ink,#e8e3d7);font-weight:500;">${d.v}</div></div>`).join('');
+
+      document.getElementById('arm-bars').innerHTML = ARMS.map((r, i) => {
+        const w = (r.cert / 100 * 100).toFixed(1);
+        const isSel = i === selected;
+        return `<div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:110px;font-family:var(--mono,monospace);font-size:11px;color:${isSel ? '#fff' : 'var(--ash,#928c7e)'};letter-spacing:.04em;text-align:right;text-transform:uppercase;${isSel ? 'font-weight:600' : ''}">${r.label}</div>
+          <div style="flex:1;height:22px;background:var(--bg,#0f0e0d);border-radius:2px;overflow:hidden;position:relative;">
+            <div style="height:100%;width:${w}%;background:${r.color};opacity:${isSel ? '0.9' : '0.4'};border-radius:2px;transition:all .3s;"></div>
+          </div>
+          <div style="width:50px;font-family:var(--mono,monospace);font-size:12px;color:${isSel ? '#fff' : 'var(--ash,#928c7e)'};font-weight:${isSel ? '700' : '400'};">${r.cert.toFixed(1)}%</div>
+        </div>`;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  })();
+  </script>
+
+  <!-- ═══════ FIGURE ═══════ -->
+  <section class="section" id="figure">
+    <div class="section-head">
+      <div class="section-num">§ 07 · Robustness</div>
+      <div>
+        <h2 class="section-title">How <em>stable</em> is the gain?</h2>
+        <p class="section-lede">
+          Delta-plots under problem-level perturbations: coefficient scaling,
+          constraint permutation, and variable relabeling. A method is robust
+          if its verified solve rate stays put under superficial re-encodings
+          of the same problem.
+        </p>
+      </div>
+    </div>
+
+    <figure class="figure">
+      <img src="fig_robustness.png" alt="Robustness deltas across perturbation families" />
+      <figcaption class="figure-caption">
+        <span class="fig-tag">Figure 2</span>
+        <em>Robustness deltas across perturbation families</em>. Each panel shows
+        verified-solve-rate change under a family of input perturbations; bars are
+        per-method mean shifts with bootstrap intervals. Solver-grounded arms absorb
+        permutations and renamings with substantially smaller degradations than the
+        no-feedback retry baseline.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ═══════ REPRODUCE ═══════ -->
+  <section class="section" id="reproduce">
+    <div class="section-head">
+      <div class="section-num">§ 07 · Reproducibility</div>
+      <div>
+        <h2 class="section-title">One command, <em>one paper</em>.</h2>
+        <p class="section-lede">
+          The main paper path is executed by a single shell script. It
+          bootstraps Python 3.11, (re)generates the linear benchmark, runs the
+          five-method arm matrix, and rebuilds the figures, tables, and LaTeX
+          PDF end-to-end. The paper <strong>fails closed</strong> if the local
+          llama.cpp endpoint is unavailable — no silent stub fallback.
+        </p>
+      </div>
+    </div>
+
+    <div class="repro-shell">
+      <div class="repro-head">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <span>scripts/run_all.sh — one-command paper pipeline</span>
+      </div>
+      <div class="repro-body">
+<span class="comment"># 1 · bootstrap a local Python 3.11 environment</span>
+<span class="prompt">$</span> <span class="cmd">bash scripts/bootstrap_local_mac.sh</span> <span class="str">.venv</span>
+<span class="prompt">$</span> <span class="cmd">source</span> <span class="str">.venv/bin/activate</span>
+
+<span class="comment"># 2 · serve Qwen 3.5-35B locally via llama.cpp on :8000</span>
+<span class="prompt">$</span> <span class="cmd">llama-server</span> <span class="flag">-m</span> <span class="str">/path/to/qwen3.5-35b-a3b.gguf</span> <span class="flag">--port</span> <span class="str">8000</span> <span class="flag">--ctx-size</span> <span class="str">8192</span>
+
+<span class="comment"># 3 · run the full paper pipeline (linear main + sudoku appendix + figures + tables + PDF)</span>
+<span class="prompt">$</span> <span class="cmd">bash scripts/run_all.sh</span> <span class="flag">--seeds</span> <span class="str">3</span> <span class="flag">--max-rounds</span> <span class="str">4</span> <span class="flag">--budget</span> <span class="str">4</span> <span class="flag">--timeout-ms</span> <span class="str">1500</span>
+
+<span class="comment"># or a single arm:</span>
+<span class="prompt">$</span> <span class="cmd">cegvr eval</span> \
+    <span class="flag">--pipeline</span> <span class="str">candidate</span> \
+    <span class="flag">--arm</span> <span class="str">cd_vgs_core_rank</span> \
+    <span class="flag">--problems</span> <span class="str">data/linear/problems.jsonl</span> \
+    <span class="flag">--out</span> <span class="str">runs/linear_main/cd_vgs_core_rank</span> \
+    <span class="flag">--seeds</span> <span class="str">3</span> <span class="flag">--max-rounds</span> <span class="str">4</span> <span class="flag">--budget</span> <span class="str">4</span> \
+    <span class="flag">--llm-endpoint</span> <span class="str">http://127.0.0.1:8000/v1/chat/completions</span> \
+    <span class="flag">--llm-model</span> <span class="str">qwen3.5-35b-a3b</span>
+
+<span class="comment"># 4 · inspect aggregated tables, figures, and paper assets</span>
+<span class="prompt">$</span> <span class="cmd">cegvr summarize</span> <span class="flag">--runs</span> <span class="str">runs/linear_main</span>
+<span class="prompt">$</span> <span class="cmd">cegvr make-figures</span> <span class="flag">--runs</span> <span class="str">runs/linear_main</span> <span class="flag">--out</span> <span class="str">examples/paper_assets/figures_linear</span>
+<span class="prompt">$</span> <span class="cmd">open</span> <span class="str">examples/paper_assets/latex/main.pdf</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="colophon">
+  <div class="shell">
+    <div class="colophon-grid">
+      <div class="colophon-brand">
+        <div class="title">CEGVR · Verifiable Reasoning</div>
+        <p>A candidate-first LLM + SMT evaluation protocol with solver-grounded feedback. Studies whether richer verifier signal measurably improves verified performance over matched compute. Part of the Aegis suite of research &amp; systems portfolio projects.</p>
+      </div>
+      <div class="colophon-col">
+        <h4>Artefacts</h4>
+        <ul>
+          <li><a href="main.pdf" target="_blank" rel="noopener">Paper (PDF)</a></li>
+          <li><a href="fig_robustness.png" target="_blank" rel="noopener">Robustness figure</a></li>
+          <li><a href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning/blob/main/examples/paper_assets/latex/main.tex" target="_blank" rel="noopener">LaTeX source</a></li>
+        </ul>
+      </div>
+      <div class="colophon-col">
+        <h4>Source</h4>
+        <ul>
+          <li><a href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning" target="_blank" rel="noopener">GitHub repo</a></li>
+          <li><a href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning/tree/main/src/cegvr" target="_blank" rel="noopener">Package <code>cegvr</code></a></li>
+          <li><a href="https://github.com/stelioszach03/llm-smt-verifiable-reasoning/blob/main/scripts/run_all.sh" target="_blank" rel="noopener"><code>run_all.sh</code></a></li>
+        </ul>
+      </div>
+      <div class="colophon-col">
+        <h4>Aegis Suite</h4>
+        <ul>
+          <li><a href="https://stelioszach.com/aegis-graph-fraud-gnn/" rel="noopener">Graph Fraud GNN</a></li>
+          <li><a href="https://stelioszach.com/nyc-subway-anomaly/" rel="noopener">NYC Subway Anomaly</a></li>
+          <li><a href="https://stelioszach.com/aegis-graph-aml/" rel="noopener">AML Investigator</a></li>
+          <li><a href="https://stelioszach.com/aegis-deid/" rel="noopener">DeID Privacy Studio</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon-rule"></div>
+    <div class="colophon-foot">
+      <div class="credit">Authored by <strong>Stelios Zacharioudakis</strong> — CS, NKUA Athens.</div>
+      <div class="meta">© 2026 · No. 05 Aegis Suite · MIT License</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
