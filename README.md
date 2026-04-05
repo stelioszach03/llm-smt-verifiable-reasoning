@@ -1,4 +1,20 @@
+<div align="center">
+
+[![CI](https://github.com/stelioszach03/llm-smt-verifiable-reasoning/actions/workflows/ci.yml/badge.svg)](https://github.com/stelioszach03/llm-smt-verifiable-reasoning/actions)
+
 # CEGVR — Counterexample-Grounded Verifiable Reasoning
+
+**LLM + Z3 SMT solver: 90.6% certified accuracy via conflict-directed search — a 50-point lift over one-shot baselines. 7 500 evaluation runs, compiled paper.**
+
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Z3](https://img.shields.io/badge/Z3-SMT%20Solver-8b2f20?style=flat-square)](https://github.com/Z3Prover/z3)
+[![Qwen](https://img.shields.io/badge/Qwen3--30B--A3B-vLLM-7C3AED?style=flat-square)](https://huggingface.co/Qwen)
+[![A100](https://img.shields.io/badge/NVIDIA-A100%2080GB-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://www.nvidia.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square)](LICENSE)
+
+**[Live Results](https://stelioszach.com/llm-smt-verifiable-reasoning/)**  ·  **[Paper PDF](https://stelioszach.com/papers/cegvr-verifiable-reasoning.pdf)**  ·  **[GitHub](https://github.com/stelioszach03/llm-smt-verifiable-reasoning)**
+
+</div>
 
 A candidate-first LLM + SMT protocol for verifiable reasoning under strict
 feedback-granularity control. A local LLM proposes a structured candidate
@@ -9,15 +25,6 @@ for the next round.
 **Central question:** not *whether* an LLM can emit a candidate, but whether
 **solver-grounded feedback** measurably improves verified performance over
 mere repeated attempts under matched compute budgets.
-
-- 📄 Working paper: `examples/paper_assets/latex/main.pdf`
-- 🔬 Live page: <https://stelioszach.com/llm-smt-verifiable-reasoning/>
-- 🧪 Python 3.11 · Z3 · llama.cpp · Qwen 3.5-35B
-- 📦 One-command local paper pipeline
-
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](./pyproject.toml)
-[![Solver](https://img.shields.io/badge/solver-Z3-8b2f20.svg)](https://github.com/Z3Prover/z3)
 
 ---
 
