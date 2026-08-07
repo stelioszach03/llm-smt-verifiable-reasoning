@@ -261,6 +261,32 @@ def data_stats(
     console.print(Syntax(json.dumps(payload, indent=2, sort_keys=True), "json"))
 
 
+def _require_reachable_endpoint(endpoint: str) -> None:
+    """Abort before an LLM run if the chat-completions endpoint is unreachable.
+
+    Without this preflight, connection errors are swallowed per attempt and the
+    run completes with every candidate recorded as a schema failure, i.e. a
+    silent 0 % result that looks like a real measurement.
+    """
+
+    import requests  # type: ignore[import-untyped]
+
+    base = endpoint.split("/v1/", 1)[0]
+    try:
+        requests.get(f"{base}/v1/models", timeout=5)
+    except requests.RequestException:
+        try:
+            requests.post(endpoint, json={}, timeout=5)
+        except requests.RequestException as exc:
+            console.print(
+                f"[bold red]LLM endpoint unreachable:[/bold red] {endpoint}\n"
+                f"{exc}\n"
+                "Start a local OpenAI-compatible server before running the "
+                "candidate pipeline. Refusing to emit an all-zero run."
+            )
+            raise typer.Exit(code=3) from exc
+
+
 @app.command("eval")
 def eval_dataset(
     problems: Path = typer.Option(
@@ -340,6 +366,14 @@ def eval_dataset(
 
     gname = generator_name.lower()
     chosen_pipeline = pipeline.lower()
+    if chosen_pipeline == "candidate" and not gname.startswith("llm"):
+        console.print(
+            "[bold red]The candidate pipeline requires --generator llm.[/bold red] "
+            "The stub generator only implements the trace pipeline."
+        )
+        raise typer.Exit(code=2)
+    if gname.startswith("llm"):
+        _require_reachable_endpoint(llm_endpoint)
     if gname == "llm" and chosen_pipeline == "candidate":
         generator = LLMLinearCandidateGenerator(
             endpoint=llm_endpoint,

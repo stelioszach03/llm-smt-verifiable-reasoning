@@ -24,13 +24,21 @@ htmlcov/
 .vscode/
 *.swp
 *.swo
+# Raw per-problem run logs stay out of git (~18 MB for one full 5-arm sweep).
 /runs/
-/tables/
+
+# Aggregated result tables are small and are the evidence for every number in
+# the README, so CSVs under tables/ are deliberately tracked.
+/tables/**
+!/tables/
+!/tables/**/
+!/tables/**/*.csv
+
 reports/case_studies.md
 examples/paper_assets/figures/
 examples/paper_assets/tables/
 examples/paper_assets/latex/*.pdf
-!examples/paper_assets/latex/main.pdf
+!examples/paper_assets/latex/legacy_2025-10-11_llama3-8b.pdf
 
 # Ensure we never ignore the source package tables module
 !src/cegvr/tables/
@@ -47,3 +55,6 @@ models/
 *.tar.gz
 *.zip
 *.zst
+
+# Hypothesis example database (local test cache)
+.hypothesis/

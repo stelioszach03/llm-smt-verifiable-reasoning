@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/generation/llm_latin5.py
-# hypothesis_version: 6.140.3
-
-[0.2, 512, '.', '=', "Grid ('.' is blank):", 'LLMLatin5Generator', '_', '```', '```json', 'answer', 'assignments', 'assumptions', 'binary', 'choices', 'constant', 'constraints', 'content', 'derive', 'expr', 'grid', 'id', 'issues', 'justification', 'kind', 'last_assignment', 'latin5-llm', 'left', 'linear_ineq', 'llama-3-8b-instruct', 'max_tokens', 'message', 'messages', 'model', 'name', 'note', 'objective', 'op', 'problem_id', 'relation', 'rhs', 'right', 'role', 'scheduling', 'steps', 'system', 'task', 'temperature', 'terms', 'type', 'unsat_core', 'unsat_descriptions', 'user', 'value', 'variable', 'variables']

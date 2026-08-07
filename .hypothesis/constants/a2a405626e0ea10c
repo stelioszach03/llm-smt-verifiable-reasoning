@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/smt/encoder.py
-# hypothesis_version: 6.140.3
-
-['<=', '=', '>=', '_cegvr_context', 'constraint', 'int']

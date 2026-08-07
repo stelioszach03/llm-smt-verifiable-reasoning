@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/grammar/types.py
-# hypothesis_version: 6.140.3
-
-[0.0, 1.0, '!=', '*', '+', '-', '/', '<', '<=', '=', '=>', '>', '>=', 'AndConstraint', 'Answer', 'BinaryExpr', 'BoolAtomConstraint', 'Bounds', 'ConstantExpr', 'Constraint', 'Expression', 'FunctionExpr', 'IntDomainConstraint', 'LinearIneqConstraint', 'LinearTerm', 'NotConstraint', 'Objective', 'OrConstraint', 'Step', 'Trace', 'UnaryExpr', 'Variable', 'VariableExpr', 'after', 'all_different', 'and', 'assume', 'binary', 'bool', 'bool_atom', 'case', 'constant', 'constraints', 'derive', 'function', 'int', 'int_domain', 'kind', 'linear_ineq', 'math', 'maximize', 'minimize', 'not', 'or', 'planning', 'scheduling', 'terms', 'type', 'unary', 'value', 'variable', 'variables']

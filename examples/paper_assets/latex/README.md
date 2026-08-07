@@ -1,4 +1,16 @@
-# Paper Asset LaTeX Pack
+# Write-up LaTeX Pack
+
+> **`legacy_2025-10-11_llama3-8b.pdf` is a stale build and does not describe the
+> current study.** It was compiled on 2025-10-11 from an earlier version of
+> `main.tex` that ran a local llama.cpp **Llama 3 8B Instruct (Q4_K_M)** with
+> `--max-rounds 3 --budget 1`, reports `certified_accuracy = 0.7`, and concludes
+> that "certification remains comparable to one-shot baselines". The current
+> `main.tex` describes the 5-arm candidate-first study instead. The file is kept
+> under an explicit legacy name rather than deleted so the history is visible;
+> do not cite its numbers. A current PDF cannot be built from a clean checkout
+> because `tables/` is not tracked — see step 1 below.
+>
+> This is a **manuscript. It is not published and has not been peer-reviewed.**
 
 This LaTeX pack is synced to the current implementation:
 
@@ -29,7 +41,8 @@ This LaTeX pack is synced to the current implementation:
 
 ## Structure
 
-- `main.tex`: top-level paper draft
+- `main.tex`: top-level manuscript draft
+- `legacy_2025-10-11_llama3-8b.pdf`: stale build, superseded — see the note above
 - `sections/results.tex`: linear main results plus Sudoku appendix transfer section
 - `tables_linear/table_main.tex`: auto-generated linear main table
 - `tables_sudoku_appendix/table_main.tex`: auto-generated appendix table

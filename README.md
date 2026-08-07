@@ -1,254 +1,187 @@
-<div align="center">
+# CEGVR — does solver feedback actually help an LLM, or is it just more retries?
+
+An LLM proposes a candidate solution to a constraint problem; Z3 either certifies it or
+returns an unsat-core. The experiment asks whether feeding that unsat-core back is
+better than simply retrying the same number of times.
 
 [![CI](https://github.com/stelioszach03/llm-smt-verifiable-reasoning/actions/workflows/ci.yml/badge.svg)](https://github.com/stelioszach03/llm-smt-verifiable-reasoning/actions)
-
-# CEGVR — Counterexample-Grounded Verifiable Reasoning
-
-**LLM + Z3 SMT solver: 90.6% certified accuracy via conflict-directed search — a 50-point lift over one-shot baselines. 7 500 evaluation runs, compiled paper.**
-
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Z3](https://img.shields.io/badge/Z3-SMT%20Solver-8b2f20?style=flat-square)](https://github.com/Z3Prover/z3)
-[![Qwen](https://img.shields.io/badge/Qwen3--30B--A3B-vLLM-7C3AED?style=flat-square)](https://huggingface.co/Qwen)
-[![A100](https://img.shields.io/badge/NVIDIA-A100%2080GB-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://www.nvidia.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square)](LICENSE)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square)](https://www.python.org/)
 
-**[Live Results](https://stelioszach.com/llm-smt-verifiable-reasoning/)**  ·  **[Paper PDF](https://stelioszach.com/papers/cegvr-verifiable-reasoning.pdf)**  ·  **[GitHub](https://github.com/stelioszach03/llm-smt-verifiable-reasoning)**
-
-</div>
-
-A candidate-first LLM + SMT protocol for verifiable reasoning under strict
-feedback-granularity control. A local LLM proposes a structured candidate
-(either a full satisfying assignment or an UNSAT claim), and Z3 either
-certifies it or returns an unsat-core that becomes natural-language hints
-for the next round.
-
-**Central question:** not *whether* an LLM can emit a candidate, but whether
-**solver-grounded feedback** measurably improves verified performance over
-mere repeated attempts under matched compute budgets.
+Solo research project by Stelios Zacharioudakis.
+**Manuscript only — not published, not peer-reviewed, not submitted.**
 
 ---
 
-## What's inside
+## The experimental design (this is the point of the repo)
 
-CEGVR ships two parallel execution paths:
+Five arms share an **identical compute budget** — same `K` candidates per round, same `R`
+rounds, same solver timeout, same parsing rules, same generation settings. The only thing
+that varies is *what feedback is carried forward*:
 
-- A **candidate-first linear pipeline** — the main Q1-style study.
-- A preserved **trace-based compatibility layer** — retained for Sudoku,
-  scheduling, and extension work (appendix transfer evidence).
+| # | Arm | What it gets |
+|---|---|---|
+| 1 | `one_shot` | one attempt — repair-gain reference point |
+| 2 | `multi_no_feedback` | budget-matched retries, independent sampling |
+| 3 | `multi_generic_feedback` | + a generic "your previous answer was wrong" hint |
+| 4 | `multi_unsat_core_feedback` | + the Z3 unsat-core rendered as a natural-language hint |
+| 5 | `cd_vgs_core_rank` | same budget, redistributed by conflict-directed search + CoreRank |
 
-The main paper protocol studies a **five-method linear matrix**:
+Arms 2–5 are the causal comparison. Arm 1 exists only to measure how much repair buys at all.
+Because the budget is matched, a win for arm 4 or 5 cannot be explained by "it just tried harder".
 
-| # | Method                     | Role                                                                 |
-|---|----------------------------|----------------------------------------------------------------------|
-| 1 | `one_shot`                 | Single attempt. Retained as a *repair-gain* reference point.         |
-| 2 | `multi_no_feedback`        | Compute-matched retries, independent sampling. No feedback carried.  |
-| 3 | `multi_generic_feedback`   | Same budget + a generic "your prior answer was wrong" hint.          |
-| 4 | `multi_unsat_core_feedback`| Same budget + the unsat-core as a natural-language hint.             |
-| 5 | `cd_vgs_core_rank` 🏆       | **Flagship.** Conflict-directed verifier-guided search with CoreRank.|
+## Results
 
-The primary causal comparison is among the four compute-matched multi-round
-methods, which share identical `K`, `R`, timeouts, parsing rules, and
-generation settings. Retry baselines differ **only** in carried-forward
-verifier feedback; `cd_vgs_core_rank` redistributes the same `K × R` budget
-via conflict-directed search and unsat-core ranking.
+**The aggregate result tables from the full run are not in this repository, so the headline
+numbers cannot be verified from a clean checkout. They are therefore not printed here.**
 
-## Requirements
+`/runs/` and `/tables/` were gitignored while the study was run, and the sweep was executed
+on a rented A100 whose outputs were written to external storage. `.gitignore` has been
+changed so that `tables/**/*.csv` is now tracked — the next run commits its own evidence
+automatically. Until then, treat every arm-level number quoted elsewhere (site, slides, CV)
+as unverified.
 
-- Python 3.11
-- macOS with Homebrew (for the bootstrap script) — Linux also supported
-- A local OpenAI-compatible endpoint (llama.cpp is the documented default)
+What **is** verifiable from this repository today:
 
-## Local bootstrap
+| Claim | Value | Evidence in this repo |
+|---|---|---|
+| Benchmark size | 500 linear-arithmetic problems | [`data/linear/problems.jsonl`](data/linear/problems.jsonl) — 500 lines |
+| Evaluation runs in the full sweep | 500 × 3 seeds × 5 arms = **7,500** | [`scripts/run_all.sh`](scripts/run_all.sh) — `SEEDS=3`, `ARMS=(5)` |
+| Budget parameters | `--max-rounds 4 --budget 4 --timeout-ms 1500` | [`scripts/run_all.sh`](scripts/run_all.sh) L35–38 |
+| Statistical tests implemented | paired McNemar (solved-within-budget), Wilcoxon signed-rank (latency, solver calls) | [`src/cegvr/tables/`](src/cegvr/tables/), [`examples/paper_assets/latex/sections/results.tex`](examples/paper_assets/latex/sections/results.tex) |
+| Test suite | **51 tests pass** in 1.1 s | `PYTHONPATH=src pytest -q` |
+| Type checking | clean over 44 source files | `mypy --config-file mypy.ini src` |
+| Robustness deltas | coefficient scaling / constraint permutation / variable relabeling | [`fig_robustness.png`](fig_robustness.png), [`src/cegvr/robustness/`](src/cegvr/robustness/) |
+
+An interactive results page ([`index.html`](index.html)) is committed, but its numbers are
+hard-coded into a JavaScript array rather than read from a tracked artifact — same caveat.
+
+### Stale build in the repo
+
+[`examples/paper_assets/latex/legacy_2025-10-11_llama3-8b.pdf`](examples/paper_assets/latex/legacy_2025-10-11_llama3-8b.pdf)
+is a **superseded** build from 2025-10-11. It describes a different, earlier experiment
+(local llama.cpp Llama 3 8B Instruct Q4_K_M, `--max-rounds 3 --budget 1`), reports
+`certified_accuracy = 0.7`, and concludes that certification stays comparable to one-shot
+baselines. It is kept under an explicit legacy filename so the history is visible.
+**Do not cite its numbers as current.** The current `main.tex` describes the 5-arm study.
+
+## Quickstart — verified on macOS 15 / Python 3.11
 
 ```bash
-bash scripts/bootstrap_local_mac.sh .venv
-source .venv/bin/activate
+python3.11 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+
+PYTHONPATH=src pytest -q                    # 51 passed in ~1 s
 ```
 
-This installs Python 3.11 if needed, creates `.venv`, and installs the
-project in editable mode with dev dependencies.
-
-## Serve Qwen locally (llama.cpp)
-
-The paper path expects an OpenAI-compatible chat-completions endpoint:
+A full end-to-end smoke run on the toy dataset, no GPU and no LLM required
+(**~3.5 s**, uses the stub generator on the trace pipeline):
 
 ```bash
-llama-server \
-  -m /path/to/qwen3.5-35b-a3b.gguf \
-  --port 8000 \
-  --ctx-size 8192
+cegvr eval --problems data/toy/problems.jsonl --out runs/toy \
+  --seeds 1 --max-rounds 3 --budget 2 --timeout-ms 1500 --generator stub
+cegvr summarize --runs runs/toy --table tables/toy/main_results.csv
 ```
 
-The default endpoint used by the CLI and `run_all.sh` is
-`http://127.0.0.1:8000/v1/chat/completions`. The candidate-first path uses
-`enable_thinking=false` by default.
+The stub generator emits deliberately wrong candidates, so this run certifies 0 % — it
+exercises the loop, the Z3 bridge and the aggregation path, not model quality.
 
-## One-command paper run
+## Reproducing the real study
+
+Requires a local OpenAI-compatible chat-completions endpoint. The study used
+**Qwen3-30B-A3B** (a Mixture-of-Experts model with ~3 B active parameters, not a dense 30 B)
+served locally, on an A100 80 GB.
+
+> Note on the model identifier: the CLI default is the string `qwen3.5-35b-a3b`, which is
+> only a label forwarded to the serving process — it does not name a released model. The
+> weights actually served were `Qwen/Qwen3-30B-A3B`. The default string is left unchanged
+> so old commands still reproduce, but the model to quote is Qwen3-30B-A3B.
 
 ```bash
-bash scripts/run_all.sh
+llama-server -m /path/to/qwen3-30b-a3b.gguf --port 8000 --ctx-size 8192
+
+bash scripts/run_all.sh          # 5 arms × 3 seeds × 500 problems, then tables + figures
 ```
 
-Useful options:
+Single arm:
 
 ```bash
-bash scripts/run_all.sh --seeds 3 --max-rounds 4 --budget 4 --timeout-ms 1500
-bash scripts/run_all.sh \
-  --llm-model qwen3.5-35b-a3b \
-  --llm-endpoint http://127.0.0.1:8000/v1/chat/completions
-```
-
-The script:
-
-- bootstraps the local Python environment
-- regenerates the linear dataset
-- runs the 5-method candidate-first linear study
-- runs a small Sudoku 4×4 appendix transfer check (trace layer)
-- regenerates tables, figures, and LaTeX assets (and the PDF)
-
-The main paper path **fails closed** if the local endpoint is unavailable.
-There is no silent stub fallback for the linear paper study.
-
-## Run a single arm
-
-```bash
-cegvr eval \
-  --pipeline candidate \
-  --arm cd_vgs_core_rank \
-  --generator llm \
-  --problems data/linear/problems.jsonl \
-  --out runs/linear_main/cd_vgs_core_rank \
-  --seeds 3 \
-  --max-rounds 4 \
-  --budget 4 \
-  --timeout-ms 1500 \
+cegvr eval --pipeline candidate --arm cd_vgs_core_rank --generator llm \
+  --problems data/linear/problems.jsonl --out runs/linear_main/cd_vgs_core_rank \
+  --seeds 3 --max-rounds 4 --budget 4 --timeout-ms 1500 \
   --llm-endpoint http://127.0.0.1:8000/v1/chat/completions \
-  --llm-model qwen3.5-35b-a3b \
-  --no-llm-enable-thinking
+  --llm-model qwen3-30b-a3b --no-llm-enable-thinking
 ```
 
-### Candidate contract
+If the endpoint is unreachable the CLI now **aborts with exit code 3** instead of writing a
+run in which every candidate is recorded as a schema failure — that silent all-zero run was
+indistinguishable from a real measurement.
 
-The generator returns either a full satisfying assignment:
+## What this does not do
 
-```json
-{ "status": "sat", "assignment": { "x1": 3, "x2": 1 } }
+- **The headline numbers are not reproducible offline.** No aggregate CSV is committed yet,
+  so verifying any arm-level result requires re-running the sweep against a live endpoint.
+- **The candidate pipeline requires an LLM.** `--pipeline candidate --generator stub` is
+  rejected; the stub generator only implements the trace pipeline. There is no offline path
+  that produces meaningful arm-level results.
+- **One model, one benchmark family.** Everything was measured on Qwen3-30B-A3B over
+  synthetic linear-arithmetic feasibility problems generated by
+  `scripts/build_linear_dataset.py`. Nothing here shows the finding transfers to other model
+  families, to natural-language reasoning, or to real-world constraint problems.
+- **UNSAT instances are easy in this benchmark.** The generator emits problems whose UNSAT
+  half is trivially detectable, so UNSAT recall saturates and carries no signal. The
+  informative quantity is the SAT certification rate.
+- **The transfer sets are tiny** — Sudoku 4×4 (6 problems), Latin-5 (4), scheduling (1).
+  They are descriptive appendix evidence, not a second benchmark.
+- **No human baseline, no frontier-model baseline.** The comparison is internal to the five
+  arms.
+- Latency numbers include local serving overhead and are not comparable across machines.
+
+## How it works
+
+```
+problem (JSONL)
+      │
+      ▼
+  prompt  ──►  local LLM  ──►  JSON candidate  ──►  grammar/schema check
+                                                          │
+                                                          ▼
+                                                     Z3 encoder
+                                                          │
+                                        ┌─────────────────┴──────────────────┐
+                                     certified                          unsat-core
+                                        │                                    │
+                                       done                    rendered as NL hint,
+                                                               ranked by CoreRank,
+                                                               fed into next round
 ```
 
-or an UNSAT claim:
+The generator returns either `{"status":"sat","assignment":{...}}` or `{"status":"unsat"}`.
+Nothing is trusted: Z3 decides.
 
-```json
-{ "status": "unsat" }
-```
-
-### Result schema
-
-Per-problem JSONL rows expose:
-
-- `pipeline`, `arm`, `predicted_status`, `verified_outcome`, `failure_type`
-- `solver_calls`, `llm_attempts`, `llm_latency_ms`, `solver_latency_ms`
-- token counts, `problem_features`
-- `feedback_source`, `search_policy`, `search_score`, `repeat_failure_count`
-- `core_variables`, `variables_to_revise`, `variables_to_keep_fixed`
-
-## Legacy trace pipeline
-
-The original trace-based architecture is still supported and remains the
-right entry point for compatibility and research extensions:
-
-```bash
-cegvr eval \
-  --pipeline trace \
-  --generator llm-sudoku \
-  --problems data/sudoku4/problems.jsonl \
-  --out runs/sudoku_appendix/feedback \
-  --seeds 1 --max-rounds 3 --budget 1 --timeout-ms 1500 \
-  --llm-endpoint http://127.0.0.1:8000/v1/chat/completions \
-  --llm-model qwen3.5-35b-a3b
-```
-
-Toy commands like `cegvr gen-toy` and `cegvr solve-toy` are unchanged.
-
-## Tables and figures
-
-Generate arm-level tables and plots from any run root:
-
-```bash
-cegvr summarize   --runs runs/linear_main --table tables/linear/main_results.csv
-cegvr make-tables --runs runs/linear_main --out examples/paper_assets/tables_linear
-cegvr make-figures --runs runs/linear_main --out examples/paper_assets/figures_linear
-```
-
-The figure set:
-
-- `arm_verified_solve_rate.png`
-- `convergence_by_round.png`
-- `efficiency_frontier.png`
-
-Arm-centric tables backed by:
-
-- verified solve rate
-- SAT certification rate
-- UNSAT precision / recall
-- solver calls per certified solve
-- latency mean / p95
-- repair gain vs `one_shot`
-- paired McNemar and Wilcoxon comparisons across the compute-matched arms
-
-## Dataset generation
-
-Regenerate the linear benchmark:
-
-```bash
-python scripts/build_linear_dataset.py --total 500 --sat-ratio 0.6 --seed 7
-```
-
-Each record carries difficulty metadata: `n_vars`, `n_constraints`,
-`constraint_to_var_ratio`, `coeff_max_abs`, `offline_solver_time_ms`,
-`unsat_core_size`, `difficulty_bin`.
-
-## Tests
-
-```bash
-source .venv/bin/activate
-pytest -q
-```
-
-The repo keeps regression coverage for:
-
-- the candidate-side verifier and arm isolation logic
-- the preserved trace repair loop and solver stack
-- property-based tests over linear constraints (Hypothesis)
-
-## Project layout
+## Repo layout
 
 ```
 src/cegvr/
-├── cli.py                # Typer CLI entry point
-├── config.py             # AppConfig + YAML loader
-├── candidate/            # candidate-first repair + verifier
-├── engine/               # trace-based repair + metrics
-├── generation/           # prompts, providers, llama.cpp adapters
-├── smt/                  # Z3 encoder + runner
-├── grammar/              # strict JSON-schema validation
-├── eval/                 # run harness + aggregation
-├── plots/ tables/ report/
-├── robustness/           # perturbation runner + deltas
-└── utils/
+├── cli.py             # Typer CLI
+├── candidate/         # candidate-first repair loop + verifier (the main study)
+├── engine/            # legacy trace-based repair loop (appendix transfer)
+├── generation/        # prompts, providers, llama.cpp adapters, JSON guard
+├── smt/               # Z3 encoder + runner
+├── grammar/           # strict JSON-schema validation of candidates
+├── eval/              # run harness + aggregation
+├── tables/ plots/ report/
+└── robustness/        # perturbation families + delta computation
 
-scripts/                  # dataset gen + run_all.sh
-examples/paper_assets/    # LaTeX + figures + tables
-tests/                    # pytest suite
+data/linear/problems.jsonl     # 500-problem benchmark (committed)
+scripts/run_all.sh             # full sweep: dataset → 5 arms → tables → figures → LaTeX
+examples/paper_assets/         # LaTeX manuscript source + generated figures
+tests/                         # 18 files, incl. Hypothesis property tests
 ```
+
+9,021 lines of Python. `Dockerfile` and `.devcontainer/` are provided; CI runs ruff, mypy
+and pytest on every push.
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE). Part of the **Aegis** portfolio suite:
-
-- [Graph Fraud GNN](https://stelioszach.com/aegis-graph-fraud-gnn/) — GNN-based payment fraud
-- [NYC Subway Anomaly](https://stelioszach.com/nyc-subway-anomaly/) — streaming anomaly detection
-- [AML Graph Investigator](https://stelioszach.com/aegis-graph-aml/) — graph-native AML case explainer
-- [DeID Privacy Studio](https://stelioszach.com/aegis-deid/) — policy-governed PHI/PII redaction
-- **CEGVR** — this repo (No. 05)
-
-Authored by **Stelios Zacharioudakis** — CS, NKUA Athens.
+MIT — see [`LICENSE`](LICENSE).

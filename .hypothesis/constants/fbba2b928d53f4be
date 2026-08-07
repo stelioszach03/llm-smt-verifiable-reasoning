@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/robustness/spec_variations.py
-# hypothesis_version: 6.140.3
-
-['bounds', 'generate_variants', 'lower', 'maximize', 'minimize', 'name', 'objective', 'perturb_bounds', 'target', 'type', 'upper', 'value', 'variable', 'variables', 'vary_objective']

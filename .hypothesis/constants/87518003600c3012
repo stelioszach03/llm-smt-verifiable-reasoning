@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/plots/curves.py
-# hypothesis_version: 6.140.3
-
-[0.0, 0.5, 0.7, 1.0, 300, 'Certified accuracy', 'Frequency', 'Iterations', 'Latency (ms)', 'Per-round budget', 'black', 'budget', 'center', 'certified', 'iterations', 'latency_ms', 'o', 'problem_id']

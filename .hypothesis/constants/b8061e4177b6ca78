@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/tables/main.py
-# hypothesis_version: 6.140.3
-
-[0.0, 1.0, 'avg_iterations', 'avg_latency_ms', 'certified', 'certified_accuracy', 'config', 'count', 'enable_repair', 'generate_main_table', 'iterations', 'latency_ms', 'lower', 'metric', 'per_task', 'seed_*.jsonl', 'uncertified_accuracy', 'uncertified_correct', 'upper', 'use_grammar', 'use_solver', 'utf-8', 'value', 'w']

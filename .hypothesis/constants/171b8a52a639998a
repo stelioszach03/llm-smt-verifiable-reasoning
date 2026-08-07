@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/generation/prompts.py
-# hypothesis_version: 6.140.3
-
-['<=', '=', 'Feasible sample', 'answer', 'assumptions', 'binary', 'bool', 'bounds', 'build_trace_prompt', 'coefficient', 'constant', 'constraints', 'derive', 'domain', 'example-problem', 'expr', 'flag', 'id', 'int', 'justification', 'kind', 'left', 'linear_ineq', 'lower', 'math', 'name', 'objective', 'op', 'problem_id', 'relation', 'rhs', 'right', 'steps', 'task', 'terms', 'type', 'upper', 'value', 'variable', 'variables', 'x']

@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/config.py
-# hypothesis_version: 6.140.3
-
-[2024, 'AppConfig', 'AppSettings', 'CEGVR', 'CRITICAL', 'DEBUG', 'DEFAULT_CONFIG_PATH', 'DatasetSettings', 'ERROR', 'INFO', 'LoggingSettings', 'WARNING', 'configs', 'dataset', 'default.yaml', 'load_config', 'path', 'python', 'r', 'utf-8']

@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/engine/metrics.py
-# hypothesis_version: 6.140.3
-
-[0.0, 'avg_iterations', 'avg_latency_ms', 'certified', 'certified_accuracy', 'compute_metrics', 'coverage', 'ground_truth', 'latency_ms', 'rounds', 'sat', 'status', 'uncertified_accuracy', 'unsat']

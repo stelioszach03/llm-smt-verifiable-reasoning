@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/robustness/runner.py
-# hypothesis_version: 6.140.3
-
-[0.0, 1.0, 300, 'Variant Type', 'aggregate_deltas', 'base', 'black', 'certified', 'evaluate_problem', 'evaluate_variants', 'load_problems', 'outcome', 'paraphrase', 'problem', 'problem_id', 'robustness', 'robustness.jsonl', 'save_delta_plot', 'save_delta_table', 'status', 'utf-8', 'variant', 'w', 'write_results', 'Δ Certified Accuracy']

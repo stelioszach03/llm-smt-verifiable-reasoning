@@ -1,4 +1,0 @@
-# file: /home/stelios/cegvr/src/cegvr/eval/aggregate.py
-# hypothesis_version: 6.140.3
-
-[0.0, 0.05, 1.0, 1000, 'MetricSummary', 'aggregate_runs', 'avg_iterations', 'avg_latency_ms', 'certified', 'certified_accuracy', 'count', 'iterations', 'latency_ms', 'load_run', 'per_task', 'r', 'task', 'uncertified_accuracy', 'uncertified_correct', 'utf-8']
