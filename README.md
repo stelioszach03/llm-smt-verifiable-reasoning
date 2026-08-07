@@ -35,8 +35,8 @@ Because the budget is matched, a win for arm 4 or 5 cannot be explained by "it j
 **The aggregate result tables from the full run are not in this repository, so the headline
 numbers cannot be verified from a clean checkout. They are therefore not printed here.**
 
-`/runs/` and `/tables/` were gitignored while the study was run, and the sweep was executed
-on a rented A100 whose outputs were written to external storage. `.gitignore` has been
+`/runs/` and `/tables/` were gitignored while the study was run, and the sweep was executed on
+a Colab A100 whose run logs and aggregate tables were written to Google Drive. `.gitignore` has been
 changed so that `tables/**/*.csv` is now tracked — the next run commits its own evidence
 automatically. Until then, treat every arm-level number quoted elsewhere (site, slides, CV)
 as unverified.

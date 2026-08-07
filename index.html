@@ -1299,12 +1299,21 @@ llm_attempts   = 2</span></div>
     <div class="section-head">
       <div class="section-num">§ 06 · Experiment Results</div>
       <div>
-        <h2 class="section-title">1 500 problems × 5 arms × 3 seeds — <em>verified</em>.</h2>
+        <h2 class="section-title">500 problems × 5 arms × 3 seeds = 7 500 runs.</h2>
         <p class="section-lede">
-          Final numbers from the Qwen3-30B-A3B run on an A100-80 GB Colab,
-          each arm evaluated on 500 linear-arithmetic SMT problems over 3
-          seeds. Click an arm to see its certified accuracy, SAT/UNSAT
-          breakdown, and budget-exceeded count.
+          Numbers from the Qwen3-30B-A3B run on an A100-80 GB Colab, each arm
+          evaluated on 500 linear-arithmetic SMT problems over 3 seeds. Click an
+          arm to see its certified accuracy, SAT/UNSAT breakdown, and
+          budget-exceeded count.
+        </p>
+        <p class="section-lede" style="border-left:2px solid #c9a96e;padding-left:14px;">
+          <strong>Provenance caveat.</strong> The aggregate result tables for this
+          run are not committed to the repository — <code>/tables/</code> was
+          gitignored and the outputs live on external storage. The figures below
+          are therefore hard-coded in this page and <em>cannot be independently
+          verified from the public repo</em>. Treat them as unverified until the
+          aggregated CSVs are committed. Everything the repository does prove is
+          listed in its README.
         </p>
       </div>
     </div>
