@@ -9,7 +9,7 @@ description = "Counterexample-Guided, Verifiable Reasoning toolkit skeleton."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-authors = [{name = "CEGVR Authors", email = "team@example.com"}]
+authors = [{name = "Stelios Zacharioudakis"}]
 keywords = [
   "formal verification",
   "command-line",

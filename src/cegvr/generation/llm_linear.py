@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -31,9 +32,10 @@ class LLMLinearGenerator(TraceGenerator):
             try:
                 response = requests.post(self.endpoint, json=payload, timeout=30)
                 response.raise_for_status()
-            except requests.RequestException:
+                response_payload = response.json()
+            except (requests.RequestException, ValueError):
                 continue
-            assignment = self._parse_response(response.json())
+            assignment = self._parse_response(response_payload)
             if assignment is None:
                 continue
             attempts.append(self._build_trace(problem, assignment))
@@ -117,14 +119,19 @@ class LLMLinearGenerator(TraceGenerator):
 
     def _parse_response(self, payload: dict) -> dict | None:
         try:
-            content = payload["choices"][0]["message"]["content"].strip()
+            content = payload["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError):
             return None
+        if not isinstance(content, str):
+            return None
+        content = content.strip()
         content = content.split("```json", 1)[-1] if "```json" in content else content
         content = content.split("```", 1)[0]
         try:
             data = json.loads(content)
         except json.JSONDecodeError:
+            return None
+        if not isinstance(data, dict):
             return None
         assignments = data.get("assignments")
         if not isinstance(assignments, dict):
@@ -132,7 +139,10 @@ class LLMLinearGenerator(TraceGenerator):
         parsed: Dict[str, float] = {}
         for key, value in assignments.items():
             try:
-                parsed[key] = float(value)
+                number = float(value)
+                if isinstance(value, bool) or not math.isfinite(number):
+                    return None
+                parsed[key] = number
             except (TypeError, ValueError):
                 return None
         return parsed
