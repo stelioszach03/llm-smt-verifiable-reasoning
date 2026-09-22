@@ -1,5 +1,9 @@
 # CEGVR — LLM candidates with SMT verification
 
+**[Live demo — Try the live Z3 verifier](https://stelioszach.com/demos/smt-verify/)** · [Deployed adapter and UI source](https://github.com/stelioszach03/stelioszach-portfolio/tree/main/demo-services/smt-verify)
+
+The live workspace checks structured candidate answers with Z3 and displays the actual solver outcome. It does not run the paid language-model generation or research evaluation sweep. This repository contains those broader experimental pipelines; the exact deployed adapter and UI are linked separately above.
+
 An experimental toolkit for testing whether solver feedback helps a language model propose valid solutions to formal constraint problems. A generator proposes a candidate; Z3 checks the encoded constraints; a repair loop can return structured feedback for another attempt.
 
 **Status:** research prototype. Included write-ups are unpublished drafts. There is no verified headline performance result in this checkout.
