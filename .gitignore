@@ -38,11 +38,9 @@ reports/case_studies.md
 examples/paper_assets/figures/
 examples/paper_assets/tables/
 examples/paper_assets/latex/*.pdf
-!examples/paper_assets/latex/legacy_2025-10-11_llama3-8b.pdf
 
-# Ensure we never ignore the source package tables module
-!src/cegvr/tables/
-!src/cegvr/tables/**
+# The /tables/ rules are root-anchored. Do not broadly unignore the source
+# module: doing so would also reinclude its Python bytecode caches.
 
 # Large artifacts / external assets
 datasets/
