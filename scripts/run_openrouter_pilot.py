@@ -184,6 +184,14 @@ def solver_control(output):
             "rows": rows,
         },
     )
+    if any(
+        row["direct_status"] != row["ground_truth"].lower()
+        or not row["oracle_control_certified"]
+        for row in rows
+    ):
+        raise ValueError(
+            "Direct solver preflight disagrees with dataset or cannot certify a control"
+        )
 
 
 def execute_episode(row, problem, output, ledger, key_file, deadline, allowance):
@@ -233,7 +241,10 @@ def execute_episode(row, problem, output, ledger, key_file, deadline, allowance)
         wall_latency_ms=(time.perf_counter() - start) * 1000,
         provider_calls=generator.calls,
         accounted_cost_usd=generator.accounted_micro_usd / 1e6,
-        provider_reported_cost_usd=generator.provider_reported_cost_usd,
+        provider_reported_cost_usd=generator.provider_reported_cost_usd
+        if generator.known_cost_calls
+        else None,
+        known_cost_calls=generator.known_cost_calls,
         uncertain_calls=generator.uncertain_calls,
         transport_errors=generator.transport_errors,
     )
@@ -241,7 +252,54 @@ def execute_episode(row, problem, output, ledger, key_file, deadline, allowance)
     return result
 
 
+def reconcile_worker_error(row, output, store, error_type):
+    """Recover known usage from durable evidence after a worker-level exception."""
+    location = output / "episodes" / row["id"]
+    location.mkdir(parents=True, exist_ok=True)
+    events = []
+    if (location / "events.jsonl").exists():
+        for line in (location / "events.jsonl").read_text().splitlines():
+            try:
+                events.append(json.loads(line))
+            except ValueError:
+                continue  # Preserve the interrupted last line in original evidence.
+    with store.connect() as connection:
+        charges = connection.execute(
+            "SELECT charged,status,usage_json FROM charges WHERE run_id=?",
+            (STUDY_ID + ":" + row["id"],),
+        ).fetchall()
+    known = []
+    for charge in charges:
+        usage = json.loads(charge["usage_json"] or "{}") or {}
+        if usage.get("cost") is not None:
+            known.append(usage["cost"])
+    result = {
+        **row,
+        "status": "error",
+        "error": error_type,
+        "outcome": None,
+        "provider_calls": sum(e.get("type") == "request" for e in events),
+        "accounted_cost_usd": sum(c["charged"] for c in charges) / 1e6,
+        "provider_reported_cost_usd": sum(known) if known else None,
+        "uncertain_calls": sum(
+            c["status"] in ("reserved", "uncertain") for c in charges
+        ),
+        "transport_errors": sum(
+            e.get("type") == "response" and e.get("error") is not None for e in events
+        ),
+        "wall_latency_ms": None,
+        "accounting_recovery": "Ledger charges and complete journal records; absent wall latency is unknown. Reserved-but-unlogged calls remain charged, not assumed sent.",
+        "ledger_reservations": len(charges),
+    }
+    write(location / "result.json", result)
+    return result
+
+
 def run(output, ledger, key_file, expected_protocol_sha256):
+    if not Path(ledger).is_file():
+        raise ValueError(
+            "The existing shared ledger must exist; never create a replacement"
+        )
     if digest(output / "protocol.json") != expected_protocol_sha256:
         raise ValueError("Protocol differs from externally recorded freeze hash")
     protocol = json.loads((output / "protocol.json").read_text())
@@ -309,10 +367,9 @@ def run(output, ledger, key_file, expected_protocol_sha256):
                 try:
                     result = future.result()
                 except Exception as exc:
-                    result = {**row, "status": "error", "error": type(exc).__name__}
-                    location = output / "episodes" / row["id"]
-                    location.mkdir(parents=True, exist_ok=True)
-                    write(location / "result.json", result)
+                    result = reconcile_worker_error(
+                        row, output, store, type(exc).__name__
+                    )
                     stopped = True
                 results.append(result)
                 if result["status"] != "complete":

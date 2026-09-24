@@ -399,6 +399,7 @@ def _finalize_result(
         "rounds": rounds,
         "latency_ms": (perf_counter() - total_start) * 1000.0,
         "llm_attempts": llm_attempts,
+        "llm_attempts_definition": "Generated proposal records, including unevaluated batch responses; actual HTTP requests and transport retries are accounted by the provider ledger.",
         "solver_calls": solver_calls,
         "llm_latency_ms": llm_latency_ms,
         "solver_latency_ms": solver_latency_ms,

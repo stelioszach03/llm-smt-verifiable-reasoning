@@ -123,6 +123,9 @@ def test_prompt_and_capture_have_no_ground_truth_hidden_reasoning_or_key(
     assert all(p.candidate.assignment == {"x": 2} for p in proposals)
     assert observed[0]["json"]["seed"] != observed[1]["json"]["seed"]
     assert observed[0]["json"]["provider"]["allow_fallbacks"] is False
+    assert (
+        "allOf" not in observed[0]["json"]["response_format"]["json_schema"]["schema"]
+    )
     capture = (tmp_path / "events.jsonl").read_text()
     for forbidden in (
         "test-key",
@@ -201,3 +204,22 @@ def test_invalid_usage_is_unknown():
         "cost": float("nan"),
     }
     assert all(v is None for v in read_visible_response(body)["usage"].values())
+
+
+def test_malformed_choices_retains_paid_accounting(tmp_path, monkeypatch):
+    response = Response()
+    response.body["choices"] = {"bad": "shape"}
+    monkeypatch.setattr("requests.post", lambda *a, **k: response)
+    g = generator(tmp_path)
+    assert g.propose_candidates(PROBLEM, 1)[0].candidate is None
+    assert g.accounted_micro_usd == 20
+    assert len((tmp_path / "events.jsonl").read_text().splitlines()) == 2
+
+
+def test_configuration_error_stops_without_four_repeated_calls(tmp_path, monkeypatch):
+    monkeypatch.setattr("requests.post", lambda *a, **k: Response(400))
+    g = generator(tmp_path)
+    with pytest.raises(StudyStopped, match="provider_request_rejected"):
+        g.propose_candidates(PROBLEM, 4)
+    assert g.calls == 1 and g.uncertain_calls == 1
+    assert g.accounted_micro_usd == g.store.rows[0]["reserved"]

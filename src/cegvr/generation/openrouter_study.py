@@ -43,7 +43,9 @@ def cost_reservation(payload: dict) -> int:
 
 def read_visible_response(body: dict) -> dict:
     """Allowlist only visible content and accounting, never reasoning fields."""
-    choices = body.get("choices") or []
+    choices = body.get("choices")
+    if not isinstance(choices, list):
+        choices = []
     choice = choices[0] if choices and isinstance(choices[0], dict) else {}
     message = choice.get("message") or {}
     if not isinstance(message, dict):
@@ -101,6 +103,7 @@ class AccountedOpenRouter(LLMLinearCandidateGenerator):
         self.ordinal = 0
         self.accounted_micro_usd = 0
         self.provider_reported_cost_usd = 0.0
+        self.known_cost_calls = 0
         self.uncertain_calls = 0
         self.transport_errors = 0
 
@@ -134,6 +137,10 @@ class AccountedOpenRouter(LLMLinearCandidateGenerator):
             self.ordinal += 1
             payload = self._build_payload(problem, hint)
             payload.pop("chat_template_kwargs", None)
+            # CoreWeave's grammar engine rejects JSON Schema if/then. Retain
+            # shape constraints server-side; enforce the full SAT/UNSAT contract
+            # with the strict local CandidateOutput validator after generation.
+            payload["response_format"]["json_schema"]["schema"].pop("allOf", None)
             payload.update(
                 provider=ROUTING,
                 reasoning={"effort": "low"},
@@ -188,7 +195,14 @@ class AccountedOpenRouter(LLMLinearCandidateGenerator):
                         error = "invalid_response_shape"
                 else:
                     error = f"http_{status}" if status != 200 else "response_too_large"
-            except (requests.RequestException, ValueError):
+            except (
+                requests.RequestException,
+                ValueError,
+                TypeError,
+                KeyError,
+                IndexError,
+                OverflowError,
+            ):
                 error = "transport_or_json_error"
             elapsed_ms = (time.time() - started) * 1000
             usage = (visible or {}).get("usage", {})
@@ -204,6 +218,7 @@ class AccountedOpenRouter(LLMLinearCandidateGenerator):
             self.uncertain_calls += int(not known)
             if known:
                 self.provider_reported_cost_usd += raw_cost
+                self.known_cost_calls += 1
             self.transport_errors += int(error is not None)
             self._append(
                 {
@@ -225,6 +240,8 @@ class AccountedOpenRouter(LLMLinearCandidateGenerator):
                 raise StudyStopped("provider_identity_mismatch")
             if status in (401, 402, 403):
                 raise StudyStopped("provider_access_error")
+            if status in (400, 404, 405, 413, 415, 422):
+                raise StudyStopped("provider_request_rejected")
             if status == 429 and retry < 2:
                 time.sleep(2 ** (retry + 1))
                 continue
