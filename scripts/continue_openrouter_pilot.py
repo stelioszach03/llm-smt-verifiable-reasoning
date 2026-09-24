@@ -30,6 +30,7 @@ SOURCE_COMMIT = "dc7b9de89f3a507705b259c870af82eda763621f"
 STUDY_ID = "cegvr-openrouter-pilot1-20260924"
 MODEL = "openai/gpt-oss-20b"
 WINDOW_SECONDS = 2700
+ADDITIONAL_WINDOW_SECONDS = 3600
 STUDY_CAP = 3_000_000
 # The original Store rejects a reservation exceeding $0.50. Requiring at least
 # this headroom rules out an ambiguous financial stop when the old result only
@@ -379,7 +380,7 @@ def prepare(study, runtime_script, ledger, expected_protocol_sha):
         "already_recorded_cells": len(records),
         "remaining_cell_count": len(missing),
         "remaining_cells_in_original_order": missing,
-        "additional_admission_seconds": WINDOW_SECONDS,
+        "additional_admission_seconds": ADDITIONAL_WINDOW_SECONDS,
         "workers": protocol["workers"],
         "cumulative_study_cap_usd": 3.0,
         "study_accounted_usd_at_prepare": state["study_accounted_micro_usd"] / 1e6,
@@ -387,14 +388,14 @@ def prepare(study, runtime_script, ledger, expected_protocol_sha):
         "scope": "Only previously unlaunched cells. Existing complete, stopped and failed outcomes are never rerun, overwritten or reclassified. No change to source, model/provider, seeds, selection, original remaining order, witness policy, candidate/solver caps or original shared ledger.",
         "completion_definition": "750 recorded cells means matrix coverage, not 750 successful certificates. Deadline-stopped original episodes remain observed unsuccessful executions, not model-quality-only failures.",
         "publication_requirement": "Operator must publish this exact JSON and its explanation before execution and supply the public commit reference plus SHA256. This helper does not attest remote publication itself.",
-        "window_definition": "One additional 45-minute request-admission window; in-flight work drains under the original request limits. This is an explicit post-freeze operational amendment, not the originally unchanged stopping protocol.",
+        "window_definition": "One additional 60-minute request-admission window, selected from observed throughput before efficacy analysis; in-flight work drains under the original request limits. This is an explicit post-freeze operational amendment, not the originally unchanged stopping protocol.",
     }
     write_new(wave / "amendment.json", amendment)
     explanation = (
         "# CEGVR pilot: operational admission-window amendment\n\n"
         f"Prepared at {amendment['prepared_at']}, after the first frozen 45-minute admission window completed. "
         f"The original wave recorded {len(records)}/750 cells; {len(missing)} were never launched.\n\n"
-        "One additional 45-minute admission window is authorized for those unlaunched cells only, in their original frozen order. "
+        "One additional 60-minute admission window, selected from observed throughput before efficacy analysis, is authorized for those unlaunched cells only, in their original frozen order. "
         "The original model/provider, seeds, code, task selection, candidate/solver budgets and cumulative $3 study cap are unchanged. "
         "The same original shared ledger and study ID count both waves. This is a publicly disclosed operational amendment, not a claim that the original stopping protocol stayed unchanged.\n\n"
         "Every prior result and transport record is preserved byte-for-byte. Original deadline-stopped episodes remain unsuccessful observed executions; they are not retried or attributed solely to model quality. "
@@ -503,7 +504,7 @@ def run(
             for p in map(json.loads, runtime.DATASET.read_text().splitlines())
         }
         started = time.time()
-        deadline = started + WINDOW_SECONDS
+        deadline = started + ADDITIONAL_WINDOW_SECONDS
         wave_manifest = {
             "status": "running",
             "started_at": utc_now(),
@@ -613,7 +614,7 @@ def run(
             ),
             "completion_definition": amendment["completion_definition"],
             "original_admission_seconds": WINDOW_SECONDS,
-            "additional_admission_seconds": WINDOW_SECONDS,
+            "additional_admission_seconds": ADDITIONAL_WINDOW_SECONDS,
         }
         atomic_write(study / "manifest.json", final)
         return final

@@ -440,6 +440,8 @@ def test_mocked_continuation_records_only_missing_cells_and_preserves_wave1(
     assert result["status"] == "complete"  # coverage, not successful certificates
     assert result["elapsed_seconds"] == 3000
     assert result["continuation_elapsed_seconds"] == 0
+    assert result["original_admission_seconds"] == 2700
+    assert result["additional_admission_seconds"] == 3600
     assert original_result.read_bytes() == original_result_bytes
     assert (wave / "wave1-manifest.json").read_bytes() == original_manifest
     assert read_json(wave / "manifest.json")["new_recorded_cells"] == 2
