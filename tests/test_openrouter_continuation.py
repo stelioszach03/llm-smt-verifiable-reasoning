@@ -342,6 +342,8 @@ def test_runtime_hash_verification_rejects_changed_or_extra_source(tmp_path):
 def test_mocked_continuation_records_only_missing_cells_and_preserves_wave1(
     tmp_path, monkeypatch
 ):
+    monkeypatch.setattr(continuation.time, "time", lambda: 1_800_003_000)
+    monkeypatch.setattr(continuation, "utc_now", lambda: iso(1_800_003_000))
     study, plan, manifest, ledger = fixture_study(tmp_path, observed=748)
     original_manifest = (study / "manifest.json").read_bytes()
     original_result = study / "episodes" / plan["study_order"][0]["id"] / "result.json"
@@ -436,6 +438,8 @@ def test_mocked_continuation_records_only_missing_cells_and_preserves_wave1(
     assert result["completed"] == 750 and result["missing"] == []
     assert result["recorded_status_counts"] == {"stopped": 1, "complete": 749}
     assert result["status"] == "complete"  # coverage, not successful certificates
+    assert result["elapsed_seconds"] == 3000
+    assert result["continuation_elapsed_seconds"] == 0
     assert original_result.read_bytes() == original_result_bytes
     assert (wave / "wave1-manifest.json").read_bytes() == original_manifest
     assert read_json(wave / "manifest.json")["new_recorded_cells"] == 2

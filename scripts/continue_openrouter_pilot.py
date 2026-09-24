@@ -578,6 +578,7 @@ def run(
         wave_manifest.update(
             status="complete" if not remaining else "incomplete",
             finished_at=utc_now(),
+            elapsed_seconds=time.time() - started,
             new_recorded_cells=len(new_records),
             new_status_counts=dict(Counter(r["status"] for r in new_records.values())),
             remaining_unlaunched=remaining,
@@ -593,6 +594,9 @@ def run(
             "completed": len(combined),
             "missing": remaining,
             "finished_at": utc_now(),
+            "elapsed_seconds": time.time() - timestamp(original_manifest["started_at"]),
+            "elapsed_seconds_definition": "Total wall time since the original wave started, including the publication/continuation pause; individual wave times are retained separately.",
+            "continuation_elapsed_seconds": wave_manifest["elapsed_seconds"],
             "budget_after": store.budget("research"),
             "accounted_cost_delta_usd": final_budget["research_charged_micro_usd"] / 1e6
             - original_manifest["budget_before"]["charged_usd"],
