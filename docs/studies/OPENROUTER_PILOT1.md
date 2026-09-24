@@ -33,3 +33,7 @@ Report SAT, UNSAT and mixed endpoints separately, including missing coverage, al
 Before freezing, three requests using the original conditional schema received HTTP 400. After removing unsupported server-side `if`/`then`, two tiny, non-study SAT/UNSAT requests returned valid visible JSON from the expected model/provider. An operator smoke fixture used strict `>` unsupported by the local verifier; its original failure was retained and its recorded UNSAT answer was checked offline using the equivalent integer `>= 6` constraint. No study task was evaluated or selected using these preflights. Their records and costs are separate from the primary study.
 
 Official references: [OpenRouter provider controls](https://openrouter.ai/docs/guides/routing/provider-selection), [parameter semantics](https://openrouter.ai/docs/api_reference/parameters), [endpoint metadata](https://openrouter.ai/api/v1/models/openai/gpt-oss-20b/endpoints). The dated provider snapshot is retained alongside the freeze.
+
+## Disclosed operational continuation
+
+The original window recorded 379 cells (371 completed executions and eight deadline stops), leaving 371 never launched. A [published operational amendment](OPENROUTER_PILOT1_AMENDMENT.md) authorizes one additional 60-minute admission window for only those missing cells. The original outcomes, model settings and cumulative $3 cap remain unchanged. This extends the original stopping schedule and is not presented as unchanged preregistration. The exact amendment is [retained as JSON](openrouter-pilot1-operational-amendment.json).
