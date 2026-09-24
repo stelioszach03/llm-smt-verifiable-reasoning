@@ -8,6 +8,7 @@ import json
 import math
 import time
 from pathlib import Path
+from typing import Any
 
 import requests
 
@@ -58,7 +59,7 @@ def read_visible_response(body: dict) -> dict:
         key: value if type(value := usage.get(key)) is int and value >= 0 else None
         for key in ("prompt_tokens", "completion_tokens", "total_tokens")
     }
-    cost = usage.get("cost")
+    cost: Any = usage.get("cost")
     safe_usage["cost"] = (
         cost
         if type(cost) in (int, float) and math.isfinite(cost) and cost >= 0
