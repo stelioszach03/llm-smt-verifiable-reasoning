@@ -55,6 +55,15 @@ def plot_data(report):
         elif rate is not None:
             raise ValueError("Unobserved success rate must remain null")
         cost = row["mean_accounted_cost_usd_per_observed_episode"]
+        statuses = row["status_counts"]
+        if (
+            set(statuses) - {"complete", "stopped", "error"}
+            or any(type(count) is not int or count < 0 for count in statuses.values())
+            or sum(statuses.values()) != observed
+        ):
+            raise ValueError(
+                "Recorded execution statuses do not reconcile with observed episodes"
+            )
         if cost is not None and (
             type(cost) not in (int, float) or not math.isfinite(cost) or cost < 0
         ):
@@ -73,6 +82,8 @@ def plot_data(report):
             "success_percent": rate * 100 if rate is not None else None,
             "accounted_cost_usd": cost,
             "coverage_label": f"{observed}/{planned}",
+            "operational_stopped": statuses.get("stopped", 0),
+            "operational_errors": statuses.get("error", 0),
         }
     if not arms or any(
         (arm, stratum) not in groups
@@ -91,7 +102,29 @@ def plot_data(report):
     observed = sum(groups[(arm, "all")]["observed"] for arm in arms)
     if planned != report["planned"] or observed != report["observed"]:
         raise ValueError("Arm counts do not reconcile with the overall analysis matrix")
-    partial = observed != planned or report["study_status"] != "complete"
+    partial = observed != planned
+    stopped = sum(groups[(arm, "all")]["operational_stopped"] for arm in arms)
+    errors = sum(groups[(arm, "all")]["operational_errors"] for arm in arms)
+    amendment = bool(
+        report.get("post_freeze_operational_extension")
+        or report.get("operational_amendment_sha256")
+        or report.get("additional_admission_seconds")
+    )
+    disclosure = []
+    if report["study_status"] != "complete":
+        disclosure.append(
+            f"Execution status: {report['study_status']}; matrix coverage is reported separately."
+        )
+    if stopped or errors:
+        disclosure.append(
+            f"Operational stops/errors: {stopped}/{errors}; retained as unsuccessful, not attributed to model quality."
+        )
+    if amendment:
+        original = report.get("original_admission_seconds")
+        additional = report.get("additional_admission_seconds")
+        disclosure.append(
+            f"Post-freeze operational extension: {original} + {additional} admission seconds; amended execution."
+        )
     return {
         "arms": arms,
         "groups": groups,
@@ -100,6 +133,14 @@ def plot_data(report):
         "partial": partial,
         "title_prefix": "PARTIAL MATRIX" if partial else "COMPLETED MATRIX",
         "coverage": f"{observed:,}/{planned:,} episodes recorded",
+        "operational_stopped": stopped,
+        "operational_errors": errors,
+        "all_episodes_ended_normally": not partial
+        and report["study_status"] == "complete"
+        and not stopped
+        and not errors,
+        "post_freeze_operational_extension": amendment,
+        "execution_disclosure": "\n".join(disclosure),
     }
 
 
@@ -138,7 +179,7 @@ def draw(analysis_path, output):
         plt.close(figure)
 
     figure, axis = plt.subplots(figsize=(8.8, 6.6))
-    figure.subplots_adjust(left=0.12, right=0.96, top=0.81, bottom=0.34)
+    figure.subplots_adjust(left=0.12, right=0.96, top=0.81, bottom=0.39)
     legend, costs = [], []
     for index, arm in enumerate(data["arms"]):
         row = data["groups"][(arm, "sat")]
@@ -197,14 +238,15 @@ def draw(analysis_path, output):
         0.5,
         0.015,
         "Observed denominators include stopped/error episodes. Missing cells are not zero-cost failures.\n"
-        "Points are not interpolated or jittered; overlaps remain visible in the legend. No CIs or significance claims.",
+        "Points are not interpolated or jittered; overlaps remain visible in the legend. No CIs or significance claims."
+        + ("\n" + data["execution_disclosure"] if data["execution_disclosure"] else ""),
         ha="center",
         fontsize=8.5,
     )
     save(figure, "sat-success-versus-cost")
 
     figure, axes = plt.subplots(1, 2, figsize=(12.4, 6.0))
-    figure.subplots_adjust(left=0.17, right=0.97, top=0.77, bottom=0.20, wspace=0.62)
+    figure.subplots_adjust(left=0.17, right=0.97, top=0.77, bottom=0.25, wspace=0.62)
     for axis, stratum, heading in zip(
         axes,
         ("sat", "unsat"),
@@ -265,7 +307,7 @@ def draw(analysis_path, output):
         handles,
         labels,
         loc="lower center",
-        bbox_to_anchor=(0.5, 0.065),
+        bbox_to_anchor=(0.5, 0.12),
         ncol=3,
         frameon=False,
     )
@@ -273,7 +315,8 @@ def draw(analysis_path, output):
         0.5,
         0.01,
         "SAT and UNSAT use separate eligible denominators. A Z3-certified UNSAT claim is not an LLM-produced proof.\n"
-        "Three requested seeds repeat the same problems; this is a descriptive pilot, not three independent datasets.",
+        "Three requested seeds repeat the same problems; this is a descriptive pilot, not three independent datasets."
+        + ("\n" + data["execution_disclosure"] if data["execution_disclosure"] else ""),
         ha="center",
         fontsize=8.5,
     )
@@ -285,6 +328,12 @@ def draw(analysis_path, output):
         "observed": data["observed"],
         "planned": data["planned"],
         "partial_matrix": data["partial"],
+        "operational_stopped": data["operational_stopped"],
+        "operational_errors": data["operational_errors"],
+        "all_episodes_ended_normally": data["all_episodes_ended_normally"],
+        "post_freeze_operational_extension": data["post_freeze_operational_extension"],
+        "operational_amendment_sha256": report.get("operational_amendment_sha256"),
+        "published_amendment_reference": report.get("published_amendment_reference"),
         "confidence_intervals": None,
         "significance_claim": False,
         "figures": {

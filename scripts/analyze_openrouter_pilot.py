@@ -126,12 +126,27 @@ def metrics(record):
     accounted = number(record["accounted_cost_usd"], "accounted_cost_usd")
     if known_cost is not None and known_cost > accounted + 1e-6:
         raise ValueError("Provider-reported cost exceeds accounted cost")
-    total_tokens = (
-        outcome.get("total_tokens") if outcome.get("usage_complete") is True else None
-    )
-    number(total_tokens, "total_tokens", integer=True, nullable=True)
     generated = outcome.get("generated_candidates")
     generated_count = len(generated) if isinstance(generated, list) else None
+    provider_calls = number(record["provider_calls"], "provider_calls", integer=True)
+    generated_usage_complete = outcome.get("usage_complete") is True
+    known_generated_tokens = outcome.get("known_total_tokens")
+    if known_generated_tokens is None and generated_usage_complete:
+        known_generated_tokens = outcome.get("total_tokens")
+    number(
+        known_generated_tokens,
+        "known_generated_token_subtotal",
+        integer=True,
+        nullable=True,
+    )
+    provider_usage_complete = (
+        generated_usage_complete
+        and generated_count is not None
+        and provider_calls == generated_count
+        and outcome.get("total_tokens") is not None
+    )
+    total_tokens = outcome.get("total_tokens") if provider_usage_complete else None
+    number(total_tokens, "total_tokens", integer=True, nullable=True)
     evaluated = outcome.get("evaluated_candidates")
     unused = outcome.get("unevaluated_candidates")
     if generated_count is not None:
@@ -151,12 +166,10 @@ def metrics(record):
         "success": int(success),
         "verified_outcome": certificate,
         "predicted_status": outcome.get("predicted_status"),
-        "provider_calls": number(
-            record["provider_calls"], "provider_calls", integer=True
-        ),
+        "provider_calls": provider_calls,
         "accounted_cost_usd": accounted,
         "provider_reported_cost_usd": known_cost,
-        "unconfirmed_reserve_usd": max(0.0, accounted - (known_cost or 0.0)),
+        "accounting_margin_usd": max(0.0, accounted - (known_cost or 0.0)),
         "uncertain_calls": number(
             record["uncertain_calls"], "uncertain_calls", integer=True
         ),
@@ -169,6 +182,9 @@ def metrics(record):
             nullable=record["status"] == "error",
         ),
         "total_tokens": total_tokens,
+        "generated_usage_complete": generated_usage_complete,
+        "provider_attempt_usage_complete": provider_usage_complete,
+        "known_generated_token_subtotal": known_generated_tokens,
         "generated_candidates": generated_count,
         "evaluated_candidates": evaluated,
         "unevaluated_candidates": unused,
@@ -197,6 +213,11 @@ def summarize(rows, planned, arm, stratum):
         if row["provider_reported_cost_usd"] is not None
     ]
     tokens = [row["total_tokens"] for row in chosen if row["total_tokens"] is not None]
+    generated_tokens = [
+        row["known_generated_token_subtotal"]
+        for row in chosen
+        if row["known_generated_token_subtotal"] is not None
+    ]
     latencies = [
         row["wall_latency_ms"] for row in chosen if row["wall_latency_ms"] is not None
     ]
@@ -214,6 +235,15 @@ def summarize(rows, planned, arm, stratum):
         if expected and n == len(expected)
         else None,
         "status_counts": dict(Counter(row["episode_status"] for row in chosen)),
+        "operational_stopped_episodes": sum(
+            row["episode_status"] == "stopped" for row in chosen
+        ),
+        "operational_error_episodes": sum(
+            row["episode_status"] == "error" for row in chosen
+        ),
+        "operational_unsuccessful_episodes": sum(
+            row["episode_status"] in ("stopped", "error") for row in chosen
+        ),
         "final_outcome_counts": dict(
             Counter(row["verified_outcome"] or "unavailable" for row in chosen)
         ),
@@ -229,8 +259,8 @@ def summarize(rows, planned, arm, stratum):
         else None,
         "provider_reported_cost_usd_known_subtotal": sum(known) if known else None,
         "episodes_with_reported_cost_field": len(known),
-        "unconfirmed_reserve_usd_total": sum(
-            row["unconfirmed_reserve_usd"] for row in chosen
+        "accounting_margin_usd_total": sum(
+            row["accounting_margin_usd"] for row in chosen
         ),
         "episodes_with_measured_wall_latency": len(latencies),
         "mean_wall_latency_ms": sum(latencies) / len(latencies) if latencies else None,
@@ -241,6 +271,10 @@ def summarize(rows, planned, arm, stratum):
         "total_tokens_all_observed_episodes": sum(tokens)
         if n and len(tokens) == n
         else None,
+        "known_generated_token_subtotal": sum(generated_tokens)
+        if generated_tokens
+        else None,
+        "episodes_with_known_generated_token_subtotal": len(generated_tokens),
         "mean_accounted_cost_per_certified_success": sum(
             row["accounted_cost_usd"] for row in chosen
         )
@@ -313,12 +347,56 @@ def analyze(root):
                 }
             )
     baseline_path = root / "direct_solver.json"
+    status_counts = {
+        status: sum(row["episode_status"] == status for row in rows)
+        for status in ("complete", "stopped", "error")
+    }
+    declared_counts = manifest.get("recorded_status_counts")
+    if declared_counts is not None and (
+        set(declared_counts) - set(status_counts)
+        or any(
+            declared_counts.get(status, 0) != count
+            for status, count in status_counts.items()
+        )
+    ):
+        raise ValueError(
+            "Manifest recorded_status_counts does not match episode records"
+        )
+    amendment_sha = manifest.get("operational_amendment_sha256")
+    amendment_reference = manifest.get("published_amendment_reference")
+    original_seconds = manifest.get(
+        "original_admission_seconds", protocol.get("operational_seconds")
+    )
+    additional_seconds = manifest.get("additional_admission_seconds", 0)
+    number(original_seconds, "original_admission_seconds", integer=True, nullable=True)
+    number(additional_seconds, "additional_admission_seconds", integer=True)
+    extension_present = bool(amendment_sha or amendment_reference or additional_seconds)
     report = {
         "schema": "cegvr-openrouter-pilot-analysis-v1",
         "study_status": manifest["status"],
         "planned": len(planned),
         "observed": len(rows),
         "missing": missing,
+        "recorded_status_counts": status_counts,
+        "manifest_recorded_status_counts": declared_counts,
+        "operational_amendment_sha256": amendment_sha,
+        "published_amendment_reference": amendment_reference,
+        "original_admission_seconds": original_seconds,
+        "additional_admission_seconds": additional_seconds,
+        "post_freeze_operational_extension": extension_present,
+        "operational_unsuccessful_episodes": status_counts["stopped"]
+        + status_counts["error"],
+        "execution_interpretation": (
+            "A post-freeze operational admission-window extension is disclosed separately from the original protocol; "
+            "this is not an unchanged preregistered execution. The original task matrix and endpoint definition remain identifiable. "
+            if extension_present
+            else "No post-freeze operational extension is declared by this manifest. "
+        )
+        + "Complete matrix coverage means a record exists for every cell, not that every episode ended normally. "
+        "Stopped/error episodes are operationally unsuccessful and retained in the observed certification rate under this execution; "
+        "their unsuccessful status is not attributed to model quality.",
+        "accounting_margin_definition": "Accounted cost minus the known provider-reported cost subtotal. This margin combines per-call rounding up to micro-USD and any retained reservations for calls with unknown cost; it is not an estimate of unconfirmed charges. Unknown provider cost remains null.",
+        "token_accounting_definition": "Outcome usage_complete covers generated proposals only. Complete provider-attempt token totals additionally require one recorded HTTP call per generated proposal; retries/extra calls make that total null unless independently reconstructed. Known generated-token subtotals remain separate and exclude discarded transport attempts.",
         "primary_endpoint": "SAT complete-candidate certification, evaluated against all encoded constraints; eligible SAT tasks only",
         "secondary_endpoints": [
             "UNSAT claim certification by Z3 (not an LLM-produced proof)",
@@ -376,9 +454,30 @@ def main(argv=None):
         "",
         report["interpretation"],
         "",
+        report["execution_interpretation"],
+        "",
+        f"Recorded statuses: complete={report['recorded_status_counts']['complete']}, "
+        f"stopped={report['recorded_status_counts']['stopped']}, error={report['recorded_status_counts']['error']}. "
+        "The observed certificate rate includes operational stops/errors and does not isolate model quality.",
+        "",
         "No population confidence interval or statistical-significance claim is reported. Missing metrics remain unmeasured, not zero.",
         "",
     ]
+    if report["post_freeze_operational_extension"]:
+        lines += [
+            "## Post-freeze operational extension",
+            "",
+            f"Original admission window: {report['original_admission_seconds']} seconds; "
+            f"additional admission window: {report['additional_admission_seconds']} seconds.",
+            "",
+            f"Published amendment reference: {report['published_amendment_reference'] or 'not provided in manifest'}.",
+            "",
+            f"Amendment SHA-256: `{report['operational_amendment_sha256'] or 'not provided in manifest'}`.",
+            "",
+            "This operational change is disclosed after the original freeze; it is not described as unchanged preregistration. "
+            "Old stopped/error records remain visible. No replacement of the primary denominator or model-quality claim is made.",
+            "",
+        ]
     for stratum, heading in [
         ("sat", "Primary: valid SAT assignments"),
         ("unsat", "Secondary: solver-certified UNSAT claims"),
@@ -387,8 +486,8 @@ def main(argv=None):
         lines += [
             "## " + heading,
             "",
-            "| Arm | Observed / planned | Certified | Observed rate | Accounted cost / observed | Provider calls |",
-            "|---|---:|---:|---:|---:|---:|",
+            "| Arm | Observed / planned | Certified | Observed rate | Stopped / error | Accounted cost / observed | Provider calls |",
+            "|---|---:|---:|---:|---:|---:|---:|",
         ]
         for row in report["summary"]:
             if row["stratum"] != stratum:
@@ -404,13 +503,17 @@ def main(argv=None):
                 else "unmeasured"
             )
             lines.append(
-                f"| {row['arm']} | {row['observed']}/{row['planned']} | {row['certified_successes']} | {rate} | {cost} | {row['provider_calls_total']} |"
+                f"| {row['arm']} | {row['observed']}/{row['planned']} | {row['certified_successes']} | {rate} | {row['operational_stopped_episodes']}/{row['operational_error_episodes']} | {cost} | {row['provider_calls_total']} |"
             )
         lines.append("")
     lines += [
         "All launched stopped/error episodes remain in observed denominators. An observed rate from a partial matrix is not a completed-study rate. Solver-only and witness-copy controls are separately retained in analysis.json and are not pooled with model arms.",
         "",
-        "Provider-reported known cost subtotals, unresolved reserves, missing token usage, unused generated candidates and paired common-observation counts are explicit in analysis.json. Three requested seeds are repeated executions of the same problems, not three independent datasets. Exact seeds are requested, not proof of provider determinism.",
+        report["accounting_margin_definition"],
+        "",
+        report["token_accounting_definition"],
+        "",
+        "Provider-reported known cost subtotals, accounting margins, uncertain call counts, missing token usage, unused generated candidates and paired common-observation counts are explicit in analysis.json. Three requested seeds are repeated executions of the same problems, not three independent datasets. Exact seeds are requested, not proof of provider determinism.",
         "",
     ]
     (args.output / "results.md").write_text("\n".join(lines))

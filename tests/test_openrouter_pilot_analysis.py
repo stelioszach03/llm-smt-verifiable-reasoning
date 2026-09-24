@@ -161,7 +161,7 @@ def test_token_unknown_and_unconfirmed_cost_do_not_become_measured_zero(tmp_path
     metric = analysis.metrics(row)
     assert metric["total_tokens"] is None
     assert metric["provider_reported_cost_usd"] is None
-    assert metric["unconfirmed_reserve_usd"] == 0.01
+    assert metric["accounting_margin_usd"] == 0.01
 
 
 def test_duplicate_identity_and_manifest_missing_cannot_silently_change_denominators(
@@ -238,3 +238,103 @@ def test_worker_error_unknown_wall_time_is_excluded_not_imputed_zero(tmp_path):
     row.update(status="complete", outcome=rows[2]["outcome"])
     with pytest.raises(ValueError, match="wall_latency_ms"):
         analysis.metrics(row)
+
+
+def test_known_micro_usd_rounding_is_an_accounting_margin_not_uncertain_charge(
+    tmp_path,
+):
+    _, rows = fixture_study(tmp_path)
+    row = rows[0]
+    row.update(
+        provider_reported_cost_usd=0.00000914,
+        accounted_cost_usd=0.000010,
+        uncertain_calls=0,
+    )
+    metric = analysis.metrics(row)
+    assert metric["accounting_margin_usd"] == pytest.approx(0.00000086)
+    assert metric["uncertain_calls"] == 0
+    assert "unconfirmed_reserve_usd" not in metric
+    save_record(tmp_path, row)
+    report, _ = analysis.analyze(tmp_path)
+    assert "rounding" in report["accounting_margin_definition"]
+
+
+def test_post_freeze_operational_extension_is_disclosed_and_status_counts_reconcile(
+    tmp_path,
+):
+    source = tmp_path / "study"
+    source.mkdir()
+    _, rows = fixture_study(source, all_records=True)
+    rows[0].update(status="stopped", outcome=None, error="StudyStopped")
+    save_record(source, rows[0])
+    manifest_path = source / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest.update(
+        operational_amendment_sha256="a" * 64,
+        published_amendment_reference="https://example.invalid/fixture-amendment",
+        original_admission_seconds=2700,
+        additional_admission_seconds=2700,
+        recorded_status_counts={"complete": 7, "stopped": 1},
+    )
+    manifest_path.write_text(json.dumps(manifest))
+    output = tmp_path / "analysis"
+    analysis.main([str(source), "--output", str(output)])
+    report = json.loads((output / "analysis.json").read_text())
+    assert report["observed"] == report["planned"] == 8
+    assert report["post_freeze_operational_extension"]
+    assert report["operational_amendment_sha256"] == "a" * 64
+    assert (
+        report["published_amendment_reference"]
+        == manifest["published_amendment_reference"]
+    )
+    assert (
+        report["original_admission_seconds"]
+        == report["additional_admission_seconds"]
+        == 2700
+    )
+    assert report["recorded_status_counts"] == {"complete": 7, "stopped": 1, "error": 0}
+    assert report["operational_unsuccessful_episodes"] == 1
+    primary = next(
+        row
+        for row in report["summary"]
+        if row["stratum"] == "sat" and row["arm"] == "one_shot"
+    )
+    assert primary["operational_stopped_episodes"] == 1
+    assert primary["observed_success_rate"] == 0.5
+    prose = (output / "results.md").read_text()
+    assert "Post-freeze operational extension" in prose
+    assert "not described as unchanged preregistration" in prose
+    assert "does not isolate model quality" in prose
+    manifest["recorded_status_counts"] = {"complete": 8}
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="recorded_status_counts"):
+        analysis.analyze(source)
+
+
+def test_generated_usage_after_discarded_http_retry_is_not_complete_provider_usage(
+    tmp_path,
+):
+    _, rows = fixture_study(tmp_path)
+    row = rows[0]
+    row.update(provider_calls=2, uncertain_calls=1, transport_errors=1)
+    row["outcome"].update(
+        generated_candidates=[{}],
+        evaluated_candidates=1,
+        unevaluated_candidates=0,
+        usage_complete=True,
+        total_tokens=100,
+        known_total_tokens=100,
+    )
+    metric = analysis.metrics(row)
+    assert metric["generated_usage_complete"]
+    assert not metric["provider_attempt_usage_complete"]
+    assert metric["known_generated_token_subtotal"] == 100
+    assert metric["total_tokens"] is None
+    save_record(tmp_path, row)
+    report, _ = analysis.analyze(tmp_path)
+    primary = next(
+        r for r in report["summary"] if r["stratum"] == "sat" and r["arm"] == "one_shot"
+    )
+    assert primary["total_tokens_all_observed_episodes"] is None
+    assert primary["episodes_with_complete_token_usage"] == 1
+    assert primary["known_generated_token_subtotal"] == 180
