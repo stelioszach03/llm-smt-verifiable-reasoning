@@ -1,0 +1,19 @@
+{
+  "README.md": "064079077ff768b305bf4e96f9c2ac3ddcf11e5d73955d3add965afbd96ce194",
+  "analysis.json": "439ad722eb39ee193582ec5d93b83f364cc881e1cacc0eddf34da630af13621c",
+  "continuation-environment.json": "728e6422d0f72fb7cbdaa99eae0129485a3433f1f4ae7c8062afbf623fd48358",
+  "continuation-manifest.json": "0004450dfbd21106f9f41369cd117f3c2711399dfafa211171a52c0a940843ed",
+  "direct_solver.json": "68185e6e1bc74f48ff5b6ffe14e324353abde0916683b3bde757b11a2184124d",
+  "environment.json": "a9f7282b063180d8e62183b7395754724fa94401d8608c5c639beabe9c210195",
+  "episodes.csv": "804b24ff16c2bcf43dd62caf6c151c93bcd93b2be2c0edb86c291d5d7a9830ba",
+  "figures/figure-provenance.json": "08753c7a10cb6fb6ca860393ce6197469b7a614c191f5a52927e5fd733380b56",
+  "figures/sat-success-versus-cost.png": "2c34b94c5b482a5c16327d972fdb9e383ca1b6c2ae468c72fd3c603628d01b46",
+  "figures/sat-success-versus-cost.svg": "246f0b38454d71d4e29f040dfe7ade086471699f4462702495aa71f2a974a4fe",
+  "figures/sat-unsat-certification-counts.png": "be927c01800a7f27b3b06a5a8274911bbaa93c67ffe857cd2351f3927a432d0d",
+  "figures/sat-unsat-certification-counts.svg": "ddbfae420dac18d778f3de021c91317de948eb21e5dc2e94e5854dfce5c0737e",
+  "manifest.json": "f5e9ff68cf6c3ebe3b3358c4cd1142095a7f74f0109b2cb687a727a5bc0d4683",
+  "protocol.json": "c413019db05d2c90cc1d89d708e2e5145d456dffba20bcc524e3157786c464e8",
+  "provenance.json": "a3e03cb2fc0512530ed074ace8f6ad1e7a9dd7f8e59957b23887015b8fd4423b",
+  "results.md": "07818b2c8da2d353aca8aaf6bf489752497aa35fbe7d8fae6b80d03fdccd1ff1",
+  "transport-reconciliation.json": "824c6556c0ecdea34ac2bfd16eae700f9c98e2dc275a0ad6025df9b20944a666"
+}

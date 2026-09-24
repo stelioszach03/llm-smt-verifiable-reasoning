@@ -1,0 +1,5566 @@
+{
+  "accounting": "Every HTTPattempt reserved in unchanged existingForge researchledger; unknowncost retainsfullreservation; separate$3study cap; providerusagecost excludescreditfees.",
+  "allowance_usd": 3.0,
+  "analysis": "Descriptive paired task/seed comparisons; missingunlaunched not failures; no significance or generalreasoning claim.",
+  "arms": [
+    "one_shot",
+    "multi_no_feedback",
+    "multi_generic_feedback",
+    "multi_unsat_core_feedback",
+    "cd_vgs_core_rank"
+  ],
+  "dataset_sha256": "2476dfe4499fd18310fc80e5243c9caa38b2eb8d1bc9853cf18e10672ecd4529",
+  "frozen_at": "2026-09-24T11:32:50.156320+00:00",
+  "known_limits": [
+    "Syntheticpubliclinearfeasibility",
+    "simplecontradictoryUNSATinstances",
+    "directZ3can solve theseproblems withoutLLM",
+    "requestedseed doesn'tguaranteedeterminism",
+    "hostedcheckpointversionnotpinnable",
+    "equalcandidatecapsarenotequalcost"
+  ],
+  "max_output_tokens": 2048,
+  "max_rounds": 4,
+  "model": "openai/gpt-oss-20b",
+  "operational_seconds": 2700,
+  "per_round_candidates": 4,
+  "primary_endpoint": "SAT assignment certification among30tasks x3requestedseeds perarm",
+  "provider": {
+    "allow_fallbacks": false,
+    "max_price": {
+      "completion": 0.25,
+      "prompt": 0.05
+    },
+    "only": [
+      "coreweave/fp4"
+    ],
+    "quantizations": [
+      "fp4"
+    ],
+    "require_parameters": true
+  },
+  "reasoning_effort": "low",
+  "retry_policy": "Only HTTP429: at most2 transport retries, waits2s/4s, same payload; all charged/accounted.",
+  "runtime_hashes": {
+    "data/linear/problems.jsonl": "2476dfe4499fd18310fc80e5243c9caa38b2eb8d1bc9853cf18e10672ecd4529",
+    "requirements-study.txt": "df3dde7bfc39b827b40b3eb6c9d25066b6e7065c2578e8a8d38be45c1f6381ba",
+    "scripts/run_openrouter_pilot.py": "01fe05984eaa5c2f2d2a34796e5656f264757a507f5db519895c17a2632d7377",
+    "src/cegvr/__init__.py": "66e0600d7a40700e86e297e13b660a200a979b879a2860ff581f26cc9b88b3c1",
+    "src/cegvr/baselines/__init__.py": "c2fd41a9bf6188c9db5d2270bddfcb9e834c681720c08e10c777abe95b51563b",
+    "src/cegvr/baselines/dummy.py": "820a16afd2c731ba64c01d9f770f7005d80ecb6a74bb40f49525e224f3e60133",
+    "src/cegvr/candidate/__init__.py": "c15b08cc80baea28c04f9bfb1f5b2c913f893e290296e89fc9789d449bd02827",
+    "src/cegvr/candidate/repair.py": "e58dc5f8e88961f33f0a8eac269d1e57a8b3f52b8987147da5b4fc2017ac3880",
+    "src/cegvr/candidate/types.py": "61e8b9d7b7f9f1e7729d7bcbf0fe80f3e8ad4f7bf0ac5d66a021288bd569858f",
+    "src/cegvr/candidate/verifier.py": "ba2ed9b52004d3bebcdeccfa1c3778e864c3c0ce4259c396b8ad881c37594108",
+    "src/cegvr/cli.py": "5e1ee15f07dabded432cf351b543fe4442a1a6c04c608a06fa130cfe1887bf42",
+    "src/cegvr/config.py": "95564bd778fb8b907746cae67c9b948fd8ea2ca9b42024f0f8c56ae1ca707343",
+    "src/cegvr/data/__init__.py": "3bb0542c04cf0671470f185cf136375de9ec2e017fefdfb32c737f576912e3be",
+    "src/cegvr/data/adapters.py": "ddbf8e31efbcded206782ae4da404219ea585ba871e1aea19d5b2c8c0a699b66",
+    "src/cegvr/data/loader.py": "8df7ce71ed39d1dc42be1c0b17c77ec3bd957e8a3f91c7896ef7d372d6e072d2",
+    "src/cegvr/engine/__init__.py": "07c33d86db970afbaf42f086d31c2a09725dd363364788b1db31287591b61ef0",
+    "src/cegvr/engine/configs.py": "ca9f51087d4b8c36a68e9eb8de56f1dd24be24e6ab7c2444935693c9172f1217",
+    "src/cegvr/engine/errors.py": "f40e4392682cd1a88b6bfa804994099350e19b4a0dd937a6038b85fb982a617f",
+    "src/cegvr/engine/metrics.py": "063e1af46f6076e049eeedb07ef0608ee2207bd5790fe0a910c0b5d7053dacb1",
+    "src/cegvr/engine/repair.py": "8094d689849bc50f422f7c146c911538edab5eb437a268c3f7db4e24b0fa9eba",
+    "src/cegvr/eval/aggregate.py": "eaffcc3b386ac7c5f3b8126c33e8b59a611f0e16889c976f0d9226272a2d72be",
+    "src/cegvr/eval/harness.py": "1be5e7c8f51a98361e39b8f4dce779261ab46c672ecc82f90654486024551fea",
+    "src/cegvr/generation/__init__.py": "c1cd67ae0147ec3466049a0c9b295d9c903c36818cfdcfce16d882eee59604af",
+    "src/cegvr/generation/json_guard.py": "315497268525c11ed1215001a4a0d19d813e714d05fb3955d328c77669f211bf",
+    "src/cegvr/generation/llm_candidate_linear.py": "8347a234ce02fae36a94088b1c9cc95148192cf1268d5abce650ef037b81e2f2",
+    "src/cegvr/generation/llm_latin5.py": "c1183527de3d38233e217183472c7b289265ca49addf4aff0f23eb741dd7c02a",
+    "src/cegvr/generation/llm_linear.py": "d6e981964425af87fcfd4ee270a7a1312f178e761e16d9e7e0d84b5930e988a2",
+    "src/cegvr/generation/llm_sudoku.py": "51009f9707bd5a085cf7b8405518b40ed8c2db18d024adf0ce11c1e1715cbc5e",
+    "src/cegvr/generation/openrouter_study.py": "68ae88863d250fd03a84e5af1a8444e978f1e99f86da3a25f51a98534bb60dc6",
+    "src/cegvr/generation/prompts.py": "474fb3174196bbcc9b0410ea048eb9712d2c489e4f2f44c1315be08bc00a474c",
+    "src/cegvr/generation/provider.py": "7e71fac6fbce9e3789ac8c3fbf43343014fffb3804e019f9c8edd6a50f272283",
+    "src/cegvr/grammar/__init__.py": "575eccc3d19b82dfad9a780e7402dbdbda7d28e3a97fd304661ca4495bb32fbd",
+    "src/cegvr/grammar/types.py": "2d9fa02f78c141b8895586271af299c2c139a2b0f6bbdded6f0f705c20eb6513",
+    "src/cegvr/grammar/validate.py": "5805c6806c0b9b12360fc401b4ce6b709dca0a75704c6a28f0f11f953899ede1",
+    "src/cegvr/plots/__init__.py": "9789bd476de7093865251edc19ff23b515a937c12e13c1c4748c78064915ec8c",
+    "src/cegvr/plots/curves.py": "3d5e1a78cfb809ea42f92188e116b098c4a7f875d47cd6552d8f40e5273e4e64",
+    "src/cegvr/report/case_studies.py": "51a6982136f8a9a0f3cd8b4ee7d0e73438e7b0806781a6a6733e1ac0ea80ec63",
+    "src/cegvr/robustness/__init__.py": "c2e5e49ae56d9f66579dd5fe5ca2cae4a8cd77691c400cb3d90a9856f3e2630e",
+    "src/cegvr/robustness/paraphrase.py": "2bf6525397fcf1e7a3c7ad71e8aec2ade236da5716e1b55bcccdc18e566d8979",
+    "src/cegvr/robustness/runner.py": "4aba289661efb63074dd61af98188b7c0fba5d376926fc9265060a1f8a79119c",
+    "src/cegvr/robustness/spec_variations.py": "a2ed242b9e19f5cf3d77c44ad72dd3a429ebda4e00e3da8b4007a66a17eb5c37",
+    "src/cegvr/smt/__init__.py": "ddb907923e4a9fa3a088409ca334e3ac72887d72f3b63219066a891ed934a786",
+    "src/cegvr/smt/encoder.py": "bdd0ab068b9d750914bdc2716a2b8e86833ef2fd3308d4fcddaa8f217010c0c3",
+    "src/cegvr/smt/runner.py": "36ef19290731db1e97cd951584ecf4c449df3403348178c52d8f698a778c44c0",
+    "src/cegvr/tables/__init__.py": "86c301ccb39213d47a155f3ef7a53c6710c7e661fc25e3af122c98b13dc2eb37",
+    "src/cegvr/tables/main.py": "6f2b005b6beb02e727722e1bce0fc62c2c4816a4ce731da01a005b377bbd927b",
+    "src/cegvr/utils/logging.py": "40e7c42641187cc907a1893d14c8824ec7eac0feb9ef5c7eacdbde498f3344aa",
+    "src/cegvr/utils/random.py": "0141ef2384f8303fa6c7b111d0aff2685135ab940b9e3405f5b848c2697beb55"
+  },
+  "secondary_endpoints": [
+    "UNSAT claim certification by Z3",
+    "overall certification",
+    "all provider calls/cost/tokens",
+    "repair after first failure"
+  ],
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "selected_tasks": [
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0083"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0292"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0205"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0192"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0244"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0184"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0022"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0263"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0274"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0057"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0220"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0068"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0214"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0186"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0230"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0233"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0039"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0280"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0137"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0054"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0028"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0063"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0031"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0156"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0121"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0061"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0242"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0261"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0159"
+    },
+    {
+      "ground_truth": "sat",
+      "problem_id": "linear-sat-0197"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0165"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0053"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0167"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0128"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0078"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0034"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0044"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0026"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0166"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0023"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0085"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0056"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0146"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0173"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0176"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0148"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0168"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0125"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0145"
+    },
+    {
+      "ground_truth": "unsat",
+      "problem_id": "linear-unsat-0010"
+    }
+  ],
+  "selection": "SHA256('cegvr-pilot-v1|'+problem_id), smallest30SAT/20UNSAT; existingpublic500taskdataset, not unseen/external.",
+  "solver_timeout_ms": 1500,
+  "source_commit": "dc7b9de89f3a507705b259c870af82eda763621f",
+  "study_id": "cegvr-openrouter-pilot1-20260924",
+  "study_order": [
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "2e2773c821b5bdefe68a",
+      "problem_id": "linear-sat-0083",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "73c8d79106e0267c4493",
+      "problem_id": "linear-sat-0031",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "d09544bbb5e48a0a21ef",
+      "problem_id": "linear-unsat-0044",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "e3bb305292c196a34df3",
+      "problem_id": "linear-sat-0031",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "8d150fd6a5179b119f7d",
+      "problem_id": "linear-sat-0137",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "0bb0caeb255a1b3ba2e1",
+      "problem_id": "linear-unsat-0026",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "08491f424b412ac4877e",
+      "problem_id": "linear-unsat-0128",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "88e90d33bc889621e1c0",
+      "problem_id": "linear-unsat-0173",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "b65e5ec27429fdad80d4",
+      "problem_id": "linear-unsat-0168",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "1285e7ea8791aefb1ed3",
+      "problem_id": "linear-sat-0137",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "141f86e3a46face2aeb2",
+      "problem_id": "linear-unsat-0125",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "69600dfc11dd345a32cd",
+      "problem_id": "linear-sat-0280",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "fa3a5cb0d0e518815e78",
+      "problem_id": "linear-sat-0156",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "0ce962348d8ae3438e3a",
+      "problem_id": "linear-sat-0230",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "63790d168f139423c8d4",
+      "problem_id": "linear-unsat-0026",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "7cc4603ccb79f0066069",
+      "problem_id": "linear-sat-0261",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "9fa1ebf6beb8f5b7d2dc",
+      "problem_id": "linear-sat-0061",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c5f0ba2386cb1cc701e9",
+      "problem_id": "linear-sat-0022",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "b8a5b823344071cfb96b",
+      "problem_id": "linear-sat-0031",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "49aee6f7ea3ed4f9cd62",
+      "problem_id": "linear-unsat-0145",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "d207fbf7da5c19a32cec",
+      "problem_id": "linear-unsat-0034",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4cc5b9d935b824b95a68",
+      "problem_id": "linear-sat-0242",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "18075feeddae7b37d254",
+      "problem_id": "linear-sat-0230",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "d13fc2ecb6c86f06ef4b",
+      "problem_id": "linear-unsat-0078",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "1d77a7308d05158c1336",
+      "problem_id": "linear-unsat-0026",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "cddbb83361f53586d62f",
+      "problem_id": "linear-unsat-0167",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "c46eb7f234988641d1bd",
+      "problem_id": "linear-unsat-0125",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "715f4da1f5e5e0e1c013",
+      "problem_id": "linear-sat-0197",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "9c1f3855474d51d30793",
+      "problem_id": "linear-sat-0068",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "0c3828fd26c28ba289ba",
+      "problem_id": "linear-sat-0063",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "32fe709b637100105b7f",
+      "problem_id": "linear-sat-0274",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "ad8f2bad1c7925853969",
+      "problem_id": "linear-sat-0197",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "eadb9d433e67056c2b4d",
+      "problem_id": "linear-unsat-0166",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "b535ac562769bac89926",
+      "problem_id": "linear-unsat-0056",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "06bc8e254a2de8f3f62b",
+      "problem_id": "linear-sat-0192",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "8ccb5117db57165e45d7",
+      "problem_id": "linear-sat-0233",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "e7b0012e1b93d46325b8",
+      "problem_id": "linear-unsat-0148",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "b815edf5f8e51f8dc6ac",
+      "problem_id": "linear-unsat-0026",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "b36c0f52eb3bdfd3e5d2",
+      "problem_id": "linear-sat-0121",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "79a552ae5e5f17b7908c",
+      "problem_id": "linear-sat-0230",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "5129d5b764a8d36340c3",
+      "problem_id": "linear-unsat-0146",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "43e9df7032d4b1cd7288",
+      "problem_id": "linear-sat-0214",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "c01e18f4ee7a2cef63b0",
+      "problem_id": "linear-unsat-0146",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "0b62ceb21042762815f0",
+      "problem_id": "linear-unsat-0173",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "8a2f3b41a58b92f88d80",
+      "problem_id": "linear-sat-0121",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "e53e87f06fb8cee85ebc",
+      "problem_id": "linear-sat-0244",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "6e2e2209d5cd4bc61da4",
+      "problem_id": "linear-sat-0061",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "41aff3f2b3e90026f698",
+      "problem_id": "linear-sat-0022",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "2ce6c865b552da7eafcd",
+      "problem_id": "linear-unsat-0145",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "0dd55fbdb90ecb6760a3",
+      "problem_id": "linear-unsat-0023",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "afc58b02d493fe8edbd2",
+      "problem_id": "linear-sat-0121",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "f99e6d75affb6320ae21",
+      "problem_id": "linear-unsat-0145",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "546422b862dcdf8a7d77",
+      "problem_id": "linear-sat-0156",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "76cd4062c72ee0e22383",
+      "problem_id": "linear-sat-0244",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "59755c9780e08a82eb09",
+      "problem_id": "linear-unsat-0010",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "4b71777788c084d9e92a",
+      "problem_id": "linear-unsat-0125",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "f8812c83e2d685f26229",
+      "problem_id": "linear-unsat-0010",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "556437e9c8cd3c94c0dd",
+      "problem_id": "linear-unsat-0146",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "387ed1bfba449dfd3627",
+      "problem_id": "linear-sat-0057",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "46a4f0ff81aeecc8142d",
+      "problem_id": "linear-sat-0184",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "8a00ac25cd7de7713886",
+      "problem_id": "linear-sat-0068",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "95d532beb6c731760b61",
+      "problem_id": "linear-sat-0292",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "dbc43d82f5d832a6c4cc",
+      "problem_id": "linear-sat-0184",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "55a8ac30d700b86de050",
+      "problem_id": "linear-sat-0192",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "f35e07a2a4ccb27e4419",
+      "problem_id": "linear-unsat-0056",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "91016540df10dfe47a39",
+      "problem_id": "linear-unsat-0056",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "72512a0ff56d43ce3483",
+      "problem_id": "linear-sat-0039",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "58dfde2150637abb49e8",
+      "problem_id": "linear-sat-0263",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "bd7b0913b0c6d543e014",
+      "problem_id": "linear-sat-0083",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "6a675be3ad70e148bc5e",
+      "problem_id": "linear-unsat-0166",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "c7ed82ec2cf90c68b4f0",
+      "problem_id": "linear-sat-0186",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "e9534d007a58727bcc8d",
+      "problem_id": "linear-unsat-0056",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "95b1c3136de704a69a1e",
+      "problem_id": "linear-sat-0233",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "1f2d60712bc845ada300",
+      "problem_id": "linear-sat-0061",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "afcfdbe46472daf90d22",
+      "problem_id": "linear-unsat-0168",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "e6f553d4a48951fe279a",
+      "problem_id": "linear-unsat-0173",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "37a0c0416d37427df1e1",
+      "problem_id": "linear-unsat-0078",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "19cef1bdc1857f848a37",
+      "problem_id": "linear-unsat-0078",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "1f337c6536ae8d30a8ed",
+      "problem_id": "linear-unsat-0167",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "41cf282240c19a3af95f",
+      "problem_id": "linear-unsat-0167",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "d421fc439c662dd54655",
+      "problem_id": "linear-sat-0192",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c6c02877885f1d2d037b",
+      "problem_id": "linear-sat-0274",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c972ede903587ac51fc2",
+      "problem_id": "linear-sat-0156",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "74ed2c34ff162bac6966",
+      "problem_id": "linear-sat-0054",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "88753062ee15b482c0d9",
+      "problem_id": "linear-sat-0061",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "ce8cba86e5e91381edc9",
+      "problem_id": "linear-sat-0263",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "d03cb0a7d1ba1a577bea",
+      "problem_id": "linear-unsat-0168",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "e32a8b5ecfb4da7cf9d2",
+      "problem_id": "linear-unsat-0034",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "b11cf2d49619760b38c3",
+      "problem_id": "linear-sat-0292",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "af6221a5630753fe7ff8",
+      "problem_id": "linear-sat-0261",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "cf60e65f96e273c65ec5",
+      "problem_id": "linear-unsat-0085",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ae9b9a610acd903005ef",
+      "problem_id": "linear-sat-0263",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "5953dac832ac246c5bf3",
+      "problem_id": "linear-sat-0274",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "8894ae48e474ef596950",
+      "problem_id": "linear-sat-0159",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "a1ce0d49e9b20ad1401b",
+      "problem_id": "linear-sat-0280",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "4df214c648bf4d0668cf",
+      "problem_id": "linear-unsat-0023",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "ebe3be9e4aa5f7e58509",
+      "problem_id": "linear-sat-0274",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "36545e17b3e436fd10b6",
+      "problem_id": "linear-sat-0061",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "8fc646f65228041bf7b6",
+      "problem_id": "linear-sat-0054",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "078172a2d6ecee070d0e",
+      "problem_id": "linear-sat-0063",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "275268109a62f32898e3",
+      "problem_id": "linear-sat-0214",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "010727ca52cf66f81d55",
+      "problem_id": "linear-sat-0214",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "c090da376f26f78050cc",
+      "problem_id": "linear-sat-0057",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "6bed78511666b9c827aa",
+      "problem_id": "linear-sat-0244",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "83a177ed24d0b36d82cf",
+      "problem_id": "linear-unsat-0078",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "bba0441c778751cee90d",
+      "problem_id": "linear-sat-0156",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "25bc8cee019f3080c6db",
+      "problem_id": "linear-sat-0214",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "8a77327484bb22eef388",
+      "problem_id": "linear-sat-0054",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "1ff48697a483c96b8d65",
+      "problem_id": "linear-unsat-0168",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5550dac5cc477af1ff4a",
+      "problem_id": "linear-sat-0292",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "9b80b3eab68bc2a0f811",
+      "problem_id": "linear-sat-0205",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "3f4f508fb0aec67c7dcd",
+      "problem_id": "linear-sat-0063",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "86b26fcb42fbe519676f",
+      "problem_id": "linear-sat-0068",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4a16809563fc9c83c297",
+      "problem_id": "linear-sat-0280",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "208fc1baf49980cf5306",
+      "problem_id": "linear-unsat-0165",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "bc84c591ef1e1bcd239a",
+      "problem_id": "linear-unsat-0166",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "654ddc82d97e17bf1808",
+      "problem_id": "linear-sat-0233",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "04520e522c7f151ecee3",
+      "problem_id": "linear-unsat-0053",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "3c309fd3494cccad02b0",
+      "problem_id": "linear-sat-0230",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "7241b4fcf5832ca4634b",
+      "problem_id": "linear-unsat-0044",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "50dec042f369bae15f3e",
+      "problem_id": "linear-unsat-0023",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "30a342097698f8d7d856",
+      "problem_id": "linear-sat-0022",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "b01c2589582fdd3d2046",
+      "problem_id": "linear-sat-0263",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "de80d0a8116d0129f5fe",
+      "problem_id": "linear-sat-0028",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "532b42ce2a5c75342194",
+      "problem_id": "linear-unsat-0053",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "e14d947232006e7a0d97",
+      "problem_id": "linear-unsat-0023",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "01c6aba622bef4f37646",
+      "problem_id": "linear-unsat-0078",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "68faad46bf916227df7d",
+      "problem_id": "linear-sat-0057",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "7afffd6cf7cf50305196",
+      "problem_id": "linear-unsat-0085",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "b1579e295dbd37bb8687",
+      "problem_id": "linear-unsat-0128",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d987aba4b1fab1d68d29",
+      "problem_id": "linear-sat-0242",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "884132188018259a2ade",
+      "problem_id": "linear-unsat-0023",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "52a454ba416e8cc83d8d",
+      "problem_id": "linear-sat-0159",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f466d0db50aa03ce55c4",
+      "problem_id": "linear-sat-0192",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "c2252bec0ce669584788",
+      "problem_id": "linear-sat-0186",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "6393e599e5afcebf871a",
+      "problem_id": "linear-sat-0039",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "96ccffec93a0d6db349f",
+      "problem_id": "linear-sat-0244",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "81eb2a865e583c04b197",
+      "problem_id": "linear-sat-0121",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "4b8bdf453791c7d119e2",
+      "problem_id": "linear-sat-0192",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "421a5c528f5ddcc3455e",
+      "problem_id": "linear-unsat-0010",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "7c38f44c985ea8f77245",
+      "problem_id": "linear-sat-0028",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "88fcc1d5cf970c41ec46",
+      "problem_id": "linear-unsat-0166",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "aae28367b2a10ea66c32",
+      "problem_id": "linear-unsat-0173",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "2b3431601402fca2cb7e",
+      "problem_id": "linear-sat-0274",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "9e32de8928acb88f550d",
+      "problem_id": "linear-unsat-0176",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7b3a5b6dfce41ba60c51",
+      "problem_id": "linear-unsat-0167",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "1b1d486520f20cc5d944",
+      "problem_id": "linear-sat-0039",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "395f68a629b027f5e482",
+      "problem_id": "linear-sat-0230",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5956a8eff84f753c35c0",
+      "problem_id": "linear-sat-0186",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "21d1b3e267970fb40a9f",
+      "problem_id": "linear-sat-0057",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "a7365b3011c29b6bf219",
+      "problem_id": "linear-sat-0137",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "379d226092d1b41b7ee8",
+      "problem_id": "linear-sat-0137",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "a39264bffea1c539b48c",
+      "problem_id": "linear-sat-0039",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "4858c57154e0902e6f0f",
+      "problem_id": "linear-sat-0244",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "fb5fd4220eb2a9e69cda",
+      "problem_id": "linear-sat-0205",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "3c61e11ad3898facc8a7",
+      "problem_id": "linear-unsat-0023",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "fe6fe3ac0b01e0b2c340",
+      "problem_id": "linear-sat-0121",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "3e021ead28818905841c",
+      "problem_id": "linear-unsat-0125",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "eef114cafc72820c28db",
+      "problem_id": "linear-sat-0292",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "9377972cb266d453faee",
+      "problem_id": "linear-sat-0083",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "851835489f53a8d9617e",
+      "problem_id": "linear-unsat-0044",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "47791c75b1e5cde56679",
+      "problem_id": "linear-sat-0186",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7cec2e4df74aade08453",
+      "problem_id": "linear-unsat-0176",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "e1a1fa74dae11ded1850",
+      "problem_id": "linear-unsat-0044",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "f9891cd1596559396676",
+      "problem_id": "linear-sat-0261",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "cb2228eeee6c94362b54",
+      "problem_id": "linear-unsat-0034",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "7d87e389dc30fa067c9d",
+      "problem_id": "linear-sat-0230",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "df71bbbe46e3c6b399b0",
+      "problem_id": "linear-unsat-0056",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "f473bd57a2006c28683b",
+      "problem_id": "linear-unsat-0176",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "3a21a6acf380184b8208",
+      "problem_id": "linear-sat-0192",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "6f8f74f8637e1bd8d423",
+      "problem_id": "linear-sat-0220",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "83f9d07c5102ba69dd49",
+      "problem_id": "linear-unsat-0010",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "91fe1f5b92ba6ae465a7",
+      "problem_id": "linear-unsat-0053",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "95644342958623aff2b6",
+      "problem_id": "linear-unsat-0165",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "100d6dfb6897f6653ff7",
+      "problem_id": "linear-unsat-0165",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "84cbb6c0e502f67a003b",
+      "problem_id": "linear-unsat-0023",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "599ffb0a3c291a1b70d8",
+      "problem_id": "linear-sat-0028",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "e2c575e1d45a12dc7a80",
+      "problem_id": "linear-unsat-0165",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "e1fc9cf00272e43b0dde",
+      "problem_id": "linear-sat-0197",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "06d379186e00f4c58d0e",
+      "problem_id": "linear-unsat-0145",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "eba188ec6a4dfadf9576",
+      "problem_id": "linear-sat-0192",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "7827cdaa6375d3c0cc64",
+      "problem_id": "linear-unsat-0010",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "b13b2959bf67d88292a3",
+      "problem_id": "linear-sat-0261",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "9309cd8a2b80eae6009c",
+      "problem_id": "linear-unsat-0034",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "0b20c1e150f6ab3300f0",
+      "problem_id": "linear-sat-0184",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "93351584bbf0613383d4",
+      "problem_id": "linear-unsat-0145",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "e41c844a3d01d9cf6283",
+      "problem_id": "linear-unsat-0176",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c514540d4159e176d60a",
+      "problem_id": "linear-sat-0159",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "197abe6f2feebb662606",
+      "problem_id": "linear-unsat-0056",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "954bc85080aefc5cbd75",
+      "problem_id": "linear-sat-0156",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "8dc003d9e5cff48fdf95",
+      "problem_id": "linear-sat-0057",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "e9bc33ba41ce8b7fed65",
+      "problem_id": "linear-sat-0233",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "50f98c852a0d4bfbe964",
+      "problem_id": "linear-sat-0039",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "cd96da8d7447adbb8d5f",
+      "problem_id": "linear-unsat-0173",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "41afbf0666ad5d48a02a",
+      "problem_id": "linear-sat-0292",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "d5ac717580db18e30ed2",
+      "problem_id": "linear-sat-0083",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "fe1cc070e5dcd11fadeb",
+      "problem_id": "linear-unsat-0167",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "9cb7368b207f98d34e07",
+      "problem_id": "linear-sat-0242",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "bb3d399d031fddc5c2fa",
+      "problem_id": "linear-sat-0121",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "ec6fcec3f6c8a76176e4",
+      "problem_id": "linear-sat-0121",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "801e7ae88673866801f1",
+      "problem_id": "linear-sat-0280",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "e8311180b2ef0d1c165d",
+      "problem_id": "linear-sat-0233",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "91b03db3617a70adb4f8",
+      "problem_id": "linear-unsat-0010",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "826da4fe99823893f438",
+      "problem_id": "linear-unsat-0085",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "d621761dc65da62208de",
+      "problem_id": "linear-sat-0205",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "0a4c528b69323cf784b3",
+      "problem_id": "linear-sat-0028",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "adcc31d55821dc032a3b",
+      "problem_id": "linear-sat-0186",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "aa2337f125c033fb0c42",
+      "problem_id": "linear-unsat-0125",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "bdffd308edf6adfbc01e",
+      "problem_id": "linear-unsat-0023",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "e75153992571e9b7712e",
+      "problem_id": "linear-sat-0137",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "8b8b4b6ae827f33a358c",
+      "problem_id": "linear-sat-0214",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4da5eb5f1d4c9bf6af6a",
+      "problem_id": "linear-sat-0083",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "898817041be8954104f4",
+      "problem_id": "linear-sat-0022",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "53ac1503d1ef7e7aaacf",
+      "problem_id": "linear-sat-0039",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "f604d6769e4737e606b1",
+      "problem_id": "linear-unsat-0056",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "80797bed615f042633d3",
+      "problem_id": "linear-unsat-0168",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "a92b7d9c2eafccdcb039",
+      "problem_id": "linear-sat-0261",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "4073b9d5ebef6f572a10",
+      "problem_id": "linear-unsat-0053",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "baf8f7d1d4d1b0f3558f",
+      "problem_id": "linear-sat-0274",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "1f13a134c928fb8f72b3",
+      "problem_id": "linear-sat-0192",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "2dffcce4f8bbf8b9fb46",
+      "problem_id": "linear-sat-0057",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "df547c3de0624eb168d5",
+      "problem_id": "linear-sat-0184",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "088b382b07602e2ce27e",
+      "problem_id": "linear-sat-0205",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "191f4e87052bef7d6fd5",
+      "problem_id": "linear-sat-0137",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "b7dc9d92bbba0993bc78",
+      "problem_id": "linear-sat-0242",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "de69aa307ef0a695c810",
+      "problem_id": "linear-sat-0137",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "0bd21e9117f579d6f79e",
+      "problem_id": "linear-sat-0022",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "57c2fe062cfd7bc01734",
+      "problem_id": "linear-sat-0220",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "bd28e3610024707798d6",
+      "problem_id": "linear-unsat-0146",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "6e83f25c4b5bf5d114d0",
+      "problem_id": "linear-unsat-0085",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "08f10edcd08b9d4c9c19",
+      "problem_id": "linear-sat-0083",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "d7249bc1c31657638b5d",
+      "problem_id": "linear-unsat-0085",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "4b721a57cb6e28d85d77",
+      "problem_id": "linear-sat-0244",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ad59485ed645972196a5",
+      "problem_id": "linear-sat-0192",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7ed0adb53079a3a84f39",
+      "problem_id": "linear-unsat-0166",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "2d2751223fbba392ffeb",
+      "problem_id": "linear-sat-0280",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "fdf10f1f0e62b55605be",
+      "problem_id": "linear-sat-0121",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "a3ac66de0c2ef887b997",
+      "problem_id": "linear-sat-0197",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "8d48b4cb5c2ed65ff837",
+      "problem_id": "linear-sat-0028",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "755908f1f49b98beeef9",
+      "problem_id": "linear-sat-0057",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "8907d693cb2de33209ce",
+      "problem_id": "linear-unsat-0010",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "9095c223612ea5b82f35",
+      "problem_id": "linear-sat-0205",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "83d7929e20988bd2f406",
+      "problem_id": "linear-sat-0031",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "302515477748b461f0c9",
+      "problem_id": "linear-unsat-0167",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "4a7aa48369c4d833248a",
+      "problem_id": "linear-unsat-0044",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "fb81f10758e751ba4017",
+      "problem_id": "linear-unsat-0165",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "f257030cb7786604bf88",
+      "problem_id": "linear-sat-0054",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4c1c379289917bccda46",
+      "problem_id": "linear-sat-0068",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "f35f9a19387b4071805b",
+      "problem_id": "linear-unsat-0125",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "5f0dc4217de922d5342a",
+      "problem_id": "linear-unsat-0026",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "c96011c27c073617f5d8",
+      "problem_id": "linear-sat-0205",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "218a05d4169e2c8762e0",
+      "problem_id": "linear-sat-0063",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "85afdbe5e595771d5e96",
+      "problem_id": "linear-sat-0274",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5654bdf25f9b9ffb4d0f",
+      "problem_id": "linear-sat-0197",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "814963c1938b7e9fd931",
+      "problem_id": "linear-unsat-0148",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "979a59c2b27159557fcc",
+      "problem_id": "linear-sat-0230",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "66289b481fb563760c20",
+      "problem_id": "linear-unsat-0148",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "b3061c0d8dd0954f2027",
+      "problem_id": "linear-sat-0244",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "3e4fe0e6513280b0cc3c",
+      "problem_id": "linear-unsat-0145",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "f9c4c581122b00a00fd6",
+      "problem_id": "linear-unsat-0166",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "900c236eb8e0b70a0d08",
+      "problem_id": "linear-unsat-0044",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "627a1b022a603988882e",
+      "problem_id": "linear-sat-0068",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "68ed3279f5d2616c4f9e",
+      "problem_id": "linear-sat-0244",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "b045c45fe126993fe065",
+      "problem_id": "linear-unsat-0148",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "ee2530f01ae58a4d6e86",
+      "problem_id": "linear-unsat-0053",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "e115c3e336df9d568e0e",
+      "problem_id": "linear-unsat-0146",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "80702e271d0e8326202e",
+      "problem_id": "linear-unsat-0146",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "2fb3010ef3fd98b019d0",
+      "problem_id": "linear-sat-0121",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "4ee8e0d7c4f4d6fc425d",
+      "problem_id": "linear-unsat-0146",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "aadbebe188e355ec4bbd",
+      "problem_id": "linear-sat-0280",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "e1a52877ed79cdb04769",
+      "problem_id": "linear-unsat-0053",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "bef01dacad19c7e9105b",
+      "problem_id": "linear-sat-0261",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1264f1e448555c82081a",
+      "problem_id": "linear-sat-0054",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f6be49b2f9c7e224966c",
+      "problem_id": "linear-sat-0220",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "84b5da3334d248938b9f",
+      "problem_id": "linear-sat-0137",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "0c770d7516347cc5ca7c",
+      "problem_id": "linear-unsat-0146",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f5a91f6b7635bc277590",
+      "problem_id": "linear-sat-0242",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "1820a7473594b71d192a",
+      "problem_id": "linear-unsat-0146",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "3687c18a9b4674a37309",
+      "problem_id": "linear-sat-0159",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "7a4ce5a836aa70d34be5",
+      "problem_id": "linear-unsat-0056",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "c7d7d90f19fb443085a8",
+      "problem_id": "linear-sat-0233",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "0780bd745d7ebe377168",
+      "problem_id": "linear-sat-0214",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "e18ec512dd0864a5e6a8",
+      "problem_id": "linear-sat-0068",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "29264b0196a2cc893add",
+      "problem_id": "linear-unsat-0167",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "5fe26b419851eab24121",
+      "problem_id": "linear-sat-0280",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f1a40a920d2386f9ba2e",
+      "problem_id": "linear-sat-0274",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "3238de3d3dc583d0273c",
+      "problem_id": "linear-unsat-0176",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "6d271f431fdabe33bf3e",
+      "problem_id": "linear-sat-0057",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "bf4c8e7842c919cf20f0",
+      "problem_id": "linear-sat-0220",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f32572bac45790470d2c",
+      "problem_id": "linear-sat-0028",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "18fa8427f1551a9ef107",
+      "problem_id": "linear-unsat-0145",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "6242ee77d4a7d33748dc",
+      "problem_id": "linear-sat-0192",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "828152d4e6d6b06a6e8a",
+      "problem_id": "linear-unsat-0148",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "e4ea3e94b85f98866b5e",
+      "problem_id": "linear-sat-0054",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "e8eb2cf4fba85e020006",
+      "problem_id": "linear-sat-0156",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "8f11aea769114e501bc5",
+      "problem_id": "linear-unsat-0167",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "c41bbdcaf59dfcdf805f",
+      "problem_id": "linear-sat-0197",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "73cdd281ed78fbe9891f",
+      "problem_id": "linear-sat-0031",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "bc71f623909d762c5df5",
+      "problem_id": "linear-sat-0186",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "a522c7c3040f2176a713",
+      "problem_id": "linear-sat-0068",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "f0c9ff9458a95cd76106",
+      "problem_id": "linear-unsat-0056",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "7b76f1563680ccea49d8",
+      "problem_id": "linear-sat-0220",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "17d2da6ce6cfbb63a68c",
+      "problem_id": "linear-sat-0054",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "bad1fbdcaef20dddd1d4",
+      "problem_id": "linear-unsat-0165",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "f15e5b5dd84150028c45",
+      "problem_id": "linear-sat-0039",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "c3873a71a2c9d9b90582",
+      "problem_id": "linear-unsat-0044",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "d11e5412a9b7fb6202d5",
+      "problem_id": "linear-sat-0186",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "ce6bba525e4dea7c28aa",
+      "problem_id": "linear-unsat-0085",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4842e976fdbc7560452d",
+      "problem_id": "linear-sat-0205",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "88ccc7851e619a400de0",
+      "problem_id": "linear-unsat-0085",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "2f72f3b276113af1fc7e",
+      "problem_id": "linear-sat-0028",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "03e7623dce76e4458ce7",
+      "problem_id": "linear-unsat-0053",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "742aa6adbaef5df1e8ff",
+      "problem_id": "linear-unsat-0128",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "9a37442648b9bc9f7d48",
+      "problem_id": "linear-sat-0220",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "b4baed63f5b3c4d8273a",
+      "problem_id": "linear-unsat-0176",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "eea711f19131e2bf2f70",
+      "problem_id": "linear-unsat-0146",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "c328fabebd2697208daf",
+      "problem_id": "linear-sat-0184",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "8a77fa422ca428c70520",
+      "problem_id": "linear-unsat-0145",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "a214286912f7f9b62b33",
+      "problem_id": "linear-sat-0280",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "022f5f56af891ae78a0b",
+      "problem_id": "linear-unsat-0023",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "b7f209f92e8393320964",
+      "problem_id": "linear-unsat-0148",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "b90911bdef757db9a68d",
+      "problem_id": "linear-unsat-0145",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "10c9f4018e4c5da12f98",
+      "problem_id": "linear-sat-0244",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "cb88691c49874c7f458d",
+      "problem_id": "linear-sat-0280",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "1b24f84e1244b369d186",
+      "problem_id": "linear-unsat-0053",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "760a689217926dc46f4c",
+      "problem_id": "linear-unsat-0128",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "b9e8fec90691f88a0e68",
+      "problem_id": "linear-unsat-0176",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "63a7b5d736e30564525e",
+      "problem_id": "linear-sat-0121",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "6dbe8abce89533813fe8",
+      "problem_id": "linear-sat-0233",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5cad08e032ca485d8d08",
+      "problem_id": "linear-sat-0054",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "73318e790cc38708abcd",
+      "problem_id": "linear-sat-0220",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "13645244d8e91f91dbf9",
+      "problem_id": "linear-unsat-0125",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "5dbaab35874ba26ce8cb",
+      "problem_id": "linear-unsat-0034",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "997d84174d8a23226228",
+      "problem_id": "linear-unsat-0044",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "c16bfef60e257130bdb0",
+      "problem_id": "linear-sat-0063",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "68c5a2f338cc5f88334f",
+      "problem_id": "linear-unsat-0176",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "6946b087aad4fe92e8e4",
+      "problem_id": "linear-unsat-0145",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "64e423e7174d3f99b3b5",
+      "problem_id": "linear-unsat-0056",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "930153fb1ad2fcf5b31b",
+      "problem_id": "linear-unsat-0034",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "ba5b30a16476d5b4ef1b",
+      "problem_id": "linear-sat-0184",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4033d5537449439e031a",
+      "problem_id": "linear-sat-0233",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4e4ecab09d687ba3c702",
+      "problem_id": "linear-sat-0292",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "f814ea9f7eb3ba08057a",
+      "problem_id": "linear-sat-0184",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "80ff860cc00deee6f1e0",
+      "problem_id": "linear-unsat-0168",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "7602cb4209f12b6b342f",
+      "problem_id": "linear-sat-0121",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "aa40e0e225a5f8fe621c",
+      "problem_id": "linear-sat-0031",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "699884435c5e71c65428",
+      "problem_id": "linear-sat-0192",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "0cdd8f044795ecf098ab",
+      "problem_id": "linear-sat-0280",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5c6b497ba4f0193d502b",
+      "problem_id": "linear-sat-0028",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "e67243595ce8db488b96",
+      "problem_id": "linear-sat-0031",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "abc490477e5820d57224",
+      "problem_id": "linear-unsat-0165",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "826f58470d93796d336c",
+      "problem_id": "linear-unsat-0034",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "6305ced53b202a12c0d4",
+      "problem_id": "linear-sat-0137",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "ca67561e9a985ba9586d",
+      "problem_id": "linear-unsat-0078",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "d3f55f4865eb56dda074",
+      "problem_id": "linear-sat-0186",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "b742fe654f1d03bf26b8",
+      "problem_id": "linear-sat-0261",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "70b3e8eba765f7fb690c",
+      "problem_id": "linear-sat-0031",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "be3263cca24e3468d7b0",
+      "problem_id": "linear-sat-0186",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "4cb5dbb25e3a647ca0e8",
+      "problem_id": "linear-sat-0028",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c80fc662d6e3608f3b9a",
+      "problem_id": "linear-sat-0137",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "cbfeed6863d429ff74e1",
+      "problem_id": "linear-unsat-0167",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "837cef9d5dedbdcbfecd",
+      "problem_id": "linear-sat-0197",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "3c513a54cf83ed08c024",
+      "problem_id": "linear-sat-0242",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "44d5defb91bd4e5b0d7e",
+      "problem_id": "linear-unsat-0167",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "cc2b803f77989b936143",
+      "problem_id": "linear-sat-0244",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "f759169e24d1aaecc60f",
+      "problem_id": "linear-sat-0159",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "463c4d0a5a60772752fd",
+      "problem_id": "linear-unsat-0148",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "8b7fe65878bd77a7d19c",
+      "problem_id": "linear-sat-0063",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "9d17653185498b4fdec1",
+      "problem_id": "linear-sat-0186",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "87d0c5223fd7a1ca6d92",
+      "problem_id": "linear-unsat-0034",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "9e21e45c0555f98aab0e",
+      "problem_id": "linear-sat-0220",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "848a621016bb05160870",
+      "problem_id": "linear-unsat-0173",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "44b1cdaf3a38bef4c57b",
+      "problem_id": "linear-unsat-0145",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "8a3b2ee9f4a57114b14b",
+      "problem_id": "linear-sat-0057",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "f8901396a8d03e1df727",
+      "problem_id": "linear-sat-0263",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "e0351ebf54ebcb639206",
+      "problem_id": "linear-sat-0039",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "620730e46e8d91ac1691",
+      "problem_id": "linear-unsat-0165",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d10d7e95030c4353224d",
+      "problem_id": "linear-sat-0159",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "69496d8eda52863260c5",
+      "problem_id": "linear-sat-0263",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "207952429d00b8d2b810",
+      "problem_id": "linear-unsat-0168",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "a76099afa85cda68a70c",
+      "problem_id": "linear-unsat-0053",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "3330ff5cb60322244c10",
+      "problem_id": "linear-sat-0214",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "739c725b6234274bd01f",
+      "problem_id": "linear-sat-0156",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "2ccc87f44baff6051b7c",
+      "problem_id": "linear-sat-0280",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "7ee3e44c166c8912d26b",
+      "problem_id": "linear-sat-0242",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f67722ae0e5b7279f34a",
+      "problem_id": "linear-sat-0242",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "b139bc2c8b9d57453f65",
+      "problem_id": "linear-unsat-0034",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "cf4e65b0e3828d253086",
+      "problem_id": "linear-sat-0039",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "dda91e281149b582f50e",
+      "problem_id": "linear-unsat-0125",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "ca72c23214786dc463b4",
+      "problem_id": "linear-sat-0274",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "81e4fbcb517c1729d223",
+      "problem_id": "linear-sat-0159",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "d02c852a91c8fd5dfae3",
+      "problem_id": "linear-unsat-0148",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "daeb446529ffc4452012",
+      "problem_id": "linear-sat-0242",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "cb20be409796d32fc97d",
+      "problem_id": "linear-sat-0083",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "2e32b3b165f518aa765f",
+      "problem_id": "linear-sat-0263",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "dbaec9d0a5ab3f3c6a21",
+      "problem_id": "linear-unsat-0173",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "c9c339c5bf19a84f8337",
+      "problem_id": "linear-unsat-0168",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "701d8e9ae0de536405ef",
+      "problem_id": "linear-sat-0031",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "ee26385b84fc658ebfc7",
+      "problem_id": "linear-unsat-0026",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "3e4b56074173ec7bd869",
+      "problem_id": "linear-unsat-0148",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "9cac1b9de8defd3bd265",
+      "problem_id": "linear-unsat-0128",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "7a4e4c54e15fbc2cc047",
+      "problem_id": "linear-sat-0242",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "943fa01e6e1a72d2696b",
+      "problem_id": "linear-unsat-0026",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "9842b0b7114abffc10a6",
+      "problem_id": "linear-sat-0031",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "78f91aa592a43d4d5746",
+      "problem_id": "linear-unsat-0010",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "58541a871b3b7707a5b8",
+      "problem_id": "linear-unsat-0145",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5bebcc59f14c77a3431d",
+      "problem_id": "linear-sat-0028",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "e23da936fe2680e1e3fc",
+      "problem_id": "linear-unsat-0010",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "2af8183b15718a450175",
+      "problem_id": "linear-unsat-0085",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "35bb1e6d173d5bae5b15",
+      "problem_id": "linear-sat-0184",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "e34bea88de57dc078887",
+      "problem_id": "linear-unsat-0125",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "0b1fb6e38cb2ac083b6e",
+      "problem_id": "linear-sat-0156",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "3892275ed1d35d49049a",
+      "problem_id": "linear-unsat-0034",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "5648556c910aa915b08a",
+      "problem_id": "linear-unsat-0085",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "2ea83d06802e0ded0ebf",
+      "problem_id": "linear-unsat-0173",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "e6edd90193495c7b57de",
+      "problem_id": "linear-unsat-0173",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "219a8af83b683d5f19ec",
+      "problem_id": "linear-unsat-0023",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d68f99d64cd70527c4b5",
+      "problem_id": "linear-sat-0057",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "ee7d1bd70f9b33572977",
+      "problem_id": "linear-sat-0083",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "d43633cd941868fe2a60",
+      "problem_id": "linear-unsat-0078",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "52a1a4ad6e2ca9529658",
+      "problem_id": "linear-sat-0220",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "0544518c00b0013d07d6",
+      "problem_id": "linear-unsat-0053",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "d7da81159240702a9059",
+      "problem_id": "linear-unsat-0078",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ba77352adb4e9a6acd61",
+      "problem_id": "linear-sat-0063",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4a2c7ede682959469f26",
+      "problem_id": "linear-sat-0121",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1fddb032bf26358f06d7",
+      "problem_id": "linear-sat-0244",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "1ca6ef2df856331995c4",
+      "problem_id": "linear-sat-0063",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "4726dc22982c0eb133a0",
+      "problem_id": "linear-sat-0068",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "bc116aac59bd2aaca048",
+      "problem_id": "linear-sat-0031",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "94686055c5f817d03894",
+      "problem_id": "linear-sat-0054",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "0cb9412cb7ed9c55ef1f",
+      "problem_id": "linear-sat-0022",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "0aa36fecb3d86400120f",
+      "problem_id": "linear-sat-0063",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "be9a3c4fddb9b7ed4bc4",
+      "problem_id": "linear-sat-0159",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "78647173c1e624f73291",
+      "problem_id": "linear-sat-0054",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "36b69c419755e04ebdb6",
+      "problem_id": "linear-unsat-0034",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "6d6427cb184ac6e90b8d",
+      "problem_id": "linear-sat-0186",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "55a3796da81ca3f20dd4",
+      "problem_id": "linear-unsat-0034",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "66a7a91ca02b1a05539c",
+      "problem_id": "linear-unsat-0167",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "eb9e9f39239f1fc2fe91",
+      "problem_id": "linear-unsat-0173",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "1a8f7d12dbc4d3d7e805",
+      "problem_id": "linear-sat-0274",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "51ad62344b8f8ebadbe5",
+      "problem_id": "linear-unsat-0026",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "368e72e6fe28d928682b",
+      "problem_id": "linear-sat-0214",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "a5d1ebd492f8e093b7fc",
+      "problem_id": "linear-unsat-0165",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "2454b206c5c1b0c0ee93",
+      "problem_id": "linear-sat-0063",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "11583b780792f6eab67a",
+      "problem_id": "linear-sat-0068",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "b682ee8e9d75cf95ae7e",
+      "problem_id": "linear-sat-0261",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "583de838f4f1ebc1b279",
+      "problem_id": "linear-sat-0197",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "2100e94034e97768f3ab",
+      "problem_id": "linear-unsat-0145",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "a50357a1c94b47791f09",
+      "problem_id": "linear-sat-0242",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "57789e79b02095dff761",
+      "problem_id": "linear-sat-0156",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "d429602b6273455e5b8a",
+      "problem_id": "linear-sat-0121",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4ba9adf3a0336a0e32d0",
+      "problem_id": "linear-sat-0083",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "e6733d9d21747fcfdbba",
+      "problem_id": "linear-unsat-0167",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "e28391614ba8b3a25d36",
+      "problem_id": "linear-unsat-0023",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5c62bfd2c6bfc5411f78",
+      "problem_id": "linear-sat-0205",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "ea6e58095de072554819",
+      "problem_id": "linear-unsat-0167",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "d88b23671974364aaad1",
+      "problem_id": "linear-unsat-0044",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "552f48922ecff2438119",
+      "problem_id": "linear-unsat-0168",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "bdee867943482639ead8",
+      "problem_id": "linear-sat-0214",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "9ac0d0fe1dcf7fa3e7fa",
+      "problem_id": "linear-unsat-0010",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "adc483a72c45b7ae9d89",
+      "problem_id": "linear-unsat-0166",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "a22d07807054b0f6b1a2",
+      "problem_id": "linear-unsat-0128",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "57a847395061b872a614",
+      "problem_id": "linear-unsat-0176",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "f2eb52401aa97bfb912d",
+      "problem_id": "linear-sat-0230",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "63340bd0210af1812ad7",
+      "problem_id": "linear-sat-0261",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "2ece1bb0fd191bbd8e54",
+      "problem_id": "linear-sat-0205",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "c77b8a93af278e6b3284",
+      "problem_id": "linear-sat-0230",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4c324108ad2d416645ab",
+      "problem_id": "linear-sat-0184",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "3d832cb0bf5557903b4c",
+      "problem_id": "linear-unsat-0146",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "ae53f293fca35b720980",
+      "problem_id": "linear-unsat-0173",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "d2a57632b376e40d1ea5",
+      "problem_id": "linear-sat-0292",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "69a3428188597313628b",
+      "problem_id": "linear-sat-0022",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "a771d3e62e8a280285af",
+      "problem_id": "linear-unsat-0026",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1746dedfb055b197c162",
+      "problem_id": "linear-sat-0233",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "806d921a2343b13f204d",
+      "problem_id": "linear-unsat-0146",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "f81de57f20253ee522e7",
+      "problem_id": "linear-unsat-0146",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "217d219420644c61e375",
+      "problem_id": "linear-sat-0061",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "53464bdf2dffd1feaa9f",
+      "problem_id": "linear-sat-0197",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "8279c63d109694ac8356",
+      "problem_id": "linear-unsat-0125",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "77698ea7f294bf41e2f7",
+      "problem_id": "linear-sat-0022",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "7b839a1fede08cc6f3e1",
+      "problem_id": "linear-sat-0214",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "8a6ea6c48eefbe9803f8",
+      "problem_id": "linear-unsat-0044",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "00ddc4a961849020f32d",
+      "problem_id": "linear-unsat-0145",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "b4e499493e39a1dccfc1",
+      "problem_id": "linear-sat-0057",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "83fb14282a7560976768",
+      "problem_id": "linear-sat-0233",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "24f35e2218e11a2d5a98",
+      "problem_id": "linear-unsat-0044",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "86bbd43ee1575b3ee5ab",
+      "problem_id": "linear-unsat-0034",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ec33f4d384c71557ea09",
+      "problem_id": "linear-sat-0039",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "f7b23fe496c5602eade2",
+      "problem_id": "linear-sat-0205",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "99816d7d58f196d94024",
+      "problem_id": "linear-sat-0280",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "e590e79ed86419207535",
+      "problem_id": "linear-sat-0261",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5d319dea399c927380cf",
+      "problem_id": "linear-sat-0274",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1e1293b0c25f06f3ef57",
+      "problem_id": "linear-sat-0214",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "a47e634971add1d9f0e5",
+      "problem_id": "linear-sat-0205",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "7bb4e20cba78320dab9e",
+      "problem_id": "linear-sat-0292",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "9b4066f77c2b5cfc5fde",
+      "problem_id": "linear-sat-0068",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "013f81cdcfcae67e8c15",
+      "problem_id": "linear-unsat-0026",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "efd2e35d2891c22e612c",
+      "problem_id": "linear-unsat-0010",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "11623ee10ebda3ab4deb",
+      "problem_id": "linear-unsat-0078",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "683dd0f7610153172989",
+      "problem_id": "linear-sat-0214",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "73e4eb478f2d55b36630",
+      "problem_id": "linear-sat-0186",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "b467b7a0f1e4f4e93126",
+      "problem_id": "linear-unsat-0176",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "6c0e7aba997e053e9063",
+      "problem_id": "linear-sat-0083",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "cce07784732c69248b69",
+      "problem_id": "linear-unsat-0146",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "5d2f9d2dc16be862a845",
+      "problem_id": "linear-sat-0054",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "deff70c37245deed8aec",
+      "problem_id": "linear-sat-0263",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f155264e6dab84962370",
+      "problem_id": "linear-sat-0022",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5b7c47e35e38e5e26222",
+      "problem_id": "linear-sat-0159",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "3fb22a22da8d6e8b00c9",
+      "problem_id": "linear-sat-0192",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "956dfc7e59f7727a433e",
+      "problem_id": "linear-sat-0220",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ed662ca742a4887a2b05",
+      "problem_id": "linear-sat-0220",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "7b3413ab49cc5bf4f7d3",
+      "problem_id": "linear-sat-0242",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "8e90a7255494a7b8b0fa",
+      "problem_id": "linear-unsat-0128",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "5c37af5686ce46975548",
+      "problem_id": "linear-unsat-0176",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "c9646c614295ea81daa5",
+      "problem_id": "linear-unsat-0168",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1f5fc9a610996ff93d93",
+      "problem_id": "linear-sat-0214",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "1bdcfe11e7d677f19088",
+      "problem_id": "linear-unsat-0128",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "ed9fd2fffa2ef2adc573",
+      "problem_id": "linear-sat-0261",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "304660a6be1d0a64f3cf",
+      "problem_id": "linear-unsat-0168",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "78d77d69291f3f839386",
+      "problem_id": "linear-unsat-0078",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "c91de43d0d198b929ce7",
+      "problem_id": "linear-sat-0068",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "3596440671907aa74f2a",
+      "problem_id": "linear-sat-0274",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5b35f61a142598236fe3",
+      "problem_id": "linear-sat-0197",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "2db9d18604b71e23f145",
+      "problem_id": "linear-sat-0022",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "7183e22705fd5c53e483",
+      "problem_id": "linear-unsat-0010",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "1f28189a6d6e04854338",
+      "problem_id": "linear-unsat-0023",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "a733c16023da9c11c209",
+      "problem_id": "linear-sat-0263",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "feb5d2b375f4b636860f",
+      "problem_id": "linear-sat-0184",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "6723d2ecd9520cc86e36",
+      "problem_id": "linear-sat-0220",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "4b2bb59958167595eb87",
+      "problem_id": "linear-unsat-0168",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "e994f763c5b5e187545c",
+      "problem_id": "linear-sat-0063",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "8ed6dbe07f7fcc14a8a8",
+      "problem_id": "linear-unsat-0148",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "bfd792c23ac8f60490ab",
+      "problem_id": "linear-sat-0242",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "d4e4c3715ef2e0228d82",
+      "problem_id": "linear-unsat-0128",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "93c6f7270f7ff7c0f00c",
+      "problem_id": "linear-sat-0156",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "03173e33d40054ae767f",
+      "problem_id": "linear-unsat-0085",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "06ff951af200cdc7af57",
+      "problem_id": "linear-sat-0205",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "4cc6f9dd7dc8372521d2",
+      "problem_id": "linear-unsat-0053",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4caa9d5c017dec094924",
+      "problem_id": "linear-sat-0028",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "267172f261d707e8eea3",
+      "problem_id": "linear-sat-0083",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "58e59994f298975d7a58",
+      "problem_id": "linear-sat-0261",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "9d978e122d91db8ef5c7",
+      "problem_id": "linear-sat-0263",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "87a81570e3401bbb6e92",
+      "problem_id": "linear-sat-0184",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "bb71e21e33aac99223a9",
+      "problem_id": "linear-sat-0039",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "e5d0874cc03537e50f9f",
+      "problem_id": "linear-sat-0230",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "5a22fa212a039f02d7c0",
+      "problem_id": "linear-unsat-0166",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "f2e93376b9cb86356add",
+      "problem_id": "linear-unsat-0053",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "2ce56760ebec0a2c8346",
+      "problem_id": "linear-sat-0156",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "4b0be29b5167f1079ab6",
+      "problem_id": "linear-sat-0159",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "dc2c2880c3f20dc57274",
+      "problem_id": "linear-sat-0061",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "2775244eebe18bfcd851",
+      "problem_id": "linear-unsat-0056",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "50c70d727944e86dc81c",
+      "problem_id": "linear-sat-0022",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "3a02631cf65743ab6dc8",
+      "problem_id": "linear-sat-0233",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "fcfc1691cd5fb07517a3",
+      "problem_id": "linear-sat-0031",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "035ca892a37369023fb0",
+      "problem_id": "linear-unsat-0166",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "9e7684402bb5b4cb7ccc",
+      "problem_id": "linear-unsat-0146",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "04272e8b5e96edd57648",
+      "problem_id": "linear-unsat-0168",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "934f4f4e42f3ce36f061",
+      "problem_id": "linear-sat-0197",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "3da91a725280dc6104ff",
+      "problem_id": "linear-sat-0244",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "9c698dda96ed718a43ba",
+      "problem_id": "linear-sat-0233",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "e412964754af3de97bc2",
+      "problem_id": "linear-unsat-0026",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "2490062cb6345f06bd73",
+      "problem_id": "linear-sat-0159",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "657e2ee919061a176230",
+      "problem_id": "linear-unsat-0167",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "3d389cb9f9fe1941d55a",
+      "problem_id": "linear-sat-0186",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "dd92d9d8340ad621033d",
+      "problem_id": "linear-sat-0121",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "0886af7703bbbd34a48e",
+      "problem_id": "linear-sat-0233",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f5056d383adf85913027",
+      "problem_id": "linear-sat-0186",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "3fccdef5230824aab2ec",
+      "problem_id": "linear-unsat-0125",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "0f67b01ae0a4d1cae005",
+      "problem_id": "linear-sat-0244",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "d66f9ccc9978ce734704",
+      "problem_id": "linear-unsat-0125",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "54ac4d41fde8a068e400",
+      "problem_id": "linear-sat-0054",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "8aa08a9829469509b537",
+      "problem_id": "linear-sat-0159",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "3b6869d207c6924ab7c7",
+      "problem_id": "linear-sat-0061",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "a74331c94e8b33ee99a6",
+      "problem_id": "linear-sat-0063",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "ab759e44d3c25ffded19",
+      "problem_id": "linear-sat-0022",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "e80f7c58f3b9e768dc80",
+      "problem_id": "linear-sat-0186",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d91e684f05b8a2e01dee",
+      "problem_id": "linear-sat-0057",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "a4d90031323414703df2",
+      "problem_id": "linear-unsat-0148",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "eb96531d7de137043e56",
+      "problem_id": "linear-sat-0292",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "8e6a2e75ee5d395a40c7",
+      "problem_id": "linear-sat-0083",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "db18937f121c76788238",
+      "problem_id": "linear-sat-0068",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "55e74cbd08dbefc1b359",
+      "problem_id": "linear-sat-0063",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "346ff41cff31f3eff96c",
+      "problem_id": "linear-sat-0261",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "d1687c635bf02b0f95f7",
+      "problem_id": "linear-sat-0028",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "7ce9351be51616624255",
+      "problem_id": "linear-sat-0054",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "534a69d397f6bfb0cc4a",
+      "problem_id": "linear-unsat-0166",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "5dc1279242505bcb70e6",
+      "problem_id": "linear-unsat-0145",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "63305171b355f414597f",
+      "problem_id": "linear-sat-0280",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "bf9409807cf6365383b3",
+      "problem_id": "linear-sat-0184",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "19090ba086e7d170fe4a",
+      "problem_id": "linear-unsat-0166",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "c46c0ebf7a577077535d",
+      "problem_id": "linear-unsat-0128",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "d1478cb3ad5cb20786b7",
+      "problem_id": "linear-sat-0220",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4ac7163ba31963a56eb0",
+      "problem_id": "linear-sat-0022",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "fa53785d693be96913a8",
+      "problem_id": "linear-sat-0220",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "6490d342471808bece5a",
+      "problem_id": "linear-unsat-0125",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "a22259b157a2895857f2",
+      "problem_id": "linear-sat-0274",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d478370ade9af6f4c2f1",
+      "problem_id": "linear-sat-0156",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "106e1db4cbb105db6e57",
+      "problem_id": "linear-unsat-0010",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "338cbd6a0540b82ed9c0",
+      "problem_id": "linear-sat-0039",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "80881dd20d8427af36b1",
+      "problem_id": "linear-sat-0031",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "0577ac889ac9b3888782",
+      "problem_id": "linear-unsat-0085",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "913fe2fde63605321b8c",
+      "problem_id": "linear-sat-0192",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "311a211858b15cda4bbb",
+      "problem_id": "linear-unsat-0165",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "ed1d70a76c1dd8b23c2c",
+      "problem_id": "linear-sat-0068",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "76ed8568cf7c0fdc9eeb",
+      "problem_id": "linear-unsat-0125",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "01587f6ad034ba553832",
+      "problem_id": "linear-sat-0121",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "bd773dbf7bb7642428cf",
+      "problem_id": "linear-sat-0242",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "392371867f18781d2336",
+      "problem_id": "linear-sat-0197",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "a1bd518b3fae1ac0c20d",
+      "problem_id": "linear-sat-0197",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "820d6e5cc6b9b8759330",
+      "problem_id": "linear-unsat-0165",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "0e07730718a63c2c6b3d",
+      "problem_id": "linear-sat-0263",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "1fbc63cfa92c03de97be",
+      "problem_id": "linear-sat-0061",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "d8811d04221ec80c7984",
+      "problem_id": "linear-unsat-0128",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "ba330d2102cbd746e7cb",
+      "problem_id": "linear-unsat-0176",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "66b3c589bf0c25b22a7e",
+      "problem_id": "linear-sat-0083",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f67fdaf7efc61e475dc8",
+      "problem_id": "linear-sat-0054",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "30292db84eee32aad06f",
+      "problem_id": "linear-unsat-0168",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "1595a20b2f0c73905d76",
+      "problem_id": "linear-unsat-0010",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "c3afd6a10ac921baff06",
+      "problem_id": "linear-unsat-0148",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "f80203516452986f9e4e",
+      "problem_id": "linear-unsat-0044",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "e1db1ec7b6a90e34e414",
+      "problem_id": "linear-sat-0184",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f3767661309591e52c1d",
+      "problem_id": "linear-sat-0263",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "5c4965f60f5bc2c82d09",
+      "problem_id": "linear-sat-0214",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "023e3d8fc2e3782cb1ef",
+      "problem_id": "linear-unsat-0166",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f14f764de2c86c4a34d6",
+      "problem_id": "linear-sat-0280",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "b4a2960b90a89142f6e3",
+      "problem_id": "linear-unsat-0085",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "265a5c9c6affdb41879d",
+      "problem_id": "linear-sat-0230",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "9aa45c8231f03a92e258",
+      "problem_id": "linear-sat-0022",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "710e450cd78ac5b83f35",
+      "problem_id": "linear-unsat-0078",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ffbf8dbd0cf3af3694a5",
+      "problem_id": "linear-sat-0205",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "bacab25f7db718a1e9f5",
+      "problem_id": "linear-sat-0244",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "55f338701079cecc7aca",
+      "problem_id": "linear-sat-0156",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "064fd46da1403483a69b",
+      "problem_id": "linear-sat-0028",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "c5f7527a5254770debce",
+      "problem_id": "linear-sat-0292",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "7e359cc73ef6467a2496",
+      "problem_id": "linear-unsat-0026",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "6113c379fb9d12347619",
+      "problem_id": "linear-unsat-0173",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "de61501cb979f4118697",
+      "problem_id": "linear-unsat-0176",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4ae95621403aaf8fdd31",
+      "problem_id": "linear-sat-0057",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "65719e88a688ccf36311",
+      "problem_id": "linear-unsat-0034",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "888261d0cec14486e691",
+      "problem_id": "linear-sat-0263",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "11b3bb83525ffae4d97b",
+      "problem_id": "linear-sat-0230",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "4ded31120c90051d74ed",
+      "problem_id": "linear-unsat-0056",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "e8d54198c50b325f081a",
+      "problem_id": "linear-unsat-0148",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "57d78ac2d7152c3b7a96",
+      "problem_id": "linear-sat-0022",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "7dce80e186455ccbc5c2",
+      "problem_id": "linear-sat-0292",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "61409fd792e3e4b68f87",
+      "problem_id": "linear-sat-0028",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "8cee92066f78f7bb6857",
+      "problem_id": "linear-sat-0220",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "6df6f3a907b0a521ab32",
+      "problem_id": "linear-sat-0083",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "46d9904b0f85c3b3789b",
+      "problem_id": "linear-unsat-0078",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "f56fe13b006734cabfd8",
+      "problem_id": "linear-sat-0061",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "f4e61b88e144c4da75fb",
+      "problem_id": "linear-sat-0261",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "f5d9057166f7ea107597",
+      "problem_id": "linear-sat-0063",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "255953c51996dd12d4f0",
+      "problem_id": "linear-unsat-0148",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "5a76af6ffeecadedf462",
+      "problem_id": "linear-sat-0039",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "0b1536981663d98f0d30",
+      "problem_id": "linear-unsat-0056",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ead9bba6983ffbc16547",
+      "problem_id": "linear-sat-0263",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "42bc462413bce9e75ca1",
+      "problem_id": "linear-sat-0292",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "8ae8bc06ff59f50a1971",
+      "problem_id": "linear-unsat-0023",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "a3bc27ffa173bf3b089b",
+      "problem_id": "linear-sat-0061",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "66b12a8d453cb931d82e",
+      "problem_id": "linear-sat-0028",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "4984ba3d12e4befa91cd",
+      "problem_id": "linear-unsat-0044",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "addbf412deac54f83a1d",
+      "problem_id": "linear-unsat-0173",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "4131f9c8c1659cff86f2",
+      "problem_id": "linear-sat-0244",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "9d1e49ec5e29cbbe39b4",
+      "problem_id": "linear-sat-0061",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "b822ccaf58fac52ec2d4",
+      "problem_id": "linear-sat-0230",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "a7842b8771da38d8c119",
+      "problem_id": "linear-unsat-0128",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "bbdc13540965c30b4f70",
+      "problem_id": "linear-sat-0230",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "4a49b8afc1cda16fcb78",
+      "problem_id": "linear-unsat-0128",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7268315a1c3a6fe068a2",
+      "problem_id": "linear-unsat-0023",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "0f6800d5da7d9789e132",
+      "problem_id": "linear-sat-0156",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7037e2acca597233764a",
+      "problem_id": "linear-unsat-0056",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "2314d79b51c65f04f09f",
+      "problem_id": "linear-unsat-0173",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "c75e97e2b99733352258",
+      "problem_id": "linear-unsat-0026",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "3a1b22da197514823d0f",
+      "problem_id": "linear-sat-0061",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "0752a0c96e308e48d422",
+      "problem_id": "linear-sat-0214",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "7f6babcbb78412fe81e2",
+      "problem_id": "linear-sat-0261",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "d99e8b63ead2a7ea2bf6",
+      "problem_id": "linear-sat-0063",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "5604f39fa99135a49556",
+      "problem_id": "linear-sat-0083",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "9eed040f19056566565a",
+      "problem_id": "linear-sat-0292",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "cf7800eb82611e2b9ea7",
+      "problem_id": "linear-sat-0057",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "bf050a6627cf1c9bff0b",
+      "problem_id": "linear-unsat-0010",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "24b4b57c4eabc2db075f",
+      "problem_id": "linear-sat-0274",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "ab78e93b45b3f7eeb9f0",
+      "problem_id": "linear-sat-0263",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "fad0f065f94fcb7537b1",
+      "problem_id": "linear-sat-0159",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "44586f9ea11872bdf302",
+      "problem_id": "linear-sat-0054",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "9c97fcba2e06cd86f486",
+      "problem_id": "linear-unsat-0085",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "5de36bed8121ae655eae",
+      "problem_id": "linear-sat-0233",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "88ec20f2cb9ca4dcd4dc",
+      "problem_id": "linear-unsat-0128",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "71212e78a209cbaa2d2e",
+      "problem_id": "linear-sat-0292",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "49b80ab242b9f546bcf9",
+      "problem_id": "linear-unsat-0168",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "444207ee944c8231c641",
+      "problem_id": "linear-sat-0039",
+      "seed": 29
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "b06aa5fe55d61bad0426",
+      "problem_id": "linear-unsat-0078",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "6d1c854d7d1f38edda7b",
+      "problem_id": "linear-sat-0159",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "8bcef9cf4684b6b17a12",
+      "problem_id": "linear-unsat-0023",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "079329ab2004939a0897",
+      "problem_id": "linear-unsat-0034",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "bdd1a1a610291a2f956a",
+      "problem_id": "linear-unsat-0053",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "bfd76526376adda674c2",
+      "problem_id": "linear-sat-0068",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "2b2f8f1ee28762b03351",
+      "problem_id": "linear-sat-0137",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "41b882c0f66ecac4a9d7",
+      "problem_id": "linear-unsat-0078",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "16e9d505b600919fa9de",
+      "problem_id": "linear-sat-0274",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "8841db02714b75672ca9",
+      "problem_id": "linear-sat-0159",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "b96de3eefdd327756c40",
+      "problem_id": "linear-unsat-0056",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "bb4665f6d9af8d8b40b9",
+      "problem_id": "linear-unsat-0176",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "f16fe75aa5c9ba80ea80",
+      "problem_id": "linear-sat-0242",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "6366ae168ff5043a8f6e",
+      "problem_id": "linear-unsat-0026",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "003c10fc8c0976c1a47f",
+      "problem_id": "linear-sat-0068",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "a1350d2b7038003613a2",
+      "problem_id": "linear-unsat-0166",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "41d488be79ff0056a67b",
+      "problem_id": "linear-sat-0205",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "b7b5e1a6e0c1a67bf495",
+      "problem_id": "linear-sat-0137",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "15f1ca742b43b2761abc",
+      "problem_id": "linear-unsat-0165",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "519c46d71408dd2e0be2",
+      "problem_id": "linear-sat-0197",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "57bcd1ca92ac0afa1908",
+      "problem_id": "linear-unsat-0165",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "c1816efae35815960747",
+      "problem_id": "linear-unsat-0053",
+      "seed": 29
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "unsat",
+      "id": "c3f65f89718ca935425a",
+      "problem_id": "linear-unsat-0128",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "f2c0553930fddec7aa7b",
+      "problem_id": "linear-unsat-0085",
+      "seed": 43
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "97cad60f60fbaa171677",
+      "problem_id": "linear-unsat-0078",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "1b6a39218faae01760e9",
+      "problem_id": "linear-sat-0233",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "5d8ef6a99a7d8dc87932",
+      "problem_id": "linear-unsat-0053",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "98e1257b37e76a6d2a16",
+      "problem_id": "linear-sat-0280",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "21a9bad41a4160017b3a",
+      "problem_id": "linear-sat-0184",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "5833a36d4437101fc085",
+      "problem_id": "linear-sat-0031",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "f0a5e9c12e226ec77870",
+      "problem_id": "linear-unsat-0167",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "99de15e186f43efd702d",
+      "problem_id": "linear-sat-0061",
+      "seed": 17
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "a6330881871acc7c57e0",
+      "problem_id": "linear-unsat-0085",
+      "seed": 29
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "3a9f1d27cd833bf18eb7",
+      "problem_id": "linear-sat-0184",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "6b70b24d7aed0b3f9a06",
+      "problem_id": "linear-sat-0205",
+      "seed": 29
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "sat",
+      "id": "7ee924cce0221195d283",
+      "problem_id": "linear-sat-0137",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "9f4de6ac9770755276d4",
+      "problem_id": "linear-sat-0230",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "211f234c209040de75d8",
+      "problem_id": "linear-sat-0137",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "14c8f28e3c91116f2b58",
+      "problem_id": "linear-sat-0192",
+      "seed": 43
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "797113b30ed8f40b6bdb",
+      "problem_id": "linear-sat-0039",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "3873e5206a74f5f16308",
+      "problem_id": "linear-unsat-0044",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "add6b4965d261043407a",
+      "problem_id": "linear-unsat-0165",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "1e66ea5f6f95a0b34eb8",
+      "problem_id": "linear-sat-0156",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "7b3a47415b96116baa20",
+      "problem_id": "linear-sat-0031",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "4b666d4024d49ab0cc24",
+      "problem_id": "linear-unsat-0044",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "1368e23520ce04c9d8b7",
+      "problem_id": "linear-unsat-0165",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "7f7847a70d27a94d5a9a",
+      "problem_id": "linear-unsat-0176",
+      "seed": 29
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "5ed0fa14dae807efa2a2",
+      "problem_id": "linear-sat-0061",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "sat",
+      "id": "5cbac00ed6e2db10ba91",
+      "problem_id": "linear-sat-0137",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "sat",
+      "id": "ed7ce2f6ff94a215d326",
+      "problem_id": "linear-sat-0197",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "4375db1ed7f272e0d9aa",
+      "problem_id": "linear-sat-0192",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "cf8da1083087642e0bcf",
+      "problem_id": "linear-unsat-0166",
+      "seed": 43
+    },
+    {
+      "arm": "multi_generic_feedback",
+      "ground_truth": "unsat",
+      "id": "d4a002ece6df87c9fdf9",
+      "problem_id": "linear-unsat-0166",
+      "seed": 17
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "sat",
+      "id": "f471aa66e2e65e00038f",
+      "problem_id": "linear-sat-0057",
+      "seed": 43
+    },
+    {
+      "arm": "multi_unsat_core_feedback",
+      "ground_truth": "unsat",
+      "id": "5cbde68c1d52729bca04",
+      "problem_id": "linear-unsat-0125",
+      "seed": 43
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "4c1239da8990747002aa",
+      "problem_id": "linear-unsat-0173",
+      "seed": 17
+    },
+    {
+      "arm": "cd_vgs_core_rank",
+      "ground_truth": "unsat",
+      "id": "d6c8e93583520f78aa2d",
+      "problem_id": "linear-unsat-0026",
+      "seed": 17
+    },
+    {
+      "arm": "multi_no_feedback",
+      "ground_truth": "unsat",
+      "id": "b839c0e7c39bf85f3ef3",
+      "problem_id": "linear-unsat-0148",
+      "seed": 17
+    },
+    {
+      "arm": "one_shot",
+      "ground_truth": "sat",
+      "id": "4fc9e0faa0abc8c05395",
+      "problem_id": "linear-sat-0292",
+      "seed": 17
+    }
+  ],
+  "temperature": 0.2,
+  "witness_policy": "withhold",
+  "workers": 8
+}

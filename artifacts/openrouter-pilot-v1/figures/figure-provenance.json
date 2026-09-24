@@ -1,0 +1,22 @@
+{
+  "all_episodes_ended_normally": false,
+  "analysis_sha256": "439ad722eb39ee193582ec5d93b83f364cc881e1cacc0eddf34da630af13621c",
+  "confidence_intervals": null,
+  "figures": {
+    "sat-success-versus-cost.png": "2c34b94c5b482a5c16327d972fdb9e383ca1b6c2ae468c72fd3c603628d01b46",
+    "sat-success-versus-cost.svg": "246f0b38454d71d4e29f040dfe7ade086471699f4462702495aa71f2a974a4fe",
+    "sat-unsat-certification-counts.png": "be927c01800a7f27b3b06a5a8274911bbaa93c67ffe857cd2351f3927a432d0d",
+    "sat-unsat-certification-counts.svg": "ddbfae420dac18d778f3de021c91317de948eb21e5dc2e94e5854dfce5c0737e"
+  },
+  "matplotlib_version": "3.11.2",
+  "observed": 750,
+  "operational_amendment_sha256": "c919cc21b18a887c40eb18a2cf76db234f483b154283b5f796322f68e7c0cc56",
+  "operational_errors": 0,
+  "operational_stopped": 11,
+  "partial_matrix": false,
+  "planned": 750,
+  "plot_source_sha256": "9dfe043c35df7c738483ca64434d93cec688fcb9e1638e262c1e021600605586",
+  "post_freeze_operational_extension": true,
+  "published_amendment_reference": "https://github.com/stelioszach03/llm-smt-verifiable-reasoning/commit/b057c46452dc0082c51359f210d88b26022ef496",
+  "significance_claim": false
+}

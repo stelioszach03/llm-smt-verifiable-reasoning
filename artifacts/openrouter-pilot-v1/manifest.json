@@ -1,0 +1,43 @@
+{
+  "accounted_cost_delta_usd": 0.867535,
+  "additional_admission_seconds": 3600,
+  "budget_after": {
+    "accounting": "Conservative token-rate estimates; uncertain calls retain their full reservation.",
+    "bucket": "research",
+    "cap_usd": 12.0,
+    "charged_usd": 2.737447,
+    "disabled": false,
+    "remaining_usd": 9.262553,
+    "total_charged_usd": 2.804717
+  },
+  "budget_before": {
+    "accounting": "Conservative token-rate estimates; uncertain calls retain their full reservation.",
+    "bucket": "research",
+    "cap_usd": 12.0,
+    "charged_usd": 1.869912,
+    "disabled": false,
+    "remaining_usd": 10.130088,
+    "total_charged_usd": 1.937182
+  },
+  "completed": 750,
+  "completion_definition": "750 recorded cells means matrix coverage, not 750 successful certificates. Deadline-stopped original episodes remain observed unsuccessful executions, not model-quality-only failures.",
+  "continuation_elapsed_seconds": 3611.529289484024,
+  "continuation_manifest": "continuation-wave2/manifest.json",
+  "cumulative_study_accounted_cost_usd": 0.867535,
+  "elapsed_seconds": 6491.13841676712,
+  "elapsed_seconds_definition": "Total wall time since the original wave started, including the publication/continuation pause; individual wave times are retained separately.",
+  "finished_at": "2026-09-24T13:22:16.165289+00:00",
+  "missing": [],
+  "operational_amendment_sha256": "c919cc21b18a887c40eb18a2cf76db234f483b154283b5f796322f68e7c0cc56",
+  "original_admission_seconds": 2700,
+  "original_wave_manifest": "continuation-wave2/wave1-manifest.json",
+  "planned": 750,
+  "protocol_sha256": "c413019db05d2c90cc1d89d708e2e5145d456dffba20bcc524e3157786c464e8",
+  "published_amendment_reference": "https://github.com/stelioszach03/llm-smt-verifiable-reasoning/commit/b057c46452dc0082c51359f210d88b26022ef496",
+  "recorded_status_counts": {
+    "complete": 739,
+    "stopped": 11
+  },
+  "started_at": "2026-09-24T11:34:05.026880+00:00",
+  "status": "complete"
+}

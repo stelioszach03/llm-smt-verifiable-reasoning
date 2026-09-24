@@ -1,0 +1,18 @@
+{
+  "amendment_sha256": "c919cc21b18a887c40eb18a2cf76db234f483b154283b5f796322f68e7c0cc56",
+  "cumulative_study_accounted_cost_usd": 0.867535,
+  "elapsed_seconds": 3611.529289484024,
+  "finished_at": "2026-09-24T13:22:16.164179+00:00",
+  "new_recorded_cells": 371,
+  "new_status_counts": {
+    "complete": 368,
+    "stopped": 3
+  },
+  "original_manifest_sha256": "853616bcaeef13db08ebef40e8f930af3928dc376f811625bd4587fc759b59c5",
+  "planned_new_cells": 371,
+  "publication_verification": "Operator-supplied public reference; reviewed before invocation, not fetched by this helper",
+  "published_amendment_reference": "https://github.com/stelioszach03/llm-smt-verifiable-reasoning/commit/b057c46452dc0082c51359f210d88b26022ef496",
+  "remaining_unlaunched": [],
+  "started_at": "2026-09-24T12:22:04.634924+00:00",
+  "status": "complete"
+}

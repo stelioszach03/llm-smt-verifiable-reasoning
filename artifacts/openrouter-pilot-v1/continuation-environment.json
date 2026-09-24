@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-09-24T12:30:39.369808+00:00",
+  "original_environment_sha256": "a9f7282b063180d8e62183b7395754724fa94401d8608c5c639beabe9c210195",
+  "helper_sha256": "5ed4411164281320fd3dcd949f296942f5ac1f358b7900d7939de365bde96c02",
+  "service_resource_settings": {
+    "RuntimeMaxUSec": "1h 5min",
+    "CPUQuotaPerSecUSec": "2s",
+    "MemoryMax": "1572864000",
+    "Nice": "10",
+    "PrivateTmp": "yes",
+    "ProtectHome": "yes",
+    "ProtectSystem": "strict",
+    "NoNewPrivileges": "yes",
+    "KillMode": "control-group"
+  },
+  "note": "Continuation operational environment; original environment file is preserved unchanged."
+}

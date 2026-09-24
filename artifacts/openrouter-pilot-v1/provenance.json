@@ -1,0 +1,16 @@
+{
+  "raw_archive_name": "pilot1-final.tar.gz",
+  "raw_archive_sha256": "e4045552a34163290be183f9475d7bbb4888f14dc9a4d048e6b3cf530a47f08f",
+  "raw_archive_bytes": 1234917,
+  "raw_release_url": "https://github.com/stelioszach03/llm-smt-verifiable-reasoning/releases/download/openrouter-pilot-v1/pilot1-final.tar.gz",
+  "original_evaluation_source_commit": "dc7b9de89f3a507705b259c870af82eda763621f",
+  "original_freeze_publication_commit": "e6797d91f49911c1937d90032acebfbc2eb358ed",
+  "operational_amendment_publication_commit": "b057c46452dc0082c51359f210d88b26022ef496",
+  "analysis_source_commit": "c35c74c931b34a27cbf1dc1d1ce40e11749f21e3",
+  "original_wave_archive_sha256": "030549cb655bc67f9f1e70eff750cfadcac95038a7c9bde08aca1771ff1941c9",
+  "original_episode_files_preserved": 758,
+  "raw_files": 1511,
+  "protocol_sha256": "c413019db05d2c90cc1d89d708e2e5145d456dffba20bcc524e3157786c464e8",
+  "amendment_sha256": "c919cc21b18a887c40eb18a2cf76db234f483b154283b5f796322f68e7c0cc56",
+  "scope": "50 public synthetic tasks x 3 requested seeds x 5 arms; 750 recorded cells, 739 completed executions, 11 deadline stops; not the proposed 7500-episode study."
+}
