@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest
+from pydantic import ValidationError
+
 from cegvr.candidate.types import CandidateOutput
 from cegvr.candidate.verifier import verify_linear_candidate
 
@@ -88,3 +91,22 @@ def test_false_unsat_claim_returns_witness() -> None:
     assert result.verified_outcome == "FALSE_UNSAT_CLAIM"
     assert result.sat_witness is not None
     assert result.sat_witness["x"] == 2
+
+
+@pytest.mark.parametrize(
+    "assignment",
+    [{"y": 2}, {"x": "bad"}, {"x": 1.5}, {"x": True}, {"x": 2, "extra": 1}],
+)
+def test_invalid_assignment_precheck_never_evaluates_unsafe_values(assignment):
+    candidate = CandidateOutput.model_construct(status="sat", assignment=assignment)
+    result = verify_linear_candidate(SAT_PROBLEM, candidate, timeout_ms=1000)
+    assert result.verified_outcome == "REJECTED_DOMAIN"
+    assert result.verifier_result == "precheck"
+    assert result.solver_time_ms == 0
+    assert result.precheck_violations > 0
+
+
+@pytest.mark.parametrize("value", ["2", 2.0, "true"])
+def test_candidate_wire_schema_does_not_coerce_noninteger_nonboolean_values(value):
+    with pytest.raises(ValidationError):
+        CandidateOutput.model_validate({"status": "sat", "assignment": {"x": value}})

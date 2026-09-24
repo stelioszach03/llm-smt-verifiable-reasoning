@@ -32,8 +32,6 @@ def verify_linear_candidate(
     if predicted_status == "sat":
         assignment = dict(candidate.assignment or {})
         precheck = _precheck_assignment(variables, assignment)
-        violations = _count_constraint_violations(constraints, assignment)
-        precheck_violations = len(precheck) + len(violations)
         if precheck:
             return CandidateVerification(
                 predicted_status=predicted_status,
@@ -43,15 +41,17 @@ def verify_linear_candidate(
                 diagnostics={
                     "last_assignment": assignment,
                     "precheck_errors": precheck,
-                    "violated_constraint_ids": [
-                        ref.constraint_id for ref in violations
-                    ],
-                    "violated_constraint_texts": [
-                        ref.constraint_text for ref in violations
-                    ],
+                    "violated_constraint_ids": [],
+                    "violated_constraint_texts": [],
                 },
-                precheck_violations=precheck_violations,
+                precheck_violations=len(precheck),
             )
+
+        # Only evaluate expressions once every referenced variable has a complete,
+        # correctly typed in-domain assignment. Missing/malformed values are
+        # rejected candidates, not exceptions that abort the evaluation study.
+        violations = _count_constraint_violations(constraints, assignment)
+        precheck_violations = len(violations)
 
         solver, context, varmap = _build_problem_solver(
             problem, constraints, timeout_ms

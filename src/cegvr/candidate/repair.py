@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import Counter
 import json
 from time import perf_counter
-from typing import Any
+from typing import Any, Literal
 
 from cegvr.generation.provider import CandidateGenerator
 
@@ -31,11 +31,16 @@ def repair_candidates_until_certified(
     max_rounds: int = 4,
     per_round_budget: int = 4,
     timeout_ms: int = 2000,
+    witness_policy: Literal["include", "withhold"] = "include",
 ) -> dict[str, Any]:
     """Iteratively repair candidate outputs under a paper-study arm."""
 
+    if witness_policy not in ("include", "withhold"):
+        raise ValueError("Unknown solver witness feedback policy")
     total_start = perf_counter()
     history: list[dict[str, Any]] = []
+    generated_candidates: list[dict[str, Any]] = []
+    usage_measurements = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
     feedback: VerifierFeedback | None = None
     last_feedback: VerifierFeedback | None = None
     last_feedback_source: dict[str, Any] | None = None
@@ -59,13 +64,47 @@ def repair_candidates_until_certified(
         proposals = generator.propose_candidates(problem, round_budget, hint=feedback)
         round_attempts: list[tuple[AttemptRecord, CandidateVerification | None]] = []
 
-        for candidate_index, proposal in enumerate(proposals):
-            llm_attempts += 1
+        # The provider has already generated the entire batch. Account and retain
+        # every response even if verification of its first candidate succeeds.
+        batch_start = len(generated_candidates)
+        llm_attempts += len(proposals)
+        for index, proposal in enumerate(proposals):
             llm_latency_ms += proposal.llm_latency_ms
-            prompt_tokens += proposal.prompt_tokens or 0
-            completion_tokens += proposal.completion_tokens or 0
-            total_tokens += proposal.total_tokens or 0
+            usage = {name: getattr(proposal, name) for name in usage_measurements}
+            for name, value in usage.items():
+                usage_measurements[name] += type(value) is int and value >= 0
+            prompt_tokens += (
+                usage["prompt_tokens"]
+                if type(usage["prompt_tokens"]) is int and usage["prompt_tokens"] >= 0
+                else 0
+            )
+            completion_tokens += (
+                usage["completion_tokens"]
+                if type(usage["completion_tokens"]) is int
+                and usage["completion_tokens"] >= 0
+                else 0
+            )
+            total_tokens += (
+                usage["total_tokens"]
+                if type(usage["total_tokens"]) is int and usage["total_tokens"] >= 0
+                else 0
+            )
+            generated_candidates.append(
+                {
+                    "round_index": round_index,
+                    "candidate_index": index,
+                    "raw_candidate": proposal.raw_content,
+                    "candidate_output": proposal.candidate.model_dump(mode="python")
+                    if proposal.candidate
+                    else None,
+                    "llm_latency_ms": proposal.llm_latency_ms,
+                    **usage,
+                    "evaluated": False,
+                    "verified_outcome": None,
+                }
+            )
 
+        for candidate_index, proposal in enumerate(proposals):
             attempt, verification, predicted_status = _verify_proposal(
                 problem=problem,
                 proposal=proposal,
@@ -77,6 +116,9 @@ def repair_candidates_until_certified(
                 failure_counts=failure_counts,
             )
             history.append(attempt.model_dump(mode="python"))
+            generated_candidates[batch_start + candidate_index].update(
+                evaluated=True, verified_outcome=attempt.verified_outcome
+            )
             round_attempts.append((attempt, verification))
             last_predicted_status = predicted_status
 
@@ -104,6 +146,9 @@ def repair_candidates_until_certified(
                     completion_tokens=completion_tokens,
                     total_tokens=total_tokens,
                     history=history,
+                    generated_candidates=generated_candidates,
+                    usage_measurements=usage_measurements,
+                    witness_policy=witness_policy,
                     feedback=last_feedback,
                     feedback_source=last_feedback_source,
                     model=verification.certified_assignment if verification else None,
@@ -129,6 +174,27 @@ def repair_candidates_until_certified(
             verification=source_verification,
             arm=arm,
         )
+        if witness_policy == "withhold":
+            # Feedback diagnostics may otherwise become another witness channel.
+            # Only echo the actual proposed assignment; do not copy a verifier's
+            # diagnostics.last_assignment or any nested/private diagnostic field.
+            candidate_output = source_attempt.model_dump(mode="python").get(
+                "candidate_output"
+            )
+            own_assignment = (
+                candidate_output.get("assignment")
+                if isinstance(candidate_output, dict)
+                and candidate_output.get("status") == "sat"
+                else None
+            )
+            feedback = feedback.model_copy(
+                update={
+                    "sat_witness": None,
+                    "diagnostics": {"last_assignment": own_assignment}
+                    if isinstance(own_assignment, dict)
+                    else {},
+                }
+            )
         last_feedback = feedback
         last_feedback_source = {
             "round_index": source_attempt.round_index,
@@ -152,6 +218,9 @@ def repair_candidates_until_certified(
         completion_tokens=completion_tokens,
         total_tokens=total_tokens,
         history=history,
+        generated_candidates=generated_candidates,
+        usage_measurements=usage_measurements,
+        witness_policy=witness_policy,
         feedback=last_feedback,
         feedback_source=last_feedback_source,
         model=None,
@@ -314,6 +383,9 @@ def _finalize_result(
     completion_tokens: int,
     total_tokens: int,
     history: list[dict[str, Any]],
+    generated_candidates: list[dict[str, Any]],
+    usage_measurements: dict[str, int],
+    witness_policy: str,
     feedback: VerifierFeedback | None,
     feedback_source: dict[str, Any] | None,
     model: dict[str, Any] | None,
@@ -330,9 +402,26 @@ def _finalize_result(
         "solver_calls": solver_calls,
         "llm_latency_ms": llm_latency_ms,
         "solver_latency_ms": solver_latency_ms,
-        "prompt_tokens": prompt_tokens,
-        "completion_tokens": completion_tokens,
-        "total_tokens": total_tokens,
+        "prompt_tokens": prompt_tokens
+        if usage_measurements["prompt_tokens"] == llm_attempts
+        else None,
+        "completion_tokens": completion_tokens
+        if usage_measurements["completion_tokens"] == llm_attempts
+        else None,
+        "total_tokens": total_tokens
+        if usage_measurements["total_tokens"] == llm_attempts
+        else None,
+        "known_prompt_tokens": prompt_tokens,
+        "known_completion_tokens": completion_tokens,
+        "known_total_tokens": total_tokens,
+        "usage_complete": all(
+            count == llm_attempts for count in usage_measurements.values()
+        ),
+        "usage_measurements": dict(usage_measurements),
+        "generated_candidates": generated_candidates,
+        "evaluated_candidates": len(history),
+        "unevaluated_candidates": len(generated_candidates) - len(history),
+        "witness_policy": witness_policy,
         "history": history,
         "feedback": feedback.model_dump(mode="python")
         if feedback is not None

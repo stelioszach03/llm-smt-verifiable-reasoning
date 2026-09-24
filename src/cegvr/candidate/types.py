@@ -37,7 +37,7 @@ class ConstraintReference(BaseModel):
 class CandidateOutput(BaseModel):
     """LLM output contract for the candidate-first linear pipeline."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", strict=True)
 
     status: Literal["sat", "unsat"]
     assignment: dict[str, int | bool] | None = None
