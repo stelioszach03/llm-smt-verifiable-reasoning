@@ -1,71 +1,10 @@
-\subsection*{Linear main study}
-The main paper path evaluates the candidate-first linear benchmark under five
-explicit methods: \texttt{one\_shot}, \texttt{multi\_no\_feedback},
-\texttt{multi\_generic\_feedback}, \texttt{multi\_unsat\_core\_feedback}, and
-\texttt{cd\_vgs\_core\_rank}. The primary comparison concerns the four
-compute-matched multi-round methods, which share identical \(K\), \(R\),
-timeouts, parsing rules, and generation settings. The retry baselines differ
-only in the carried-forward verifier feedback, while \texttt{cd\_vgs\_core\_rank}
-uses the same fixed budget for conflict-directed candidate ranking and targeted
-repair.
+\subsection*{Results pending}
+The complete planned model sweep has not been verified from artifacts in this
+repository. No arm-level performance, statistical significance, transfer result
+or method advantage is reported. Offline stub runs test implementation and are
+not language-model experiments.
 
-\begin{table}[t]
-    \centering
-    \input{tables_linear/table_main.tex}
-    \caption{Arm-level linear results for the candidate-first study.}
-    \label{tab:linear-main}
-\end{table}
-
-Figure~\ref{fig:linear-arm-bars} reports arm-level verified solve rate.
-Figure~\ref{fig:linear-convergence} shows solved-within-round curves, exposing
-whether richer feedback or conflict-directed search helps convergence rather
-than merely increasing attempt count. Figure~\ref{fig:linear-frontier} plots
-efficiency via mean solver calls against verified solve rate.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.6\textwidth]{../figures_linear/arm_verified_solve_rate.png}
-    \caption{Linear study: verified solve rate by arm.}
-    \label{fig:linear-arm-bars}
-\end{figure}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.6\textwidth]{../figures_linear/convergence_by_round.png}
-    \caption{Linear study: solved-within-round curves for the five methods.}
-    \label{fig:linear-convergence}
-\end{figure}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.6\textwidth]{../figures_linear/efficiency_frontier.png}
-    \caption{Linear study: efficiency frontier using mean solver calls and verified solve rate.}
-    \label{fig:linear-frontier}
-\end{figure}
-
-\paragraph{Metrics and comparisons.}
-The run records expose verified solve rate, SAT certification rate, UNSAT
-precision/recall, solver calls per certified solve, latency summaries, token
-usage, and repair gain relative to \texttt{one\_shot}. Paired McNemar tests are
-reported for solved-within-budget comparisons among the compute-matched methods,
-with Wilcoxon signed-rank tests used for latency and solver-call comparisons.
-
-\subsection*{Sudoku appendix transfer evidence}
-To show that the repository is not reduced to a single-task artifact, we retain
-the legacy trace-based pipeline and run a small Sudoku 4x4 transfer experiment
-in the appendix. This is descriptive evidence only; it does not drive the main
-claims.
-
-\begin{table}[t]
-    \centering
-    \input{tables_sudoku_appendix/table_main.tex}
-    \caption{Sudoku appendix transfer evidence via the preserved trace layer.}
-    \label{tab:sudoku-appendix}
-\end{table}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.6\textwidth]{../figures_sudoku_appendix/arm_verified_solve_rate.png}
-    \caption{Sudoku appendix: descriptive arm-level transfer evidence.}
-    \label{fig:sudoku-appendix}
-\end{figure}
+A future report must derive its tables from preserved per-problem records,
+distinguish SAT assignment correctness from UNSAT classification, and report
+errors, solver timeouts, actual tokens, latency and repair attempts. Round and
+candidate caps alone do not demonstrate equal compute expenditure.

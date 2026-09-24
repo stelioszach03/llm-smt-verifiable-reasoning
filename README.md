@@ -6,7 +6,7 @@ The live workspace checks structured candidate answers with Z3 and displays the 
 
 An experimental toolkit for testing whether solver feedback helps a language model propose valid solutions to formal constraint problems. A generator proposes a candidate; Z3 checks the encoded constraints; a repair loop can return structured feedback for another attempt.
 
-**Status:** research prototype. Included write-ups are unpublished drafts. There is no verified headline performance result in this checkout.
+**Status:** research prototype with an unevaluated study protocol. There is no verified headline performance result in this checkout. Legacy result figures and the stale manuscript PDF were removed from the current branch because their underlying run records are unavailable; Git history is preserved.
 
 ## What can be checked here
 
@@ -42,6 +42,6 @@ For model experiments, run an OpenAI-compatible server under your control and ex
 - UNSAT instances in the supplied generator are simple; aggregate solve rate alone can hide weak SAT assignment performance.
 - A solver timeout is unknown, not a proof of infeasibility. Model output is untrusted input.
 - The linear adapter rejects malformed provider JSON and nonfinite assignments; tests use mocks, not a live model service.
-- The [legacy PDF](examples/paper_assets/latex/legacy_2025-10-11_llama3-8b.pdf) describes a different experiment and is retained only as historical material. It is not evidence for the current pipeline.
+- The [study protocol](examples/paper_assets/README.md) describes future evidence requirements. It is not a completed experiment or a publication.
 
 [MIT license](LICENSE).

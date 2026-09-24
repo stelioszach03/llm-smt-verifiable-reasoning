@@ -1,82 +1,37 @@
 \documentclass[10pt]{article}
 \usepackage[a4paper,margin=1in]{geometry}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{pgfplotstable}
-\usepackage{amsmath}
 \usepackage{microtype}
 \usepackage{hyperref}
-\usepackage{newtxtext,newtxmath}
-\pgfplotsset{compat=1.18}
-
-\title{CEGVR: Candidate-First Verifiable Reasoning with Solver-Grounded Feedback}
+\title{CEGVR: Evaluation Protocol for LLM Candidates with SMT Verification}
 \author{Stylianos Zacharioudakis}
-\date{\today}
-
+\date{Unpublished protocol; no completed model-study results}
 \begin{document}
 \maketitle
-
 \begin{abstract}
-We present a linear-first, candidate-based LLM+SMT evaluation protocol for
-verifiable reasoning under explicit feedback-granularity control. The main study
-compares five methods: a one-shot reference, three compute-matched retry
-baselines, and a new conflict-directed verifier-guided search method
-(\texttt{cd\_vgs\_core\_rank}) that uses unsat-core structure for candidate
-ranking and targeted repair. The implementation preserves the legacy trace-based
-architecture as a compatibility and transfer layer while moving the main paper
-path to a stricter candidate-verification interface. All experiments are
-designed for local execution with an OpenAI-compatible endpoint such as
-llama.cpp serving Qwen.
+This document describes an implemented candidate-verification pipeline and a
+planned study of solver feedback in language-model repair. It is an evaluation
+protocol, not a paper reporting completed experiments. No advantage over a
+baseline is established.
 \end{abstract}
-
-\section{Introduction}
-The central question of this upgrade is not whether an LLM can emit a candidate,
-but whether \emph{solver-grounded feedback} measurably improves verified
-performance over mere repeated attempts under matched budgets. To answer that
-question cleanly, the codebase now separates a candidate-first linear pipeline
-from the preserved trace-based extension layer, standardizes outcome logging,
-and reports paired arm comparisons with bootstrap confidence intervals.
-
-\paragraph{Contributions.}
-\begin{itemize}
-  \item A candidate-first linear pipeline with explicit feedback-isolated retry baselines and a conflict-directed CoreRank flagship method.
-  \item Paper-grade run records, metrics, and paired statistical comparisons.
-  \item A preserved trace-based extension path, demonstrated via a small Sudoku appendix transfer experiment.
-\end{itemize}
-
-\section{Method}
-\textbf{Main benchmark.} The primary benchmark is a solver-backed linear
-feasibility dataset with SAT/UNSAT labels and structural difficulty metadata.
-
-\textbf{Protocol.} The candidate generator returns either a full satisfying
-assignment or an UNSAT claim. The verifier then either certifies the claim or
-returns the richest solver-grounded diagnostic available. The main causal
-comparison is among the four compute-matched multi-round methods; the one-shot
-arm is retained as a repair-gain baseline.
-
-\textbf{Local execution.} The documented local path uses Python 3.11, a local
-OpenAI-compatible endpoint, and llama.cpp as the default serving stack. The
-paper defaults are \(K=4\), \(R=4\), and thinking disabled.
-
-\section{Results}
+\section{Implemented interface}
+A generator proposes a satisfying assignment or an UNSAT claim for supplied
+formal constraints. Z3 checks the candidate against that encoding. A repair
+loop may receive structured verification feedback. Solver success certifies
+only the supplied constraints, not the correctness of a natural-language
+interpretation. A timeout is unknown, not proof of infeasibility.
+\section{Planned comparison}
+The pipeline implements \texttt{one\_shot}, \texttt{multi\_no\_feedback},
+\texttt{multi\_generic\_feedback}, \texttt{multi\_unsat\_core\_feedback}, and
+\texttt{cd\_vgs\_core\_rank}. The full script specifies 500 synthetic linear
+problems, three seeds and five arms. Each method must be evaluated under a
+recorded actual model/engine and fixed protocol. Shared round and candidate
+caps are resource limits; measured usage is needed to assess cost comparability.
+\section{Evidence status}
 \input{sections/results.tex}
-
-\section{Conclusion}
-The upgraded repository now supports a linear-first, candidate-level
-verifiable-reasoning study with strict feedback isolation and reproducible local
-execution. The preserved trace layer remains useful for transfer evidence and
-future extensions, but the main paper claims are now tied to the explicit
-candidate-verification protocol.
-
-\section*{Reproducibility}
-The local paper pipeline is executed by \texttt{scripts/run\_all.sh}. It
-bootstraps Python 3.11, regenerates the linear benchmark, runs the full arm
-matrix, and rebuilds the figures, tables, and PDF.
-
-\section*{Limitations}
-The appendix transfer evidence is intentionally small and descriptive. The main
-claims remain restricted to the linear benchmark and to the current local
-serving setup. Additional training or larger transfer suites are outside the
-scope of this slice.
-
+\section{Reproducibility requirements}
+Preserve input hashes, model and server revisions, decoding settings, prompts,
+candidate outputs, solver outcomes, repair decisions, errors, token counts and
+latency. Aggregate results must be traceable to those records. Small Sudoku,
+Latin-square and scheduling examples exercise adapters; they are not evidence
+of broad reasoning generalization.
 \end{document}

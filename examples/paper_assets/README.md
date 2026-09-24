@@ -1,10 +1,24 @@
-# Paper Assets
+# Evaluation protocol and report templates
 
-The paper assets are now aligned to the linear-first candidate study and the Sudoku appendix transfer run.
+No completed five-arm model study is available in this checkout. The planned
+500-problem, three-seed, five-arm sweep totals 7,500 evaluations; a script and
+report template are not evidence that it ran. The former PDF and result images
+were removed from the current branch because the underlying records needed to
+verify them are unavailable. Historical files remain in Git history.
 
-## Linear Main Assets
+Before launching a model study, fix the dataset hash, actual served model,
+provider/engine version, decoding parameters, seeds, time/token/cost limits and
+failure handling. Equal round/candidate caps do not establish equal realized
+compute cost. Run the offline stub and parser/verifier tests first. The full
+`scripts/run_all.sh` pipeline makes inference requests and is not a smoke test.
 
-Generate from the 5-method candidate study:
+After a real run, retain per-problem records with actual model outputs, solver
+outcomes, repair steps, errors, usage and elapsed time. Derive every table and
+figure from those records. Report SAT assignment and UNSAT outcomes separately,
+include timeouts/invalid outputs, and keep exploratory transfer tasks distinct
+from the primary comparison.
+
+Example artifact commands, **only after the corresponding runs exist**:
 
 ```bash
 cegvr summarize --runs runs/linear_main --table tables/linear/main_results.csv
@@ -12,27 +26,5 @@ cegvr make-tables --runs runs/linear_main --out examples/paper_assets/tables_lin
 cegvr make-figures --runs runs/linear_main --out examples/paper_assets/figures_linear
 ```
 
-Main linear figures:
-
-- `arm_verified_solve_rate.png`
-- `convergence_by_round.png`
-- `efficiency_frontier.png`
-
-Main linear tables:
-
-- `main_results.csv`
-- `ablations.csv`
-- `difficulty_breakdown.csv`
-- `latex/tables_linear/table_main.tex`
-
-## Sudoku Appendix Assets
-
-Generate from the preserved trace-layer appendix run:
-
-```bash
-cegvr summarize --runs runs/sudoku_appendix --table tables/sudoku_appendix_results.csv
-cegvr make-tables --runs runs/sudoku_appendix --out examples/paper_assets/tables_sudoku_appendix
-cegvr make-figures --runs runs/sudoku_appendix --out examples/paper_assets/figures_sudoku_appendix
-```
-
-These appendix outputs are descriptive transfer evidence only; the main claims remain tied to the linear candidate-first study.
+The LaTeX directory is a protocol template with an explicit results-pending
+section. A compiled template must not be presented as a research result.
